@@ -3,8 +3,8 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
-export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/css-lab/' : '/',
+export default defineConfig(({ command, isPreview }) => ({
+  base: command === 'build' || isPreview ? '/css-lab/' : '/',
   plugins: [vue(), tailwindcss()],
   resolve: {
     alias: {

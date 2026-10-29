@@ -75,13 +75,11 @@ test('progress JSON roundtrip rejects malformed imports and reset requires confi
   await expect(page.locator('.stat-number').first()).toHaveText('0')
   await page.getByLabel('Importar progreso JSON').setInputFiles(path!)
   await expect(page.locator('.stat-number').first()).toHaveText('80')
-  await page
-    .getByLabel('Importar progreso JSON')
-    .setInputFiles({
-      name: 'invalid.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from('{"xp":-10}'),
-    })
+  await page.getByLabel('Importar progreso JSON').setInputFiles({
+    name: 'invalid.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{"xp":-10}'),
+  })
   await expect(
     page.getByText('El archivo no tiene un progreso válido. Se conservan tus datos.'),
   ).toBeVisible()

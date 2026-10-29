@@ -37,5 +37,8 @@ Este plan traduce la especificación funcional v1.0 a entregas verificables. Se 
 
 - [x] Especificación funcional y roadmap revisados.
 - [x] Hito 0 publicado en GitHub Pages; la URL pública responde correctamente.
-- [ ] Hito 1 en curso: laboratorio, editor, sandbox, árbol DOM, estado local y enlace comprimido implementados; pendientes revisión e integración en `main`.
-- [ ] Hitos 2–6 pendientes de las condiciones de salida anteriores.
+- [x] Hito 1: laboratorio, editor, sandbox, árbol DOM, estado local y enlace comprimido implementados y verificados.
+- [x] Recorridos funcionales de Teoría, Catálogo, Retos y Progreso; paquete de contenido con 10 lecciones, 51 fichas y 62 retos.
+- [x] XP, rachas, 31 insignias, favoritos, copia/importación JSON, cascada, fuentes locales y repaso espaciado.
+- [ ] Condiciones editoriales, pruebas con usuarios y auditorías adicionales de los Hitos 2–5: consultar `IMPLEMENTATION_STATUS.md`.
+- [ ] Hito 6: extensiones posteriores a v1.0.
