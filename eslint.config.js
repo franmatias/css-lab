@@ -44,7 +44,7 @@ export default tseslint.config(
       'vuejs-accessibility/form-control-has-label': 'error',
       'vuejs-accessibility/heading-has-content': 'error',
       'vuejs-accessibility/interactive-supports-focus': 'error',
-      'vuejs-accessibility/label-has-for': 'error',
+      'vuejs-accessibility/label-has-for': ['error', { required: { some: ['nesting', 'id'] } }],
       'vuejs-accessibility/no-autofocus': 'error',
     },
   },

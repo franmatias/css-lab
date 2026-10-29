@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { learningSchema } from '@/domain/progress'
 
 export const STORAGE_KEY = 'csslab:v1'
 const BACKUP_KEY = 'csslab:v1:backup'
@@ -12,6 +13,10 @@ const appStorageSchema = z
   .object({
     theme: themePreferenceSchema.default('system'),
     lab: labDraftSchema.optional(),
+    progress: z
+      .unknown()
+      .refine((value) => value === undefined || learningSchema.safeParse(value).success)
+      .optional(),
   })
   .passthrough()
 
@@ -125,6 +130,28 @@ export function writeLabDraft(draft: LabDraft, storage: Storage | null = getStor
     return true
   } catch (error) {
     console.error('No se pudo guardar el borrador del laboratorio.', error)
+    return false
+  }
+}
+
+let memoryLearning: unknown = {}
+
+export function readLearningData(): unknown {
+  const storage = getStorage()
+  return storage ? (readRoot(storage).progress ?? {}) : memoryLearning
+}
+
+export function writeLearningData(progress: unknown): boolean {
+  memoryLearning = progress
+  const storage = getStorage()
+  if (!storage) return false
+  try {
+    storage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ theme: 'system', ...readRoot(storage), progress }),
+    )
+    return true
+  } catch {
     return false
   }
 }

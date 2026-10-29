@@ -33,7 +33,7 @@ export const router = createRouter({
     {
       path: '/teoria/:slug?',
       name: 'theory',
-      component: () => import('@/features/sections/SectionPage.vue'),
+      component: () => import('@/features/theory/TheoryPage.vue'),
       meta: {
         titleKey: 'nav.theory',
         descriptionKey: 'sections.theory',
@@ -43,7 +43,7 @@ export const router = createRouter({
     {
       path: '/catalogo/:slug?',
       name: 'catalog',
-      component: () => import('@/features/sections/SectionPage.vue'),
+      component: () => import('@/features/catalog/CatalogPage.vue'),
       meta: {
         titleKey: 'nav.catalog',
         descriptionKey: 'sections.catalog',
@@ -63,7 +63,7 @@ export const router = createRouter({
     {
       path: '/retos/:category?/:id?',
       name: 'challenges',
-      component: () => import('@/features/sections/SectionPage.vue'),
+      component: () => import('@/features/challenges/ChallengesPage.vue'),
       meta: {
         titleKey: 'nav.challenges',
         descriptionKey: 'sections.challenges',
@@ -73,7 +73,7 @@ export const router = createRouter({
     {
       path: '/progreso',
       name: 'progress',
-      component: () => import('@/features/sections/SectionPage.vue'),
+      component: () => import('@/features/progress/ProgressPage.vue'),
       meta: {
         titleKey: 'nav.progress',
         descriptionKey: 'sections.progress',
