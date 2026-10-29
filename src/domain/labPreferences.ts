@@ -13,5 +13,14 @@ export const labPreferencesSchema = z.object({
   wrap: z.boolean().default(true),
   useTabs: z.boolean().default(false),
   tabWidth: z.union([z.literal(2), z.literal(4)]).default(2),
+  layout: z.enum(['balanced', 'code', 'preview']).default('balanced'),
+  collapsed: z
+    .object({
+      html: z.boolean().default(false),
+      css: z.boolean().default(false),
+      preview: z.boolean().default(false),
+      tree: z.boolean().default(false),
+    })
+    .default({}),
 })
 export type LabPreferences = z.infer<typeof labPreferencesSchema>

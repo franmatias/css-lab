@@ -1,4 +1,6 @@
+import { extensions } from './extensions'
 export const es = {
+  ...extensions,
   app: {
     tagline: 'Selecciona, prueba, domina',
     skip: 'Saltar al contenido',
@@ -13,6 +15,10 @@ export const es = {
     menuLabel: 'Navegación principal',
     mobileMenuLabel: 'Navegación móvil',
     currentPage: 'Estás en {page}',
+    openMenu: 'Abrir menú',
+    closeMenu: 'Cerrar menú',
+    responsiveMenu: 'Menú responsive',
+    badgeCount: 'Insignias obtenidas: {count}',
   },
   nav: {
     home: 'Inicio',
@@ -21,6 +27,9 @@ export const es = {
     lab: 'Laboratorio',
     challenges: 'Retos',
     progress: 'Progreso',
+    game: 'Juego visual',
+    badges: 'Insignias',
+    examples: 'Recetas CSS',
   },
   home: {
     eyebrow: 'Tu espacio para aprender CSS',

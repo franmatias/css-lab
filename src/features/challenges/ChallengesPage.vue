@@ -5,6 +5,7 @@ import { challenges, entries, moduleNames } from '../../../packages/content/src'
 import { useLearningStore } from '@/shared/model/learningStore'
 import { evaluateChallenge, resolveSelector, type Verdict } from '@/domain/challenges'
 import { createPreviewDocument, evaluateSelector } from '@/features/lab/model/selectorEvaluator'
+import GameInvitation from '@/shared/ui/GameInvitation.vue'
 const route = useRoute()
 const store = useLearningStore()
 const key = computed(() => String(route.params.id || route.params.category || ''))
@@ -166,6 +167,7 @@ function check() {
       >
     </div>
     <template v-else>
+      <GameInvitation />
       <p class="section-intro">
         62 oportunidades de practicar. Los módulos son libres; dentro de cada uno, avanza paso a
         paso.

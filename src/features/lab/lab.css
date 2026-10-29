@@ -6,6 +6,65 @@
   --code-keyword: #6d28d9;
   --code-comment: #595d75;
 }
+.lab-panel-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0;
+  font: 600 1.3rem/1 system-ui;
+  background: var(--surface-2);
+  color: var(--primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  cursor: pointer;
+}
+.lab-panel-collapsed {
+  min-height: 54px;
+}
+.lab-panel-collapsed > :not(.lab-panel-header) {
+  display: none !important;
+}
+.lab-tree-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+@media (min-width: 1101px) {
+  .lab-workbench:not(.lab-focus-preview) {
+    grid-template-columns: var(--html-column, 1fr) var(--css-column, 1fr) var(
+        --preview-column,
+        1.18fr
+      );
+  }
+  .lab-panel-collapsed .lab-panel-header {
+    height: 100%;
+    flex-direction: column;
+    padding: 0.5rem;
+    justify-content: start;
+  }
+  .lab-panel-collapsed .lab-panel-header h2 {
+    writing-mode: vertical-rl;
+    padding: 0.7rem 0;
+  }
+  .lab-panel-collapsed .lab-language,
+  .lab-panel-collapsed .lab-safe-label {
+    display: none;
+  }
+  .lab-panel-collapsed .lab-panel-toggle {
+    order: -1;
+    margin: 0;
+  }
+}
 :root[data-theme='dark'] {
   --code-tag: #f9a8d4;
   --code-property: #93c5fd;

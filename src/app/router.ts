@@ -10,6 +10,9 @@ declare module 'vue-router' {
       | 'nav.lab'
       | 'nav.challenges'
       | 'nav.progress'
+      | 'nav.game'
+      | 'nav.badges'
+      | 'nav.examples'
       | 'notFound.title'
     descriptionKey?:
       | 'sections.theory'
@@ -24,6 +27,24 @@ declare module 'vue-router' {
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/juego/:id?',
+      name: 'game',
+      component: () => import('@/features/game/GamePage.vue'),
+      meta: { titleKey: 'nav.game' },
+    },
+    {
+      path: '/insignias',
+      name: 'badges',
+      component: () => import('@/features/badges/BadgesPage.vue'),
+      meta: { titleKey: 'nav.badges' },
+    },
+    {
+      path: '/ejemplos/:id?',
+      name: 'examples',
+      component: () => import('@/features/examples/ExamplesPage.vue'),
+      meta: { titleKey: 'nav.examples' },
+    },
     {
       path: '/',
       name: 'home',

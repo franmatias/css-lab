@@ -4,6 +4,8 @@ import { RouterLink, useRoute } from 'vue-router'
 import { entries, moduleNames } from '../../../packages/content/src'
 import { useLearningStore } from '@/shared/model/learningStore'
 import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const route = useRoute()
 const store = useLearningStore()
 const query = ref('')
@@ -35,6 +37,7 @@ watch(
   <section class="learning-page">
     <p class="eyebrow">Tu referencia de bolsillo</p>
     <h1 id="page-title" tabindex="-1">{{ entry?.name ?? 'Catálogo' }}</h1>
+    <RouterLink class="text-link" to="/ejemplos">{{ t('examples.discover') }}</RouterLink>
     <template v-if="entry">
       <RouterLink class="text-link" to="/catalogo">← Todas las fichas</RouterLink>
       <article class="learning-card catalog-detail">
