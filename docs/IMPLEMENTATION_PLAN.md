@@ -33,8 +33,9 @@ Este plan traduce la especificación funcional v1.0 a entregas verificables. Se 
 - **Accesibilidad y rendimiento**: teclado, foco, contraste y preferencias de movimiento se consideran criterios de aceptación desde el primer layout; editor y contenido pesado se cargan bajo demanda.
 - **Licencias y privacidad**: código MIT, contenido CC BY-SA 4.0, fuentes autoalojadas y sin analítica externa.
 
-## Estado inicial
+## Estado
 
 - [x] Especificación funcional y roadmap revisados.
-- [ ] Hito 0 en curso: aplicación, pruebas y workflow preparados; pendiente publicar y verificar el primer despliegue desde `main`.
-- [ ] Hitos 1–6 pendientes de las condiciones de salida anteriores.
+- [x] Hito 0 publicado en GitHub Pages; la URL pública responde correctamente.
+- [ ] Hito 1 en curso: laboratorio, editor, sandbox, árbol DOM, estado local y enlace comprimido implementados; pendientes revisión e integración en `main`.
+- [ ] Hitos 2–6 pendientes de las condiciones de salida anteriores.

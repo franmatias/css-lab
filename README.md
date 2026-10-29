@@ -2,7 +2,7 @@
 
 **Selecciona, prueba, domina.** CSS Lab es una aplicación educativa en español para aprender selectores CSS experimentando, resolviendo retos y consultando el progreso local.
 
-> El proyecto está empezando: el Hito 0 prepara la aplicación y la publicación; las secciones de teoría, catálogo, laboratorio, retos y progreso se irán completando según el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
+> El proyecto está en desarrollo: el Hito 0 ya está publicado y el Laboratorio permite probar HTML, CSS y selectores en un entorno aislado, explorar las coincidencias en el árbol DOM y compartir borradores mediante enlaces comprimidos. Teoría, catálogo, retos y progreso se irán completando según el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
 
 ## Desarrollo local
 
