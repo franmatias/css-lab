@@ -13,6 +13,17 @@ export const learningSchema = z.object({
   xp: z.number().int().nonnegative().default(0),
   lessons: z.record(z.string()).default({}),
   challenges: z.record(resultSchema).default({}),
+  games: z
+    .record(
+      z.object({
+        attempts: z.number().int().nonnegative(),
+        hintsUsed: z.number().int().min(0).max(3),
+        status: z.enum(['in_progress', 'completed']),
+        bestScore: z.number().int().nonnegative(),
+        completedAt: z.string().optional(),
+      }),
+    )
+    .default({}),
   activity: z.record(z.number().int().nonnegative()).default({}),
   streak: z
     .object({

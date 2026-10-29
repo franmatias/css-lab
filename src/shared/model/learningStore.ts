@@ -1,7 +1,14 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { learningSchema, type LearningData } from '@/domain/progress'
-import { badgeDefinitions, challenges, type Challenge } from '../../../packages/content/src'
+import {
+  badgeDefinitions,
+  challenges,
+  gameLevels,
+  type Challenge,
+} from '../../../packages/content/src'
+import { badgeProgress } from '@/domain/badges'
+import { visualGameScore } from '@/domain/visualGame'
 import { challengeScore, dayDistance, localDate } from '@/domain/challenges'
 import {
   readLearningData,
@@ -21,6 +28,9 @@ export const useLearningStore = defineStore('learning', () => {
   const saveFailed = ref(false)
   const completed = computed(
     () => Object.values(data.value.challenges).filter((c) => c.status === 'completed').length,
+  )
+  const gamesCompleted = computed(
+    () => Object.values(data.value.games).filter((game) => game.status === 'completed').length,
   )
   const level = computed(() =>
     data.value.xp < 300
@@ -84,26 +94,9 @@ export const useLearningStore = defineStore('learning', () => {
   }
   function unlockBadges(): void {
     const d = data.value
-    const clean = challenges.filter(
-      (c) => d.challenges[c.id]?.status === 'completed' && d.challenges[c.id]?.hintsUsed === 0,
-    ).length
     for (const badge of badgeDefinitions) {
-      const metrics: Record<string, number> = {
-        challenges: completed.value,
-        lessons: Object.keys(d.lessons).length,
-        streak: d.streak.current,
-        visits: d.visits.length,
-        favorites: d.favorites.length,
-        clean,
-      }
-      const group = challenges.filter((c) => c.module === badge.threshold)
-      const achieved =
-        badge.metric === 'module'
-          ? group.every(
-              (c) =>
-                d.challenges[c.id]?.status === 'completed' && d.challenges[c.id]?.hintsUsed === 0,
-            )
-          : (metrics[badge.metric] ?? (d.flags.includes(badge.metric) ? 1 : 0)) >= badge.threshold
+      const progress = badgeProgress(badge, d, challenges)
+      const achieved = progress.current >= progress.target
       if (achieved && !d.badges[badge.id]) {
         d.badges[badge.id] = new Date().toISOString()
         if (d.settings.celebrations) notice.value = `Insignia conseguida: ${badge.name}`
@@ -112,6 +105,36 @@ export const useLearningStore = defineStore('learning', () => {
   }
   function flag(name: string): void {
     if (!data.value.flags.includes(name)) data.value.flags.push(name)
+  }
+  function gameResult(id: string) {
+    if (!gameLevels.some((level) => level.id === id)) throw new Error('Misión desconocida.')
+    return (data.value.games[id] ??= {
+      attempts: 0,
+      hintsUsed: 0,
+      status: 'in_progress',
+      bestScore: 0,
+    })
+  }
+  function gameHint(id: string): void {
+    const result = gameResult(id)
+    if (result.status !== 'completed') result.hintsUsed = Math.min(3, result.hintsUsed + 1)
+  }
+  function playGame(id: string, correct: boolean): number {
+    const level = gameLevels.find((level) => level.id === id)
+    if (!level) return 0
+    const result = gameResult(id)
+    if (result.status === 'completed') return 0
+    result.attempts++
+    if (!correct) return 0
+    const score = visualGameScore(level.level, result.hintsUsed)
+    result.status = 'completed'
+    result.bestScore = score
+    result.completedAt = new Date().toISOString()
+    data.value.xp += score
+    markActivity()
+    if (id === 'galaxia-buho') flag('gameOwl')
+    unlockBadges()
+    return score
   }
   function explore(name: string): void {
     flag(name)
@@ -217,6 +240,7 @@ export const useLearningStore = defineStore('learning', () => {
     notice,
     saveFailed,
     completed,
+    gamesCompleted,
     level,
     todayCount,
     mastery,
@@ -230,5 +254,8 @@ export const useLearningStore = defineStore('learning', () => {
     importData,
     reset,
     explore,
+    gameHint,
+    playGame,
+    refreshBadges: unlockBadges,
   }
 })

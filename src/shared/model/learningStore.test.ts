@@ -13,6 +13,31 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+it('awards visual-game points and badges once and preserves hints and imported legacy progress', () => {
+  const store = useLearningStore()
+  expect(store.playGame('galaxia-rocosos', false)).toBe(0)
+  expect(store.data.xp).toBe(0)
+  expect(store.playGame('galaxia-rocosos', true)).toBe(100)
+  expect(store.data.xp).toBe(110)
+  expect(store.gamesCompleted).toBe(1)
+  expect(store.data.badges['primera-mision']).toBeDefined()
+  expect(store.playGame('galaxia-rocosos', true)).toBe(0)
+  expect(store.data.xp).toBe(110)
+  store.gameHint('galaxia-habitable')
+  store.gameHint('galaxia-habitable')
+  expect(store.playGame('galaxia-habitable', true)).toBe(60)
+  expect(store.data.games['galaxia-habitable']?.hintsUsed).toBe(2)
+  const snapshot = JSON.stringify(store.data)
+  store.reset()
+  expect(store.importData(snapshot)).toBe(true)
+  expect(store.gamesCompleted).toBe(2)
+  const legacy = JSON.parse(snapshot)
+  delete legacy.games
+  expect(store.importData(JSON.stringify(legacy))).toBe(true)
+  expect(store.gamesCompleted).toBe(0)
+  expect(store.data.xp).toBe(170)
+})
+
 it('awards completion only once and counts daily activity and unlocks the next challenge', () => {
   const store = useLearningStore()
   const challenge = challenges[0]!

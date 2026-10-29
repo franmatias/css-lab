@@ -1,4 +1,7 @@
 import { z } from 'zod'
+import { gameBadges } from './game'
+export { gameLevels, planets, galaxyHtml } from './game'
+export type { GameLevel } from './game'
 
 export const entrySchema = z.object({
   id: z.string(),
@@ -863,3 +866,4 @@ export const badgeDefinitions = [
   metric: String(metric),
   threshold: Number(threshold),
 }))
+badgeDefinitions.push(...gameBadges)
