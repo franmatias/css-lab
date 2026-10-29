@@ -27,6 +27,15 @@ pnpm build
 
 El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html` para que las rutas profundas funcionen en el hosting estático.
 
+## Herramientas del laboratorio
+
+- Código HTML/CSS con colores de sintaxis, números de línea alineados, posición del cursor y ajuste de líneas.
+- **Formatear** por editor o **Formatear todo**: saltos de línea e indentación con espacios o tabulaciones de 2/4 columnas. Atajo: `Ctrl + Mayús + F` (`⌘ + Mayús + F` en Mac). Un error conserva el código original.
+- Resaltado por bordes, fondo, ambos o sin marcas; tres colores, numeración y contornos de cajas opcionales.
+- Animaciones breves de los elementos afectados, desactivables y respetuosas con movimiento reducido.
+- Actualización en directo o en pausa con aplicación manual; vista ampliada y anchos de 375/768 px; fondos claro, oscuro y transparencia.
+- Preferencias locales persistentes y exportación HTML sin resaltados de aprendizaje.
+
 ## Publicación
 
 `.github/workflows/deploy.yml` comprueba cada pull request y publica automáticamente al hacer push a `main`. En GitHub, configura **Settings → Pages → Build and deployment → Source: GitHub Actions**. La URL prevista es <https://franmatias.github.io/css-lab/>.
