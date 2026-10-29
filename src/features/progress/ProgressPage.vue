@@ -5,6 +5,9 @@ import { badgeDefinitions, challenges, lessons, moduleNames } from '../../../pac
 import { useLearningStore } from '@/shared/model/learningStore'
 import { localDate } from '@/domain/challenges'
 import { downloadFile } from '@/shared/utils/download'
+import GameInvitation from '@/shared/ui/GameInvitation.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const store = useLearningStore()
 const message = ref('')
 const confirmReset = ref(false)
@@ -172,7 +175,11 @@ function moduleCompleted(module: number) {
         ><span>{{ Math.round(value * 100) }} %</span>
       </div>
     </section>
+    <GameInvitation />
     <section class="badges-section">
+      <RouterLink class="text-link" to="/insignias"
+        >{{ t('nav.badges') }} · {{ t('badges.all') }} →</RouterLink
+      >
       <h2>
         Tus insignias · {{ Object.keys(store.data.badges).length }}/{{ badgeDefinitions.length }}
       </h2>

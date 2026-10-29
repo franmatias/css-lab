@@ -5,6 +5,10 @@ import { entries, lessons } from '../../../packages/content/src'
 import { useLearningStore } from '@/shared/model/learningStore'
 import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
+import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+const sidebarOpen = ref(true)
 import { encodeSharedLabDraft } from '@/features/lab/model/shareLabDraft'
 const route = useRoute()
 const router = useRouter()
@@ -33,8 +37,8 @@ async function openLab() {
     <p class="section-intro">
       Diez módulos abiertos. Sigue la ruta recomendada o elige lo que quieras repasar.
     </p>
-    <div class="learning-layout">
-      <aside class="learning-sidebar" aria-label="Mapa de aprendizaje">
+    <div class="learning-layout" :class="{ 'sidebar-collapsed': !sidebarOpen }">
+      <CollapsibleSidebar v-model="sidebarOpen" class="learning-sidebar" :title="t('panels.map')">
         <RouterLink
           v-for="item in lessons"
           :key="item.id"
@@ -46,7 +50,8 @@ async function openLab() {
           }}</span
           >{{ item.name }}
         </RouterLink>
-      </aside>
+        <RouterLink to="/ejemplos">{{ t('examples.discover') }}</RouterLink>
+      </CollapsibleSidebar>
       <article v-if="lesson" class="learning-card lesson-body">
         <p class="eyebrow">{{ lesson.minutes }} minutos · Módulo {{ lesson.module }}</p>
         <h2>Al terminar podrás…</h2>

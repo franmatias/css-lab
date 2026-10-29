@@ -39,6 +39,7 @@ Este plan traduce la especificación funcional v1.0 a entregas verificables. Se 
 - [x] Hito 0 publicado en GitHub Pages; la URL pública responde correctamente.
 - [x] Hito 1: laboratorio, editor, sandbox, árbol DOM, estado local y enlace comprimido implementados y verificados.
 - [x] Recorridos funcionales de Teoría, Catálogo, Retos y Progreso; paquete de contenido con 10 lecciones, 51 fichas y 62 retos.
-- [x] XP, rachas, 31 insignias, favoritos, copia/importación JSON, cascada, fuentes locales y repaso espaciado.
+- [x] XP, rachas, 37 insignias, favoritos, copia/importación JSON, cascada, fuentes locales y repaso espaciado.
+- [x] Juego gráfico de doce misiones, doce recetas prácticas, menú responsive y paneles laterales plegables.
 - [ ] Condiciones editoriales, pruebas con usuarios y auditorías adicionales de los Hitos 2–5: consultar `IMPLEMENTATION_STATUS.md`.
 - [ ] Hito 6: extensiones posteriores a v1.0.

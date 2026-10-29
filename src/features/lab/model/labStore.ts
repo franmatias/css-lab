@@ -1,4 +1,4 @@
-import { useDebounceFn } from '@vueuse/core'
+import { useDebounceFn, useEventListener } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { readLabDraft, writeLabDraft } from '@/infrastructure/storage/appStorage'
@@ -11,6 +11,13 @@ export const useLabStore = defineStore('lab', () => {
   const draft = ref<LabDraft>(readLabDraft())
   const evaluation = ref<SelectorEvaluation>(evaluateSelector(draft.value))
   const saveError = ref(false)
+  useEventListener(window, 'pagehide', () => {
+    try {
+      saveError.value = !writeLabDraft(draft.value)
+    } catch {
+      saveError.value = true
+    }
+  })
 
   watch(
     draft,

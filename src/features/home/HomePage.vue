@@ -7,6 +7,7 @@ import { useLearningStore } from '@/shared/model/learningStore'
 import { challenges } from '../../../packages/content/src'
 import { dailyIndex, localDate } from '@/domain/challenges'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
+import GameInvitation from '@/shared/ui/GameInvitation.vue'
 
 const { t } = useI18n()
 const learning = useLearningStore()
@@ -164,5 +165,6 @@ const learningPaths = [
         </RouterLink>
       </div>
     </section>
+    <GameInvitation />
   </div>
 </template>

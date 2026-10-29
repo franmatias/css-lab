@@ -43,7 +43,7 @@ test('formatting expands minified code, supports tabs and preserves malformed in
     .selectOption({ label: 'Tabulaciones' })
   await page.getByRole('button', { name: 'Formatear HTML', exact: true }).click()
   await expect
-    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('csslab:v1')!).lab.html))
+    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('csslab:v1')!).lab?.html ?? ''))
     .toContain('\t<h2>')
   await page.getByRole('textbox', { name: 'CSS del ejercicio' }).fill('.nota { color: red')
   await page.getByRole('button', { name: 'Formatear CSS', exact: true }).click()

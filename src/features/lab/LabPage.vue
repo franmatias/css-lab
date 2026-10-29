@@ -24,6 +24,34 @@ const route = useRoute()
 const router = useRouter()
 const store = useLabStore()
 const preferences = ref(readLabPreferences())
+const panelColumns = computed(() => {
+  const weights =
+    preferences.value.layout === 'code'
+      ? ['1.3fr', '1.3fr', '1fr']
+      : preferences.value.layout === 'preview'
+        ? ['.8fr', '.8fr', '1.6fr']
+        : ['1fr', '1fr', '1.18fr']
+  return {
+    '--html-column': preferences.value.collapsed.html ? '54px' : weights[0],
+    '--css-column': preferences.value.collapsed.css ? '54px' : weights[1],
+    '--preview-column': preferences.value.collapsed.preview ? '54px' : weights[2],
+  }
+})
+function togglePanel(panel: LabPanel) {
+  const collapsed = preferences.value.collapsed
+  collapsed[panel] = !collapsed[panel]
+  if (collapsed.html && collapsed.css && collapsed.preview)
+    collapsed[panel === 'preview' ? 'html' : 'preview'] = false
+}
+function selectPanel(panel: LabPanel) {
+  activePanel.value = panel
+  preferences.value.collapsed[panel] = false
+}
+function restorePanels() {
+  preferences.value.collapsed = { html: false, css: false, preview: false, tree: false }
+  preferences.value.layout = 'balanced'
+  focusPreview.value = false
+}
 const settingsOpen = ref(false)
 const focusPreview = ref(false)
 const formatting = ref<'html' | 'css' | 'both' | null>(null)
@@ -171,7 +199,7 @@ async function formatEditors(language: 'html' | 'css' | 'both' = 'both') {
 }
 function toggleFocusPreview() {
   focusPreview.value = !focusPreview.value
-  if (focusPreview.value) activePanel.value = 'preview'
+  if (focusPreview.value) selectPanel('preview')
 }
 function downloadCode() {
   const cleanEvaluation = { ...evaluateSelector(draft.value), matchedElementIds: [] }
@@ -279,7 +307,7 @@ function movePanel(direction: number): void {
   const nextPanel = panels[nextIndex]
   if (!nextPanel) return
 
-  activePanel.value = nextPanel.id
+  selectPanel(nextPanel.id)
   void nextTick(() => document.getElementById(`tab-${nextPanel.id}`)?.focus())
 }
 </script>
@@ -418,6 +446,17 @@ function movePanel(direction: number): void {
       <label class="lab-check"
         ><input v-model="preferences.wrap" type="checkbox" />{{ t('lab.editor.wrap') }}</label
       >
+      <label
+        >{{ t('panels.layout')
+        }}<select v-model="preferences.layout">
+          <option value="balanced">{{ t('panels.balanced') }}</option>
+          <option value="code">{{ t('panels.code') }}</option>
+          <option value="preview">{{ t('panels.preview') }}</option>
+        </select></label
+      >
+      <button type="button" class="button button-secondary" @click="restorePanels">
+        {{ t('panels.restore') }}
+      </button>
       <p>{{ t('lab.editor.keyboardHelp') }}</p>
     </fieldset>
     <p
@@ -429,7 +468,7 @@ function movePanel(direction: number): void {
       {{ formatMessage }}
     </p>
 
-    <div class="lab-workbench" :class="{ 'lab-focus-preview': focusPreview }">
+    <div class="lab-workbench" :class="{ 'lab-focus-preview': focusPreview }" :style="panelColumns">
       <div class="lab-mobile-tabs" role="tablist" :aria-label="t('lab.panels')">
         <button
           v-for="panel in panels"
@@ -441,7 +480,7 @@ function movePanel(direction: number): void {
           :aria-controls="`panel-${panel.id}`"
           :tabindex="activePanel === panel.id ? 0 : -1"
           :class="{ 'lab-tab-active': activePanel === panel.id }"
-          @click="activePanel = panel.id"
+          @click="selectPanel(panel.id)"
           @keydown.right.prevent="movePanel(1)"
           @keydown.left.prevent="movePanel(-1)"
           @keydown.home.prevent="movePanel(-panels.findIndex((item) => item.id === activePanel))"
@@ -456,13 +495,30 @@ function movePanel(direction: number): void {
       <section
         id="panel-html"
         class="lab-panel"
-        :class="{ 'lab-panel-active': activePanel === 'html' }"
+        :class="{
+          'lab-panel-active': activePanel === 'html',
+          'lab-panel-collapsed': preferences.collapsed.html,
+        }"
         role="tabpanel"
         aria-labelledby="tab-html"
         :tabindex="activePanel === 'html' ? 0 : -1"
       >
         <header class="lab-panel-header">
           <h2>{{ t('lab.html') }}</h2>
+          <button
+            type="button"
+            class="lab-panel-toggle"
+            :aria-label="
+              t(preferences.collapsed.html ? 'panels.expand' : 'panels.collapse', {
+                panel: t('lab.html'),
+              })
+            "
+            :aria-expanded="!preferences.collapsed.html"
+            aria-controls="panel-html"
+            @click="togglePanel('html')"
+          >
+            {{ preferences.collapsed.html ? '›' : '‹' }}
+          </button>
           <span class="lab-language">HTML</span>
         </header>
         <CodeEditor
@@ -483,13 +539,30 @@ function movePanel(direction: number): void {
       <section
         id="panel-css"
         class="lab-panel"
-        :class="{ 'lab-panel-active': activePanel === 'css' }"
+        :class="{
+          'lab-panel-active': activePanel === 'css',
+          'lab-panel-collapsed': preferences.collapsed.css,
+        }"
         role="tabpanel"
         aria-labelledby="tab-css"
         :tabindex="activePanel === 'css' ? 0 : -1"
       >
         <header class="lab-panel-header">
           <h2>{{ t('lab.css') }}</h2>
+          <button
+            type="button"
+            class="lab-panel-toggle"
+            :aria-label="
+              t(preferences.collapsed.css ? 'panels.expand' : 'panels.collapse', {
+                panel: t('lab.css'),
+              })
+            "
+            :aria-expanded="!preferences.collapsed.css"
+            aria-controls="panel-css"
+            @click="togglePanel('css')"
+          >
+            {{ preferences.collapsed.css ? '›' : '‹' }}
+          </button>
           <span class="lab-language">CSS</span>
         </header>
         <CodeEditor
@@ -510,13 +583,30 @@ function movePanel(direction: number): void {
       <section
         id="panel-preview"
         class="lab-panel lab-preview-panel"
-        :class="{ 'lab-panel-active': activePanel === 'preview' }"
+        :class="{
+          'lab-panel-active': activePanel === 'preview',
+          'lab-panel-collapsed': preferences.collapsed.preview,
+        }"
         role="tabpanel"
         aria-labelledby="tab-preview"
         :tabindex="activePanel === 'preview' ? 0 : -1"
       >
         <header class="lab-panel-header">
           <h2>{{ t('lab.preview') }}</h2>
+          <button
+            type="button"
+            class="lab-panel-toggle"
+            :aria-label="
+              t(preferences.collapsed.preview ? 'panels.expand' : 'panels.collapse', {
+                panel: t('lab.preview'),
+              })
+            "
+            :aria-expanded="!preferences.collapsed.preview"
+            aria-controls="panel-preview"
+            @click="togglePanel('preview')"
+          >
+            {{ preferences.collapsed.preview ? '›' : '‹' }}
+          </button>
           <span class="lab-safe-label">
             <ShieldCheck :size="14" aria-hidden="true" />
             {{ t('lab.sandboxed') }}
@@ -632,9 +722,27 @@ function movePanel(direction: number): void {
     </div>
 
     <section class="lab-dom-tree" aria-labelledby="lab-tree-title">
-      <h2 id="lab-tree-title">{{ t('lab.treeTitle') }}</h2>
-      <p>{{ t('lab.treeDescription') }}</p>
-      <DomTree :nodes="domTree" @inspect="hoveredNode = $event" />
+      <h2 id="lab-tree-title">
+        <button
+          class="lab-tree-toggle"
+          type="button"
+          :aria-label="
+            t(preferences.collapsed.tree ? 'panels.expand' : 'panels.collapse', {
+              panel: t('panels.tree'),
+            })
+          "
+          :aria-expanded="!preferences.collapsed.tree"
+          aria-controls="lab-tree-content"
+          @click="preferences.collapsed.tree = !preferences.collapsed.tree"
+        >
+          {{ t('lab.treeTitle') }}
+          <span aria-hidden="true">{{ preferences.collapsed.tree ? '＋' : '−' }}</span>
+        </button>
+      </h2>
+      <div v-show="!preferences.collapsed.tree" id="lab-tree-content">
+        <p>{{ t('lab.treeDescription') }}</p>
+        <DomTree :nodes="domTree" @inspect="hoveredNode = $event" />
+      </div>
     </section>
 
     <div class="lab-info-row">
