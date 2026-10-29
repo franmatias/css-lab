@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { RotateCcw, Share2, ShieldCheck } from '@lucide/vue'
@@ -10,6 +10,9 @@ import { createDomTree } from './model/domTree'
 import { decodeSharedLabDraft, encodeSharedLabDraft } from './model/shareLabDraft'
 import CodeEditor from './CodeEditor.vue'
 import DomTree from './DomTree.vue'
+import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
+import { downloadFile } from '@/shared/utils/download'
+import { useLearningStore } from '@/shared/model/learningStore'
 
 type LabPanel = 'html' | 'css' | 'preview'
 
@@ -17,10 +20,86 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const store = useLabStore()
+const hoveredNode = ref<number | null>(null)
+const learning = useLearningStore()
+const template = ref('')
+const history = ref<string[]>([])
+const future = ref<string[]>([])
+let changingHistory = false
+watch(
+  () => JSON.stringify(store.draft),
+  (current, previous) => {
+    if (!changingHistory) {
+      history.value.push(previous)
+      history.value = history.value.slice(-60)
+      future.value = []
+    }
+    changingHistory = false
+    if (JSON.parse(current).selector === '*') learning.explore('universal')
+  },
+)
+function undoRedo(direction: 'undo' | 'redo') {
+  const source = direction === 'undo' ? history : future
+  const target = direction === 'undo' ? future : history
+  const item = source.value.pop()
+  if (!item) return
+  target.value.push(JSON.stringify(store.draft))
+  changingHistory = true
+  store.replaceDraft(JSON.parse(item))
+  editorRevision.value++
+}
+function loadTemplate() {
+  const templates: Record<string, string> = {
+    lista: '<ul class="menu"><li>Inicio</li><li>Más<ul><li>Submenú</li></ul></li></ul>',
+    formulario:
+      '<form><label>Correo <input type="email" required></label><button type="submit">Enviar</button></form>',
+    tabla:
+      '<table><caption>Práctica CSS</caption><thead><tr><th>Nombre</th><th>Curso</th></tr></thead><tbody><tr><td>Ana</td><td>DAM</td></tr></tbody></table>',
+    tarjeta:
+      '<article class="tarjeta"><h2>Una idea</h2><p class="destacado">Aprende seleccionando.</p><button>Explorar</button></article>',
+    navegacion:
+      '<nav aria-label="Ejemplo"><a href="#inicio">Inicio</a><a class="activo" href="#guia">Guía</a><a href="#ayuda">Ayuda</a></nav>',
+  }
+  const html = templates[template.value]
+  if (html) {
+    store.replaceDraft({
+      html,
+      css: 'body { font-family: system-ui; padding: 24px; }',
+      selector: '*',
+    })
+    editorRevision.value++
+  }
+}
+const copyMessage = ref('')
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(
+      `<!doctype html><html lang="es"><head><style>${draft.value.css.replace(/</g, '\\3C ')}</style></head><body>${evaluation.value.sanitizedHtml}</body></html>`,
+    )
+    copyMessage.value = 'Código copiado.'
+  } catch {
+    copyMessage.value = 'No se pudo acceder al portapapeles. Usa Descargar HTML.'
+  }
+}
 const { draft, evaluation, saveError } = storeToRefs(store)
 const activePanel = ref<LabPanel>('html')
 const editorRevision = ref(0)
-const previewDocument = computed(() => createPreviewDocument(evaluation.value, draft.value.css))
+const previewDocument = computed(() => {
+  const preview = createPreviewDocument(evaluation.value, draft.value.css)
+  if (hoveredNode.value === null) return preview
+  const document = new DOMParser().parseFromString(preview, 'text/html')
+  const original = new DOMParser().parseFromString(evaluation.value.sanitizedHtml, 'text/html')
+  const originElement = original.querySelectorAll('*')[hoveredNode.value]
+  if (!originElement) return preview
+  const sourceBodyElements = Array.from(original.body.querySelectorAll('*'))
+  const index = sourceBodyElements.indexOf(originElement)
+  const target = index >= 0 ? document.body.querySelectorAll('*')[index] : document.body
+  target?.setAttribute(
+    'style',
+    'outline: 3px solid #4f46e5 !important; outline-offset: 4px !important',
+  )
+  return `<!doctype html>${document.documentElement.outerHTML}`
+})
 const domTree = computed(() => createDomTree(evaluation.value))
 const errorMessage = computed(() => {
   if (!evaluation.value.error) return ''
@@ -51,6 +130,7 @@ onMounted(async () => {
     store.replaceDraft(result.draft)
     editorRevision.value += 1
     shareUrl.value = window.location.href
+    learning.explore('share')
     shareStatus.value = 'loaded'
   } else if (result.kind === 'invalid') {
     shareStatus.value = 'invalid'
@@ -170,6 +250,33 @@ function movePanel(direction: number): void {
       </div>
     </div>
 
+    <div class="lab-extra-tools">
+      <label
+        >Plantilla HTML<select v-model="template" @change="loadTemplate">
+          <option value="">Elige un ejemplo</option>
+          <option value="lista">Lista</option>
+          <option value="formulario">Formulario</option>
+          <option value="tabla">Tabla</option>
+          <option value="tarjeta">Tarjeta</option>
+          <option value="navegacion">Navegación</option>
+        </select></label
+      >
+      <button class="button button-secondary" :disabled="!history.length" @click="undoRedo('undo')">
+        Deshacer
+      </button>
+      <button class="button button-secondary" :disabled="!future.length" @click="undoRedo('redo')">
+        Rehacer
+      </button>
+      <button class="button button-secondary" @click="copyCode">Copiar código</button>
+      <button
+        class="button button-secondary"
+        @click="downloadFile('csslab.html', previewDocument, 'text/html')"
+      >
+        Descargar HTML
+      </button>
+      <span aria-live="polite">{{ copyMessage }}</span>
+    </div>
+
     <div class="lab-workbench">
       <div class="lab-mobile-tabs" role="tablist" :aria-label="t('lab.panels')">
         <button
@@ -264,7 +371,7 @@ function movePanel(direction: number): void {
     <section class="lab-dom-tree" aria-labelledby="lab-tree-title">
       <h2 id="lab-tree-title">{{ t('lab.treeTitle') }}</h2>
       <p>{{ t('lab.treeDescription') }}</p>
-      <DomTree :nodes="domTree" />
+      <DomTree :nodes="domTree" @inspect="hoveredNode = $event" />
     </section>
 
     <div class="lab-info-row">
@@ -277,5 +384,9 @@ function movePanel(direction: number): void {
       <p v-else class="lab-save-status">{{ t('lab.savedLocally') }}</p>
       <p class="lab-limit-note">{{ t('lab.limits') }}</p>
     </div>
+    <details class="lab-cascade">
+      <summary>Explorar la cascada y comparar reglas</summary>
+      <CascadeInspector />
+    </details>
   </section>
 </template>
