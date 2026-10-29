@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { RotateCcw, Share2, ShieldCheck } from '@lucide/vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLabStore } from './model/labStore'
-import { createPreviewDocument } from './model/selectorEvaluator'
+import { createPreviewDocument, evaluateSelector } from './model/selectorEvaluator'
 import { createDomTree } from './model/domTree'
 import { decodeSharedLabDraft, encodeSharedLabDraft } from './model/shareLabDraft'
 import CodeEditor from './CodeEditor.vue'
@@ -13,6 +13,9 @@ import DomTree from './DomTree.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
 import { downloadFile } from '@/shared/utils/download'
 import { useLearningStore } from '@/shared/model/learningStore'
+import { readLabPreferences, writeLabPreferences } from '@/infrastructure/storage/appStorage'
+import { formatCode } from './model/formatCode'
+import { detectPreviewChanges, type PreviewChanges } from './model/previewChanges'
 
 type LabPanel = 'html' | 'css' | 'preview'
 
@@ -20,6 +23,13 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const store = useLabStore()
+const preferences = ref(readLabPreferences())
+const settingsOpen = ref(false)
+const focusPreview = ref(false)
+const formatting = ref<'html' | 'css' | 'both' | null>(null)
+const formatMessage = ref('')
+const formatError = ref(false)
+watch(preferences, (value) => writeLabPreferences(value), { deep: true })
 const hoveredNode = ref<number | null>(null)
 const learning = useLearningStore()
 const template = ref('')
@@ -48,7 +58,7 @@ function undoRedo(direction: 'undo' | 'redo') {
   store.replaceDraft(JSON.parse(item))
   editorRevision.value++
 }
-function loadTemplate() {
+async function loadTemplate() {
   const templates: Record<string, string> = {
     lista: '<ul class="menu"><li>Inicio</li><li>Más<ul><li>Submenú</li></ul></li></ul>',
     formulario:
@@ -62,9 +72,15 @@ function loadTemplate() {
   }
   const html = templates[template.value]
   if (html) {
+    const css =
+      'body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; line-height: 1.6; color: #24233a; }\nbutton { padding: 8px 16px; border: 0; border-radius: 8px; background: #4f46e5; color: white; }\nli, td, th { padding: 8px; }\na { display: inline-block; margin: 8px; color: #4f46e5; }'
+    const [formattedHtml, formattedCss] = await Promise.all([
+      formatCode(html, 'html', preferences.value),
+      formatCode(css, 'css', preferences.value),
+    ])
     store.replaceDraft({
-      html,
-      css: 'body { font-family: system-ui; padding: 24px; }',
+      html: formattedHtml,
+      css: formattedCss,
       selector: '*',
     })
     editorRevision.value++
@@ -84,23 +100,90 @@ async function copyCode() {
 const { draft, evaluation, saveError } = storeToRefs(store)
 const activePanel = ref<LabPanel>('html')
 const editorRevision = ref(0)
-const previewDocument = computed(() => {
-  const preview = createPreviewDocument(evaluation.value, draft.value.css)
-  if (hoveredNode.value === null) return preview
-  const document = new DOMParser().parseFromString(preview, 'text/html')
-  const original = new DOMParser().parseFromString(evaluation.value.sanitizedHtml, 'text/html')
-  const originElement = original.querySelectorAll('*')[hoveredNode.value]
-  if (!originElement) return preview
-  const sourceBodyElements = Array.from(original.body.querySelectorAll('*'))
-  const index = sourceBodyElements.indexOf(originElement)
-  const target = index >= 0 ? document.body.querySelectorAll('*')[index] : document.body
-  target?.setAttribute(
-    'style',
-    'outline: 3px solid #4f46e5 !important; outline-offset: 4px !important',
+const previewEvaluation = ref(evaluation.value)
+const previewCss = ref(draft.value.css)
+const appliedDraft = ref(JSON.stringify(draft.value))
+const changes = ref<PreviewChanges>({ ids: [], added: 0, removed: 0, modified: 0 })
+const previewRevision = ref(0)
+const animateUpdate = ref(true)
+const hasPendingChanges = computed(() => JSON.stringify(draft.value) !== appliedDraft.value)
+function refreshPreview() {
+  const next = evaluateSelector(draft.value)
+  changes.value = detectPreviewChanges(
+    previewEvaluation.value.sanitizedHtml,
+    next,
+    previewCss.value,
+    draft.value.css,
   )
-  return `<!doctype html>${document.documentElement.outerHTML}`
+  previewEvaluation.value = next
+  previewCss.value = draft.value.css
+  appliedDraft.value = JSON.stringify(draft.value)
+  previewRevision.value++
+  animateUpdate.value = true
+}
+watch(evaluation, () => {
+  if (preferences.value.live) refreshPreview()
 })
-const domTree = computed(() => createDomTree(evaluation.value))
+watch(
+  () => preferences.value.live,
+  (live) => {
+    if (live) refreshPreview()
+  },
+)
+watch(hoveredNode, () => {
+  animateUpdate.value = false
+})
+const previewDocument = computed(() =>
+  createPreviewDocument(previewEvaluation.value, previewCss.value, {
+    ...preferences.value,
+    changedIds: changes.value.ids,
+    inspectedId: hoveredNode.value,
+    animations: preferences.value.animations && animateUpdate.value,
+  }),
+)
+const domTree = computed(() => createDomTree(previewEvaluation.value))
+async function formatEditors(language: 'html' | 'css' | 'both' = 'both') {
+  if (formatting.value) return
+  formatting.value = language
+  formatMessage.value = ''
+  formatError.value = false
+  const snapshot = { ...draft.value }
+  try {
+    const [html, css] = await Promise.all([
+      language === 'css' ? snapshot.html : formatCode(snapshot.html, 'html', preferences.value),
+      language === 'html' ? snapshot.css : formatCode(snapshot.css, 'css', preferences.value),
+    ])
+    if (html.length > 12000 || css.length > 12000) throw new Error(t('lab.editor.tooLong'))
+    if (draft.value.html !== snapshot.html || draft.value.css !== snapshot.css) {
+      formatMessage.value = t('lab.editor.changed')
+      return
+    }
+    store.replaceDraft({ ...snapshot, html, css })
+    formatMessage.value = t('lab.editor.formatted')
+  } catch (error) {
+    formatError.value = true
+    formatMessage.value = t('lab.editor.error', {
+      message: error instanceof Error ? error.message : '',
+    })
+  } finally {
+    formatting.value = null
+  }
+}
+function toggleFocusPreview() {
+  focusPreview.value = !focusPreview.value
+  if (focusPreview.value) activePanel.value = 'preview'
+}
+function downloadCode() {
+  const cleanEvaluation = { ...evaluateSelector(draft.value), matchedElementIds: [] }
+  downloadFile(
+    'csslab.html',
+    createPreviewDocument(cleanEvaluation, draft.value.css, {
+      highlight: 'none',
+      animations: false,
+    }),
+    'text/html',
+  )
+}
 const errorMessage = computed(() => {
   if (!evaluation.value.error) return ''
   return t(`lab.errors.${evaluation.value.error}`)
@@ -123,6 +206,7 @@ const panels: { id: LabPanel; label: string }[] = [
   { id: 'css', label: 'lab.css' },
   { id: 'preview', label: 'lab.preview' },
 ]
+const highlightModes = ['border', 'fill', 'both', 'none'] as const
 
 onMounted(async () => {
   const result = await decodeSharedLabDraft(route.hash)
@@ -134,6 +218,11 @@ onMounted(async () => {
     shareStatus.value = 'loaded'
   } else if (result.kind === 'invalid') {
     shareStatus.value = 'invalid'
+  } else if (
+    draft.value.html ===
+    '<main class="demo"><h2 class="featured">Aprende seleccionando</h2><p>Prueba un selector y observa el resultado.</p><button class="action" type="button">Probar</button></main>'
+  ) {
+    await formatEditors()
   }
 })
 
@@ -159,6 +248,7 @@ async function shareSolution(): Promise<void> {
     const hash = await encodeSharedLabDraft(draft.value)
     await router.replace({ path: route.path, query: route.query, hash })
     shareUrl.value = window.location.href
+    learning.explore('share')
   } catch (error) {
     if (error instanceof RangeError) {
       shareStatus.value = 'too-large'
@@ -270,14 +360,76 @@ function movePanel(direction: number): void {
       <button class="button button-secondary" @click="copyCode">Copiar código</button>
       <button
         class="button button-secondary"
-        @click="downloadFile('csslab.html', previewDocument, 'text/html')"
+        :disabled="Boolean(formatting)"
+        :title="t('lab.editor.shortcut')"
+        @click="formatEditors()"
       >
-        Descargar HTML
+        {{ t('lab.editor.formatAll') }}
       </button>
+      <button
+        class="button button-secondary"
+        :aria-pressed="preferences.live"
+        @click="preferences.live = !preferences.live"
+      >
+        {{ preferences.live ? t('lab.previewControls.live') : t('lab.previewControls.paused') }}
+      </button>
+      <button
+        v-if="!preferences.live"
+        class="button button-primary"
+        :disabled="!hasPendingChanges"
+        @click="refreshPreview"
+      >
+        {{ t('lab.previewControls.apply') }}
+      </button>
+      <button
+        class="button button-secondary"
+        :aria-expanded="settingsOpen"
+        aria-controls="lab-preferences"
+        @click="settingsOpen = !settingsOpen"
+      >
+        {{ t('lab.editor.settings') }}
+      </button>
+      <button class="button button-secondary" @click="downloadCode">Descargar HTML</button>
       <span aria-live="polite">{{ copyMessage }}</span>
     </div>
 
-    <div class="lab-workbench">
+    <fieldset v-if="settingsOpen" id="lab-preferences" class="lab-preferences">
+      <legend>{{ t('lab.editor.settings') }}</legend>
+      <label
+        >{{ t('lab.editor.fontSize')
+        }}<select v-model="preferences.fontSize">
+          <option v-for="size in [12, 14, 16, 18]" :key="size" :value="size">{{ size }} px</option>
+        </select></label
+      >
+      <label
+        >{{ t('lab.editor.indentation')
+        }}<select v-model="preferences.useTabs">
+          <option :value="false">{{ t('lab.editor.spaces') }}</option>
+          <option :value="true">{{ t('lab.editor.tabs') }}</option>
+        </select></label
+      >
+      <label
+        >{{ t('lab.editor.tabWidth')
+        }}<select v-model="preferences.tabWidth">
+          <option :value="2">2</option>
+          <option :value="4">4</option>
+        </select></label
+      >
+      <label class="lab-check"
+        ><input v-model="preferences.wrap" type="checkbox" />{{ t('lab.editor.wrap') }}</label
+      >
+      <p>{{ t('lab.editor.keyboardHelp') }}</p>
+    </fieldset>
+    <p
+      v-if="formatMessage"
+      class="lab-format-message"
+      :class="{ 'is-error': formatError }"
+      aria-live="polite"
+    >
+      {{ formatMessage }}
+    </p>
+
+    <div class="lab-workbench" :class="{ 'lab-focus-preview': focusPreview }">
       <div class="lab-mobile-tabs" role="tablist" :aria-label="t('lab.panels')">
         <button
           v-for="panel in panels"
@@ -319,6 +471,12 @@ function movePanel(direction: number): void {
           language="html"
           :max-length="12000"
           :label="t('lab.htmlLabel')"
+          :font-size="preferences.fontSize"
+          :wrap="preferences.wrap"
+          :use-tabs="preferences.useTabs"
+          :tab-width="preferences.tabWidth"
+          :formatting="formatting === 'html' || formatting === 'both'"
+          @format="formatEditors('html')"
         />
       </section>
 
@@ -340,6 +498,12 @@ function movePanel(direction: number): void {
           language="css"
           :max-length="12000"
           :label="t('lab.cssLabel')"
+          :font-size="preferences.fontSize"
+          :wrap="preferences.wrap"
+          :use-tabs="preferences.useTabs"
+          :tab-width="preferences.tabWidth"
+          :formatting="formatting === 'css' || formatting === 'both'"
+          @format="formatEditors('css')"
         />
       </section>
 
@@ -358,13 +522,112 @@ function movePanel(direction: number): void {
             {{ t('lab.sandboxed') }}
           </span>
         </header>
-        <iframe
-          class="lab-preview-frame"
-          :srcdoc="previewDocument"
-          :title="t('lab.previewTitle')"
-          sandbox=""
-          referrerpolicy="no-referrer"
-        />
+        <div class="lab-preview-controls">
+          <div
+            class="lab-highlight-modes"
+            role="group"
+            :aria-label="t('lab.previewControls.highlight')"
+          >
+            <button
+              v-for="mode in highlightModes"
+              :key="mode"
+              type="button"
+              :aria-pressed="preferences.highlight === mode"
+              @click="preferences.highlight = mode"
+            >
+              {{ t(`lab.previewControls.${mode}`) }}
+            </button>
+          </div>
+          <div class="lab-preview-quick">
+            <label
+              >{{ t('lab.previewControls.color')
+              }}<select v-model="preferences.color">
+                <option value="amber">{{ t('lab.previewControls.amber') }}</option>
+                <option value="indigo">{{ t('lab.previewControls.indigo') }}</option>
+                <option value="cyan">{{ t('lab.previewControls.cyan') }}</option>
+              </select></label
+            >
+            <button
+              type="button"
+              class="lab-small-button"
+              :aria-pressed="focusPreview"
+              @click="toggleFocusPreview"
+            >
+              {{
+                focusPreview
+                  ? t('lab.previewControls.backEditors')
+                  : t('lab.previewControls.expand')
+              }}
+            </button>
+          </div>
+          <details class="lab-preview-options">
+            <summary>{{ t('lab.previewControls.more') }}</summary>
+            <div class="lab-preview-option-grid">
+              <label
+                >{{ t('lab.previewControls.viewport')
+                }}<select v-model="preferences.width">
+                  <option value="auto">{{ t('lab.previewControls.autoWidth') }}</option>
+                  <option value="375">{{ t('lab.previewControls.mobileWidth') }}</option>
+                  <option value="768">{{ t('lab.previewControls.tabletWidth') }}</option>
+                </select></label
+              >
+              <label
+                >{{ t('lab.previewControls.background')
+                }}<select v-model="preferences.background">
+                  <option value="light">{{ t('lab.previewControls.light') }}</option>
+                  <option value="dark">{{ t('lab.previewControls.dark') }}</option>
+                  <option value="checker">{{ t('lab.previewControls.checker') }}</option>
+                </select></label
+              >
+              <label class="lab-check"
+                ><input v-model="preferences.numbers" type="checkbox" />{{
+                  t('lab.previewControls.numbers')
+                }}</label
+              >
+              <label class="lab-check"
+                ><input v-model="preferences.grid" type="checkbox" />{{
+                  t('lab.previewControls.grid')
+                }}</label
+              >
+              <label class="lab-check"
+                ><input v-model="preferences.animations" type="checkbox" />{{
+                  t('lab.previewControls.animations')
+                }}</label
+              >
+            </div>
+          </details>
+        </div>
+        <div class="lab-preview-ruler">
+          <span>{{
+            preferences.width === 'auto'
+              ? t('lab.previewControls.autoWidth')
+              : `${preferences.width} px`
+          }}</span
+          ><span>{{
+            !preferences.live && hasPendingChanges
+              ? t('lab.previewControls.pending')
+              : t('lab.previewControls.updated')
+          }}</span>
+        </div>
+        <div class="lab-preview-viewport">
+          <iframe
+            class="lab-preview-frame"
+            :style="{ width: preferences.width === 'auto' ? '100%' : `${preferences.width}px` }"
+            :srcdoc="previewDocument"
+            :title="t('lab.previewTitle')"
+            sandbox=""
+            referrerpolicy="no-referrer"
+          />
+        </div>
+        <p class="lab-change-summary" aria-live="polite">
+          {{
+            t('lab.previewControls.changes', {
+              count: changes.ids.length,
+              added: changes.added,
+              removed: changes.removed,
+            })
+          }}
+        </p>
       </section>
     </div>
 
@@ -390,3 +653,5 @@ function movePanel(direction: number): void {
     </details>
   </section>
 </template>
+
+<style src="./lab.css"></style>

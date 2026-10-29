@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { learningSchema } from '@/domain/progress'
+import { labPreferencesSchema, type LabPreferences } from '@/domain/labPreferences'
 
 export const STORAGE_KEY = 'csslab:v1'
 const BACKUP_KEY = 'csslab:v1:backup'
@@ -13,6 +14,7 @@ const appStorageSchema = z
   .object({
     theme: themePreferenceSchema.default('system'),
     lab: labDraftSchema.optional(),
+    labUi: labPreferencesSchema.optional(),
     progress: z
       .unknown()
       .refine((value) => value === undefined || learningSchema.safeParse(value).success)
@@ -29,8 +31,28 @@ export function parseLabDraft(value: unknown): LabDraft | null {
 }
 
 export const DEFAULT_LAB_DRAFT: LabDraft = {
-  html: '<main class="demo"><h2 class="featured">Aprende seleccionando</h2><p>Prueba un selector y observa el resultado.</p><button class="action" type="button">Probar</button></main>',
-  css: '.demo { padding: 1.5rem; font-family: system-ui, sans-serif; color: #24233a; }\n.featured { color: #4f46e5; }\n.action { padding: .5rem .85rem; border: 0; border-radius: .5rem; background: #4f46e5; color: white; }',
+  html: `<main class="demo">
+  <h2 class="featured">Aprende seleccionando</h2>
+  <p>Prueba un selector y observa el resultado.</p>
+  <button class="action" type="button">Probar</button>
+</main>`,
+  css: `.demo {
+  padding: 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #24233a;
+}
+
+.featured {
+  color: #4f46e5;
+}
+
+.action {
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+  color: white;
+}`,
   selector: '.featured',
 }
 
@@ -153,5 +175,29 @@ export function writeLearningData(progress: unknown): boolean {
     return true
   } catch {
     return false
+  }
+}
+
+export function readLabPreferences(): LabPreferences {
+  const storage = getStorage()
+  const value = storage ? readRoot(storage).labUi : {}
+  const result = labPreferencesSchema.safeParse(value ?? {})
+  return result.success ? result.data : labPreferencesSchema.parse({})
+}
+
+export function writeLabPreferences(value: LabPreferences): void {
+  const storage = getStorage()
+  if (!storage) return
+  try {
+    storage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        theme: 'system',
+        ...readRoot(storage),
+        labUi: labPreferencesSchema.parse(value),
+      }),
+    )
+  } catch {
+    console.warn('No se pudieron guardar las preferencias del laboratorio.')
   }
 }
