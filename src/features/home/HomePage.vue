@@ -3,8 +3,15 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { ArrowDown, ArrowRight, Check, CodeXml, FlaskConical, Sparkles } from '@lucide/vue'
+import { useLearningStore } from '@/shared/model/learningStore'
+import { challenges } from '../../../packages/content/src'
+import { dailyIndex, localDate } from '@/domain/challenges'
+import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
 
 const { t } = useI18n()
+const learning = useLearningStore()
+const dailyCandidates = challenges.filter((challenge) => !challenge.prerequisite)
+const dailyChallenge = dailyCandidates[dailyIndex(localDate(), dailyCandidates.length)]!
 const selector = ref('.destacado')
 const preview = ref<HTMLElement | null>(null)
 
@@ -35,6 +42,21 @@ const learningPaths = [
 
 <template>
   <div class="home-page">
+    <section class="home-progress-strip" aria-label="Tu práctica diaria">
+      <span
+        ><strong>{{ learning.level }}</strong> · {{ learning.data.xp }} XP ·
+        {{ learning.completed }}/62 retos</span
+      >
+      <span
+        >Objetivo diario: {{ Math.min(learning.todayCount, learning.data.settings.dailyGoal) }}/{{
+          learning.data.settings.dailyGoal
+        }}</span
+      >
+      <RouterLink :to="`/retos/${dailyChallenge.id}`"
+        >Reto del día: {{ dailyChallenge.title }} →</RouterLink
+      >
+    </section>
+    <WelcomeTour />
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="eyebrow">

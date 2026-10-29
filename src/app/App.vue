@@ -16,10 +16,12 @@ import {
   Target,
 } from '@lucide/vue'
 import { useThemeStore } from '@/features/theme/model/themeStore'
+import { useLearningStore } from '@/shared/model/learningStore'
 
 const { t } = useI18n()
 const route = useRoute()
 const themeStore = useThemeStore()
+const learning = useLearningStore()
 const { preference } = storeToRefs(themeStore)
 const themeIcons = { system: Monitor, light: Sun, dark: Moon }
 const sections = [
@@ -32,6 +34,13 @@ const sections = [
 ] as const
 const currentPage = computed(() => t(route.meta.titleKey ?? 'nav.home'))
 const themeLabel = computed(() => t(`app.themes.${preference.value}`))
+watch(
+  () => themeStore.resolvedTheme,
+  (theme) => {
+    if (theme === 'dark') learning.explore('dark')
+  },
+  { immediate: true },
+)
 
 watch(
   () => route.fullPath,
@@ -74,7 +83,11 @@ watch(
         <div class="header-actions">
           <div class="streak-pill" :aria-label="t('app.streak')">
             <Flame :size="16" aria-hidden="true" />
-            <span>{{ t('app.streak') }}</span>
+            <span>{{
+              learning.data.streak.current
+                ? `${learning.data.streak.current} días de racha`
+                : t('app.streak')
+            }}</span>
           </div>
           <button
             class="theme-button"
@@ -94,6 +107,13 @@ watch(
     </p>
 
     <main id="main-content" class="main-content">
+      <p v-if="learning.notice" class="achievement-notice" role="status">
+        ✦ {{ learning.notice }}
+        <button aria-label="Cerrar aviso" @click="learning.notice = ''">×</button>
+      </p>
+      <p v-if="learning.saveFailed" class="feedback" role="status">
+        No se puede guardar en este navegador. Exporta tu progreso antes de cerrar.
+      </p>
       <RouterView v-slot="{ Component, route: activeRoute }">
         <component :is="Component" :key="activeRoute.fullPath" />
       </RouterView>
