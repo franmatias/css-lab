@@ -16,6 +16,10 @@ test('the compiled Pages app boots and opens every section under its repository 
       .getByRole('link', { name })
       .click()
     await expect(page.getByRole('heading', { name, level: 1, exact: true })).toBeVisible()
+    if (name === 'Laboratorio') {
+      await page.getByRole('button', { name: 'Formatear todo' }).click()
+      await expect(page.locator('.lab-format-message')).toContainText('Código formateado')
+    }
     await expect(page).toHaveURL(/\/css-lab\//)
   }
   expect(errors).toEqual([])
