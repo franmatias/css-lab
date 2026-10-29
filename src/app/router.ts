@@ -53,7 +53,7 @@ export const router = createRouter({
     {
       path: '/laboratorio',
       name: 'lab',
-      component: () => import('@/features/sections/SectionPage.vue'),
+      component: () => import('@/features/lab/LabPage.vue'),
       meta: {
         titleKey: 'nav.lab',
         descriptionKey: 'sections.lab',

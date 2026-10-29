@@ -12,7 +12,7 @@ export default defineConfig(({ command }) => ({
     },
   },
   test: {
-    environment: 'happy-dom',
+    environment: 'jsdom',
     include: ['src/**/*.test.ts'],
   },
 }))
