@@ -133,6 +133,9 @@ const next = computed(
     </p>
     <template v-if="current">
       <div class="card-actions">
+        <RouterLink v-if="current.id === 'tablas'" class="text-link" to="/juego/tablas"
+          >Jugar con celdas, filas y columnas →</RouterLink
+        >
         <RouterLink class="text-link" to="/diseno">← {{ t('design.all') }}</RouterLink>
         <button class="button button-primary" @click="openLab">{{ t('examples.open') }}</button>
       </div>

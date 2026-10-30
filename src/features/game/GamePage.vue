@@ -7,6 +7,7 @@ import { gameLevels, planets, galaxyHtml, badgeDefinitions } from '../../../pack
 import { evaluateVisualGame, visualGameScore } from '@/domain/visualGame'
 import { useLearningStore } from '@/shared/model/learningStore'
 import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
+import GameModes from '@/shared/ui/GameModes.vue'
 const { t } = useI18n()
 const route = useRoute()
 const store = useLearningStore()
@@ -83,6 +84,7 @@ function submit() {
     <p class="eyebrow">{{ t('game.eyebrow') }}</p>
     <h1 id="page-title" tabindex="-1">{{ t('game.title') }}</h1>
     <p class="section-intro">{{ t('game.intro') }}</p>
+    <GameModes />
     <div class="game-topline">
       <span>{{
         t('game.progress', { count: store.gamesCompleted, total: gameLevels.length })

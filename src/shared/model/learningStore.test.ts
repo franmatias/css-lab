@@ -37,6 +37,17 @@ it('persists workshop drafts, awards XP and badges once and imports older progre
   expect(store.data.xp).toBe(110)
 })
 
+it('keeps table-game XP and badges separate from galaxy achievements', () => {
+  const store = useLearningStore()
+  expect(store.playGame('tabla-celda', true)).toBe(100)
+  expect(store.tableGamesCompleted).toBe(1)
+  expect(store.gamesCompleted).toBe(0)
+  expect(store.data.badges['primera-tabla']).toBeDefined()
+  expect(store.data.badges['primera-mision']).toBeUndefined()
+  expect(store.playGame('tabla-celda', true)).toBe(0)
+  expect(store.data.xp).toBe(110)
+})
+
 it('awards visual-game points and badges once and preserves hints and imported legacy progress', () => {
   const store = useLearningStore()
   expect(store.playGame('galaxia-rocosos', false)).toBe(0)

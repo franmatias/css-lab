@@ -47,5 +47,11 @@ test('the compiled Pages app boots and opens every section under its repository 
   await page.getByRole('radio', { name: 'ol', exact: true }).check()
   await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
   await expect(page.locator('.design-check [role="status"]')).toContainText('+100 XP')
+  await page.goto('/css-lab/juego/tablas')
+  await page
+    .getByRole('textbox', { name: 'Tu selector para la tabla' })
+    .fill('tbody > tr:nth-child(2) > td:nth-child(3)')
+  await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
+  await expect(page.locator('.table-feedback')).toContainText('+100 XP')
   expect(errors).toEqual([])
 })

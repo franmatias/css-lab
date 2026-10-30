@@ -1,0 +1,191 @@
+.table-game-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+.table-game-layout.sidebar-collapsed {
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+.table-game-layout nav {
+  display: grid;
+  gap: 0.25rem;
+}
+.table-game-layout nav a {
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+}
+.table-game-layout nav a[aria-current] {
+  color: var(--primary);
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.table-game-content {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.table-game-workspace {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  align-items: start;
+}
+.table-board {
+  position: relative;
+  min-width: 0;
+}
+.table-scroll {
+  max-width: 100%;
+  overflow: auto;
+  padding: 0.4rem;
+}
+.table-game-grid {
+  width: 100%;
+  min-width: 430px;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text);
+  background: var(--surface);
+}
+.table-game-grid caption {
+  text-align: left;
+  font-weight: 700;
+  padding: 0.6rem 0.3rem;
+}
+.table-game-grid :is(th, td) {
+  padding: 1rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-strong);
+  position: relative;
+}
+.table-game-grid thead th {
+  font-size: 0.8rem;
+  background: var(--surface-2);
+}
+.table-game-grid tbody th {
+  text-align: left;
+}
+.table-cell-mark {
+  display: inline-block;
+  min-width: 1rem;
+  font-weight: 800;
+  margin-right: 0.2rem;
+}
+.table-game-grid .target-cell {
+  outline: 2px dashed var(--match);
+  outline-offset: -4px;
+}
+.table-game-grid .selected-cell {
+  background: color-mix(in srgb, var(--primary) 16%, var(--surface));
+  box-shadow: inset 0 0 0 2px var(--primary);
+  font-weight: 700;
+}
+.table-game-grid .target-row > * {
+  border-top: 2px dashed var(--match);
+  border-bottom: 2px dashed var(--match);
+}
+.table-game-grid .target-row > :first-child {
+  border-left: 2px dashed var(--match);
+}
+.table-game-grid .target-row > :last-child {
+  border-right: 2px dashed var(--match);
+}
+.table-game-grid .selected-row > * {
+  background: color-mix(in srgb, var(--primary) 16%, var(--surface));
+  box-shadow:
+    inset 0 2px var(--primary),
+    inset 0 -2px var(--primary);
+}
+.table-game-grid .inspected-cell {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.table-game-grid :is(th, td):focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+}
+.table-board > p {
+  font-size: 0.85rem;
+}
+.table-reference {
+  display: grid;
+  gap: 0.4rem;
+  margin-block: 0.8rem;
+  font-size: 0.85rem;
+}
+.table-context,
+.table-targets {
+  overflow-wrap: anywhere;
+}
+.table-answer {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  position: sticky;
+  top: 96px;
+}
+.table-answer > label {
+  font-weight: 600;
+}
+.table-answer > input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: monospace;
+}
+.table-answer p,
+.table-answer li {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.table-answer ol {
+  padding-left: 1.3rem;
+}
+.table-win {
+  color: var(--primary);
+  font-weight: 800;
+}
+.table-source pre {
+  overflow: auto;
+  max-height: 400px;
+}
+.table-source summary {
+  cursor: pointer;
+}
+.table-board.is-won.with-motion {
+  animation: table-success 0.65s ease-out;
+}
+@keyframes table-success {
+  30% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+}
+@media (max-width: 1200px) {
+  .table-game-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .table-answer {
+    position: static;
+  }
+}
+@media (max-width: 760px) {
+  .table-game-layout,
+  .table-game-layout.sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .table-game-layout .collapsible-sidebar {
+    position: static;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .table-board.is-won.with-motion {
+    animation: none;
+  }
+}

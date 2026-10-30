@@ -1,5 +1,6 @@
 import type { LearningData } from './progress'
-import type { Challenge } from '../../packages/content/src'
+import { gameLevels, type Challenge } from '../../packages/content/src'
+import { tableMissions } from '../../packages/content/src/tableGame'
 import { workshopIds } from '../../packages/content/src/designProgress'
 
 export interface BadgeDefinition {
@@ -13,7 +14,9 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
   const completed = Object.values(data.challenges).filter(
     (result) => result.status === 'completed',
   ).length
-  const games = Object.values(data.games).filter((result) => result.status === 'completed')
+  const games = gameLevels
+    .filter((game) => data.games[game.id]?.status === 'completed')
+    .map((game) => data.games[game.id]!)
   const metrics: Record<string, number> = {
     challenges: completed,
     lessons: Object.keys(data.lessons).length,
@@ -25,6 +28,7 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
         data.challenges[c.id]?.status === 'completed' && data.challenges[c.id]?.hintsUsed === 0,
     ).length,
     games: games.length,
+    tableGames: tableMissions.filter((game) => data.games[game.id]?.status === 'completed').length,
     workshops: workshopIds.filter((id) => data.workshops[id]?.completedAt).length,
     gameClean: games.filter((result) => result.hintsUsed === 0).length,
   }
@@ -47,6 +51,7 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
   }
 }
 export function badgeFamily(metric: string): string {
+  if (metric === 'tableGames') return 'Juego de tablas'
   if (metric === 'workshops') return 'Diseño CSS'
   if (['games', 'gameClean', 'gameOwl'].includes(metric)) return 'Juego visual'
   if (metric === 'module' || metric === 'clean') return 'Maestría'

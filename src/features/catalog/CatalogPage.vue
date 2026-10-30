@@ -47,8 +47,7 @@ watch(
         </h2>
         <p>{{ entry.description }}</p>
         <p>{{ entry.detail }}</p>
-        <pre><code>{{ entry.html }}</code></pre>
-        <SelectorDemo :entry="entry" />
+        <SelectorDemo :key="entry.id" :entry="entry" />
         <h3>Errores frecuentes</h3>
         <p>{{ entry.mistake }}</p>
         <p>
