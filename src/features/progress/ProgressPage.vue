@@ -6,10 +6,28 @@ import { useLearningStore } from '@/shared/model/learningStore'
 import { localDate } from '@/domain/challenges'
 import { downloadFile } from '@/shared/utils/download'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
+import BadgeMedal from '@/shared/ui/BadgeMedal.vue'
+import ProgressHero from './ProgressHero.vue'
+import { badgeProgress } from '@/domain/badges'
+import './progress.css'
 import DesignInvitation from '@/shared/ui/DesignInvitation.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const store = useLearningStore()
+const progressBadges = computed(() =>
+  [...badgeDefinitions]
+    .sort((a, b) => {
+      const aEarned = Boolean(store.data.badges[a.id]),
+        bEarned = Boolean(store.data.badges[b.id])
+      if (aEarned !== bEarned) return Number(bEarned) - Number(aEarned)
+      if (aEarned)
+        return Date.parse(store.data.badges[b.id]!) - Date.parse(store.data.badges[a.id]!)
+      const aProgress = badgeProgress(a, store.data, challenges),
+        bProgress = badgeProgress(b, store.data, challenges)
+      return bProgress.current / bProgress.target - aProgress.current / aProgress.target
+    })
+    .slice(0, 6),
+)
 const message = ref('')
 const confirmReset = ref(false)
 function resetProgress() {
@@ -80,18 +98,15 @@ function moduleCompleted(module: number) {
 }
 </script>
 <template>
-  <section class="learning-page">
+  <section class="learning-page progress-page">
     <p class="eyebrow">Cada pequeño paso cuenta</p>
     <h1 id="page-title" tabindex="-1">Progreso</h1>
     <p class="section-intro">
       {{ store.level }} · Tu aprendizaje se guarda en este navegador. Exporta una copia para
       llevarlo contigo.
     </p>
+    <ProgressHero />
     <div class="stats-grid">
-      <article class="learning-card">
-        <span class="stat-number">{{ store.data.xp }}</span>
-        <h2>XP total</h2>
-      </article>
       <article class="learning-card">
         <span class="stat-number">{{ store.workshopsCompleted }}/12</span>
         <h2>{{ t('nav.design') }}</h2>
@@ -141,7 +156,12 @@ function moduleCompleted(module: number) {
       <section class="learning-card">
         <h2>Tu semana</h2>
         <div class="activity-chart" aria-label="Actividad de los últimos siete días">
-          <div v-for="day in days" :key="day.key" class="activity-column">
+          <div
+            v-for="day in days"
+            :key="day.key"
+            class="activity-column"
+            :class="{ 'is-today': day.key === localDate() }"
+          >
             <span>{{ day.count }}</span>
             <div
               class="activity-bar"
@@ -150,7 +170,7 @@ function moduleCompleted(module: number) {
             <span>{{ day.label }}</span>
           </div>
         </div>
-        <p>Lecciones y retos completados por día.</p>
+        <p>Actividades de aprendizaje completadas por día.</p>
       </section>
       <section class="learning-card">
         <h2>Qué repasar ahora</h2>
@@ -192,15 +212,15 @@ function moduleCompleted(module: number) {
       </h2>
       <div class="learning-grid badge-grid">
         <article
-          v-for="badge in badgeDefinitions"
+          v-for="badge in progressBadges"
           :key="badge.id"
           class="learning-card badge-card"
           :class="{ earned: Boolean(store.data.badges[badge.id]) }"
         >
-          <span class="badge-symbol" aria-hidden="true">{{
-            store.data.badges[badge.id] ? '✦' : '◇'
-          }}</span>
-          <h3>{{ badge.name }}</h3>
+          <BadgeMedal :badge="badge" :unlocked="Boolean(store.data.badges[badge.id])" :size="112" />
+          <h3>
+            <RouterLink :to="`/insignias?medalla=${badge.id}`">{{ badge.name }}</RouterLink>
+          </h3>
           <p>{{ badge.description }}</p>
           <span class="eyebrow">{{
             store.data.badges[badge.id] ? '✓ Conseguida' : 'Por descubrir'
