@@ -2,7 +2,7 @@
 
 **Selecciona, prueba, domina.** CSS Lab es una aplicación educativa en español para aprender selectores CSS experimentando, resolviendo retos y consultando el progreso local.
 
-La aplicación incluye diez lecciones, 51 fichas de catálogo, 62 retos, un juego gráfico de 12 misiones, 12 recetas prácticas, 12 talleres de diseño y un laboratorio editable. Resuelve retos, consigue las 50 insignias y exporta tu progreso sin crear una cuenta. Consulta el [estado y límites de la implementación](./docs/IMPLEMENTATION_STATUS.md) y el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
+La aplicación incluye 17 lecciones, 51 fichas de catálogo, 62 retos, 48 misiones en seis juegos, 12 recetas prácticas, 12 talleres de diseño y un laboratorio editable. Resuelve retos, consigue las 50 insignias y exporta tu progreso sin crear una cuenta. Consulta el [estado y límites de la implementación](./docs/IMPLEMENTATION_STATUS.md) y el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
 
 ## Desarrollo local
 
@@ -47,7 +47,7 @@ El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html`
 
 - `/juego/tablas`: 12 misiones con celdas, filas, columnas, rangos, `:nth-child()`, `:first-child`, `:last-child`, `:first-of-type`, `:hover` y `:has()`. El objetivo y la selección se distinguen por símbolos y bordes. Las filas se evalúan como elementos `tr`, no como un conjunto de celdas equivalente.
 - El puntero y el foco permiten recorrer la tabla; un selector de referencia ofrece el mismo ensayo sin ratón. El estado `:hover` se reproduce sobre HTML inerte, y las misiones interactivas verifican todas las celdas y el estado exterior para descartar soluciones fijas. Hay animación, pistas, puntos una sola vez y dos insignias propias, sin adelantar los logros de la galaxia.
-- Las diez lecciones muestran una introducción breve y cinco ideas clave en lista. Teoría y catálogo comparten una vista de HTML formateado y selector editable en dos columnas, apiladas en pantallas pequeñas.
+- Las lecciones de selectores muestran una introducción breve y cinco ideas clave en lista. Teoría y catálogo comparten una vista de HTML formateado y selector editable en dos columnas, apiladas en pantallas pequeñas.
 
 - `/juego`: una galaxia de seis planetas representa un árbol HTML. Escribe un selector para seleccionar exactamente los objetivos; la selección se ve en directo y el acierto activa una animación. Las 12 misiones cubren clases, atributos, combinadores, posición, negación, selector búho, `:has()` y `:is()`.
 - La primera resolución concede XP según dificultad y pistas. Repetir una misión no duplica sus puntos. El resultado se integra con la racha diaria, el progreso y la copia JSON.
@@ -56,6 +56,10 @@ El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html`
 - El menú responsive se abre desde la cabecera, cierra con Escape, al pulsar fuera o al navegar y devuelve el foco al control adecuado. La navegación inferior sigue disponible.
 
 ## Diseño CSS
+
+La teoría incluye siete lecciones prácticas nuevas en `/teoria/m10`–`/teoria/m16`: variables y funciones `var()`/`calc()`/`min()`/`max()`/`clamp()`, listas, menús con listas, tablas, formularios, uso adecuado de Flexbox y uso adecuado de Grid. Cada una contiene cinco ideas clave, tres apartados explicativos, un ejemplo HTML/CSS editable y formateado, tres preguntas y enlaces a talleres o juegos. Completar su cuestionario permite conseguir los 40 XP de la lección una sola vez.
+
+Los ejemplos tienen editores en dos columnas, vista previa aislada a 375/768/1200 px, escala opcional y traslado del código modificado al Laboratorio para guardarlo. El recuento de teoría en Progreso se amplía a 17 sin cambiar los identificadores ni los logros anteriores.
 
 En `/diseno` puedes buscar talleres por tema y categoría. El recorrido incluye tablas, formularios, listas, una página Flexbox, una galería Grid, una página responsive, BEM, SMACSS, variables, `clamp()`, `calc()`/`min()` y una página de cursos que integra las técnicas.
 

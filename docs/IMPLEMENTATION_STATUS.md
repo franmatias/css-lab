@@ -4,6 +4,9 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Implementado
 
+- Teoría ampliada a 17 lecciones: las diez de selectores y siete de CSS aplicado, con IDs nuevos `m10`–`m16`. Variables y funciones matemáticas, listas, menús, tablas, formularios, Flexbox y Grid. Cada lección nueva incorpora cinco ideas clave, tres apartados, ejemplo HTML/CSS editable con sintaxis y formato, tres preguntas y referencias originales.
+- Ejemplos prácticos con vista aislada, anchos de prueba reales, traslado al Laboratorio y carga del editor solo al abrir un ejemplo. Progreso contabiliza las 17 lecciones y estima minutos con su duración declarada. Los puntos de finalización no se duplican.
+
 - Colección de 50 medallas con ilustración SVG por logro, acabado metálico, esmaltes de familia, cuatro distinciones visuales, detalle ampliable con foco nativo del navegador y celebración al desbloquear. Recomendación de siguiente objetivo y ordenación por proximidad o fecha.
 - Juegos de semántica, Flexbox, Grid y responsive: seis misiones cada uno, 24 nuevas y 48 entre todos los escenarios. Selección exacta para semántica y evaluación guiada de declaraciones con CSSOM para distribución; no se afirma evaluar toda la cascada ni la calidad visual. Vista de objetivo y resultado, escala opcional conservando viewports reales de 375/768/1200 px y borrador persistente por misión.
 - Progreso rediseñado con nivel, XP, anillo de objetivo diario, seis recorridos independientes, actividad semanal y una selección de medallas. Ocho logros nuevos para los cuatro recorridos, compatibles con los datos locales y las copias anteriores.
@@ -16,7 +19,7 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 - Evaluación guiada de declaraciones mediante CSSOM, con selector y media query explícitos, más pregunta conceptual y observación visual. 100 XP por taller una sola vez, tres insignias nuevas y progreso compatible con exportaciones anteriores.
 
 - Rutas funcionales de aprendizaje, laboratorio, juego, recetas, progreso e insignias; carga por ruta, menú responsive accesible y foco al navegar.
-- Diez lecciones originales, ejemplos editables, errores frecuentes y dos preguntas por módulo. Completar una lección requiere superar su quiz y concede XP una sola vez.
+- Diez lecciones originales de selectores y siete de diseño aplicado, ejemplos editables, errores frecuentes y dos o tres preguntas por módulo. Completar una lección requiere superar su quiz y concede XP una sola vez.
 - Paquete `packages/content` sin dependencia de Vue: 51 fichas, 62 retos, 12 misiones visuales, 12 recetas y 50 insignias. Esquemas Zod, IDs estables, prerrequisitos acíclicos y soluciones verificadas en Chromium.
 - Catálogo con búsqueda, categorías, favoritos persistentes y fichas con ejemplos interactivos y enlaces a MDN.
 - Siete tipos de reto mediante un registro: selección exacta, completar, corregir, aplicar estilo, especificidad, elección y optimización. El reto de estilo compara estilos computados en un Shadow DOM temporal; no ejecuta código del estudiante.
