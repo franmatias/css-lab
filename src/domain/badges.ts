@@ -1,5 +1,6 @@
 import type { LearningData } from './progress'
 import type { Challenge } from '../../packages/content/src'
+import { workshopIds } from '../../packages/content/src/designProgress'
 
 export interface BadgeDefinition {
   id: string
@@ -24,6 +25,7 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
         data.challenges[c.id]?.status === 'completed' && data.challenges[c.id]?.hintsUsed === 0,
     ).length,
     games: games.length,
+    workshops: workshopIds.filter((id) => data.workshops[id]?.completedAt).length,
     gameClean: games.filter((result) => result.hintsUsed === 0).length,
   }
   if (badge.metric === 'module') {
@@ -45,6 +47,7 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
   }
 }
 export function badgeFamily(metric: string): string {
+  if (metric === 'workshops') return 'Diseño CSS'
   if (['games', 'gameClean', 'gameOwl'].includes(metric)) return 'Juego visual'
   if (metric === 'module' || metric === 'clean') return 'Maestría'
   if (metric === 'streak' || metric === 'return') return 'Constancia'

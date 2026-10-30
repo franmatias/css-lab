@@ -14,10 +14,10 @@ test('the compiled Pages app boots and opens every section under its repository 
     'Teoría',
     'Catálogo',
     'Laboratorio',
+    'Diseño CSS',
     'Juego visual',
     'Retos',
     'Progreso',
-    'Insignias',
   ]) {
     await page
       .getByRole('navigation', { name: 'Navegación principal' })
@@ -35,5 +35,17 @@ test('the compiled Pages app boots and opens every section under its repository 
     }
     await expect(page).toHaveURL(/\/css-lab\//)
   }
+  await page.getByRole('link', { name: /^Insignias obtenidas:/ }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Insignias', level: 1, exact: true }),
+  ).toBeVisible()
+  await page.goto('/css-lab/diseno/listas')
+  await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
+  await expect(page.getByRole('textbox', { name: 'CSS del taller' })).toContainText(
+    'font-weight: 700',
+  )
+  await page.getByRole('radio', { name: 'ol', exact: true }).check()
+  await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
+  await expect(page.locator('.design-check [role="status"]')).toContainText('+100 XP')
   expect(errors).toEqual([])
 })

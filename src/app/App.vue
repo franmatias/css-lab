@@ -64,14 +64,16 @@ const sections = [
   { label: 'nav.theory', to: '/teoria', icon: BookOpenText },
   { label: 'nav.catalog', to: '/catalogo', icon: LibraryBig },
   { label: 'nav.lab', to: '/laboratorio', icon: FlaskConical },
+  { label: 'nav.design', to: '/diseno', icon: Braces },
   { label: 'nav.game', to: '/juego', icon: Orbit },
   { label: 'nav.challenges', to: '/retos', icon: Target },
   { label: 'nav.progress', to: '/progreso', icon: ChartNoAxesColumnIncreasing },
   { label: 'nav.badges', to: '/insignias', icon: Award },
 ] as const
 const mobileSections = sections.filter(
-  (section) => section.to !== '/juego' && section.to !== '/insignias',
+  (section) => !['/juego', '/insignias', '/diseno'].includes(section.to),
 )
+const desktopSections = sections.filter((section) => section.to !== '/insignias')
 const currentPage = computed(() => t(route.meta.titleKey ?? 'nav.home'))
 const themeLabel = computed(() => t(`app.themes.${preference.value}`))
 watch(
@@ -110,7 +112,7 @@ watch(
 
         <nav class="desktop-nav" :aria-label="t('app.menuLabel')">
           <RouterLink
-            v-for="section in sections"
+            v-for="section in desktopSections"
             :key="section.to"
             :to="section.to"
             class="nav-link"

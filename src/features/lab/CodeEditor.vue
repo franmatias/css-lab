@@ -112,6 +112,7 @@ onMounted(() => {
           indentWithTab,
         ]),
         EditorView.contentAttributes.of({
+          tabindex: '0',
           'aria-label': props.label,
           'aria-multiline': 'true',
           autocapitalize: 'off',

@@ -13,6 +13,7 @@ declare module 'vue-router' {
       | 'nav.game'
       | 'nav.badges'
       | 'nav.examples'
+      | 'nav.design'
       | 'notFound.title'
     descriptionKey?:
       | 'sections.theory'
@@ -27,6 +28,12 @@ declare module 'vue-router' {
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/diseno/:id?',
+      name: 'design',
+      component: () => import('@/features/design/DesignPage.vue'),
+      meta: { titleKey: 'nav.design' },
+    },
     {
       path: '/juego/:id?',
       name: 'game',

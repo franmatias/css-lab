@@ -21,7 +21,7 @@ it('compares exact node sets, accepts equivalent selectors and rejects helper-cl
 it('ships unique missions, practical recipes and meaningful badge thresholds', () => {
   expect(gameLevels).toHaveLength(12)
   expect(recipes).toHaveLength(12)
-  expect(badgeDefinitions).toHaveLength(37)
+  expect(badgeDefinitions).toHaveLength(40)
   for (const items of [gameLevels, recipes, badgeDefinitions])
     expect(new Set(items.map((item) => item.id)).size).toBe(items.length)
   expect(visualGameScore(1, 0)).toBe(100)

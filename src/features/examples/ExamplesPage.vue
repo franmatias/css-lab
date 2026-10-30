@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { recipes } from '../../../packages/content/src/recipes'
+import DesignInvitation from '@/shared/ui/DesignInvitation.vue'
 import { evaluateSelector, createPreviewDocument } from '@/features/lab/model/selectorEvaluator'
 import { encodeSharedLabDraft } from '@/features/lab/model/shareLabDraft'
 const { t } = useI18n()
@@ -85,7 +86,8 @@ async function openLab() {
         </section>
       </div>
     </template>
-    <template v-else
+    <DesignInvitation v-if="!recipe" />
+    <template v-if="!recipe"
       ><label class="recipe-search"
         >{{ t('examples.search')
         }}<input v-model="query" type="search" :placeholder="t('examples.placeholder')"
