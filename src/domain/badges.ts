@@ -2,6 +2,7 @@ import type { LearningData } from './progress'
 import { gameLevels, type Challenge } from '../../packages/content/src'
 import { tableMissions } from '../../packages/content/src/tableGame'
 import { workshopIds } from '../../packages/content/src/designProgress'
+import { studioMissions } from '../../packages/content/src/studioGames'
 
 export interface BadgeDefinition {
   id: string
@@ -42,6 +43,15 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
       target: Math.max(1, group.length),
     }
   }
+  if (badge.metric.startsWith('studio-'))
+    return {
+      current: studioMissions.filter(
+        (mission) =>
+          `studio-${mission.mode}` === badge.metric &&
+          data.games[mission.id]?.status === 'completed',
+      ).length,
+      target: badge.threshold,
+    }
   return {
     current: Math.min(
       badge.threshold,
@@ -51,6 +61,13 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
   }
 }
 export function badgeFamily(metric: string): string {
+  const studio: Record<string, string> = {
+    'studio-semantica': 'Semántica',
+    'studio-flexbox': 'Flexbox',
+    'studio-grid': 'CSS Grid',
+    'studio-responsive': 'Responsive',
+  }
+  if (studio[metric]) return studio[metric]
   if (metric === 'tableGames') return 'Juego de tablas'
   if (metric === 'workshops') return 'Diseño CSS'
   if (['games', 'gameClean', 'gameOwl'].includes(metric)) return 'Juego visual'

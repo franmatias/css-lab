@@ -11,7 +11,8 @@ import { badgeProgress } from '@/domain/badges'
 import { visualGameScore } from '@/domain/visualGame'
 import { workshopIds } from '../../../packages/content/src/designProgress'
 import { tableMissions } from '../../../packages/content/src/tableGame'
-const allGameLevels = [...gameLevels, ...tableMissions]
+import { studioMissions, type StudioMode } from '../../../packages/content/src/studioGames'
+const allGameLevels = [...gameLevels, ...tableMissions, ...studioMissions]
 import { challengeScore, dayDistance, localDate } from '@/domain/challenges'
 import {
   readLearningData,
@@ -38,6 +39,17 @@ export const useLearningStore = defineStore('learning', () => {
   const tableGamesCompleted = computed(
     () => tableMissions.filter((game) => data.value.games[game.id]?.status === 'completed').length,
   )
+  function studioCompleted(mode: StudioMode): number {
+    return studioMissions.filter(
+      (mission) => mission.mode === mode && data.value.games[mission.id]?.status === 'completed',
+    ).length
+  }
+  function saveStudioDraft(id: string, draft: string): void {
+    const mission = studioMissions.find((mission) => mission.id === id)
+    if (!mission || draft.length > (mission.mode === 'semantica' ? 160 : 20_000)) return
+    gameResult(id)
+    data.value.games[id]!.draft = draft
+  }
   const workshopsCompleted = computed(
     () => workshopIds.filter((id) => data.value.workshops[id]?.completedAt).length,
   )
@@ -270,6 +282,8 @@ export const useLearningStore = defineStore('learning', () => {
     completed,
     gamesCompleted,
     tableGamesCompleted,
+    studioCompleted,
+    saveStudioDraft,
     workshopsCompleted,
     saveWorkshop,
     completeWorkshop,

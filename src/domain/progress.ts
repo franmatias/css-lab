@@ -27,6 +27,7 @@ export const learningSchema = z.object({
       z.object({
         attempts: z.number().int().nonnegative(),
         hintsUsed: z.number().int().min(0).max(3),
+        draft: z.string().max(20_000).optional(),
         status: z.enum(['in_progress', 'completed']),
         bestScore: z.number().int().nonnegative(),
         completedAt: z.string().optional(),

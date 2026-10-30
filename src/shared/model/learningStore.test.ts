@@ -37,6 +37,25 @@ it('persists workshop drafts, awards XP and badges once and imports older progre
   expect(store.data.xp).toBe(110)
 })
 
+it('persists studio drafts and awards each mode independently without duplicate points', () => {
+  const store = useLearningStore()
+  store.saveStudioDraft('flexbox-activar', '.pista { display: flex; }')
+  expect(store.data.xp).toBe(0)
+  expect(store.playGame('flexbox-activar', true)).toBe(100)
+  expect(store.studioCompleted('flexbox')).toBe(1)
+  expect(store.studioCompleted('grid')).toBe(0)
+  expect(store.gamesCompleted).toBe(0)
+  expect(store.tableGamesCompleted).toBe(0)
+  expect(store.data.badges['flexbox-inicio']).toBeDefined()
+  expect(store.data.badges['primera-mision']).toBeUndefined()
+  expect(store.playGame('flexbox-activar', true)).toBe(0)
+  expect(store.data.xp).toBe(110)
+  const exported = JSON.stringify(store.data)
+  store.reset()
+  expect(store.importData(exported)).toBe(true)
+  expect(store.data.games['flexbox-activar']?.draft).toContain('display: flex')
+})
+
 it('keeps table-game XP and badges separate from galaxy achievements', () => {
   const store = useLearningStore()
   expect(store.playGame('tabla-celda', true)).toBe(100)
