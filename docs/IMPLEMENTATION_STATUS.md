@@ -4,6 +4,13 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Implementado
 
+- Autocompletado de los editores ligado a la paleta de la aplicación: fondo, texto, selección, iconos y detalle legibles en claro y oscuro. Una prueba mide contraste mínimo 4,5:1 en las opciones normales y seleccionadas de ambos temas.
+
+- Guía rápida ampliada: 96 referencias en 16 bloques con ejemplos y explicación breve. Búsqueda sin distinción de acentos, filtro temático, acceso global y desde talleres, ventana modal nativa y carga diferida. Comprobada con teclado, ambos temas y pantalla de 320 px.
+
+- «Diseño CSS» pasa a «Talleres», con ruta `/talleres` y alias compatible `/diseno`. Catálogo de 12 talleres y 53 pasos, progreso porcentual, búsqueda por estado y reanudación. Objetivo explícito, mapa de círculos navegable, comprobaciones individuales y revisión visual responsive confirmada por el alumno. El guardado conserva pasos parciales y logros anteriores.
+- Mesa de trabajo con HTML encima de CSS, vista previa a la derecha, botones Auto/375/768/1200, ajuste opcional al panel, bordes y árbol DOM con selección persistente. Código inicial de solo lectura separado del CSS del alumno; traslado combinado al Laboratorio. Paneles plegables y adaptación móvil.
+
 - Teoría ampliada a 17 lecciones: las diez de selectores y siete de CSS aplicado, con IDs nuevos `m10`–`m16`. Variables y funciones matemáticas, listas, menús, tablas, formularios, Flexbox y Grid. Cada lección nueva incorpora cinco ideas clave, tres apartados, ejemplo HTML/CSS editable con sintaxis y formato, tres preguntas y referencias originales.
 - Ejemplos prácticos con vista aislada, anchos de prueba reales, traslado al Laboratorio y carga del editor solo al abrir un ejemplo. Progreso contabiliza las 17 lecciones y estima minutos con su duración declarada. Los puntos de finalización no se duplican.
 
