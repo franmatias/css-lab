@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch, defineAsyncComponent } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { entries, lessons } from '../../../packages/content/src'
 import { useLearningStore } from '@/shared/model/learningStore'
@@ -7,6 +7,7 @@ import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
 import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
 import { useI18n } from 'vue-i18n'
+const TheoryDesignExample = defineAsyncComponent(() => import('./TheoryDesignExample.vue'))
 const { t } = useI18n()
 const sidebarOpen = ref(true)
 import { encodeSharedLabDraft } from '@/features/lab/model/shareLabDraft'
@@ -17,6 +18,10 @@ const lesson = computed(() => lessons.find((l) => l.id === route.params.slug))
 const lessonEntries = computed(() => entries.filter((e) => e.module === lesson.value?.module))
 const answers = ref<Record<number, number>>({})
 const checked = ref(false)
+watch(lesson, () => {
+  answers.value = {}
+  checked.value = false
+})
 const passed = computed(
   () => lesson.value?.quiz.every((q, i) => answers.value[i] === q.answer) ?? false,
 )
@@ -35,7 +40,8 @@ async function openLab() {
     <p class="eyebrow">Una idea, un experimento</p>
     <h1 id="page-title" tabindex="-1">{{ lesson?.name ?? 'Teoría' }}</h1>
     <p class="section-intro">
-      Diez módulos abiertos. Sigue la ruta recomendada o elige lo que quieras repasar.
+      {{ lessons.length }} lecciones abiertas: selectores, componentes y diseño de páginas. Sigue la
+      ruta recomendada o elige lo que quieras repasar.
     </p>
     <div class="learning-layout" :class="{ 'sidebar-collapsed': !sidebarOpen }">
       <CollapsibleSidebar v-model="sidebarOpen" class="learning-sidebar" :title="t('panels.map')">
@@ -61,6 +67,18 @@ async function openLab() {
         <ul class="lesson-ideas">
           <li v-for="idea in lesson.ideas" :key="idea">{{ idea }}</li>
         </ul>
+        <section
+          v-for="section in lesson.sections"
+          :key="section.title"
+          class="theory-explanation-section"
+        >
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.paragraph }}</p>
+          <ul class="lesson-ideas">
+            <li v-for="point in section.points" :key="point">{{ point }}</li>
+          </ul>
+        </section>
+        <TheoryDesignExample v-if="lesson.example" :key="lesson.id" :example="lesson.example" />
         <RouterLink v-if="[5, 6].includes(lesson.module)" class="text-link" to="/juego/tablas"
           >Practicar con una tabla interactiva →</RouterLink
         >
@@ -76,7 +94,14 @@ async function openLab() {
             <p>{{ entry.mistake }}</p>
           </details>
         </section>
-        <button class="button button-secondary" @click="openLab">Abrir en el Laboratorio ↗</button>
+        <button v-if="!lesson.example" class="button button-secondary" @click="openLab">
+          Abrir en el Laboratorio ↗
+        </button>
+        <p v-if="lesson.reference">
+          <a class="text-link" :href="lesson.reference" target="_blank" rel="noopener noreferrer"
+            >Ampliar la explicación en MDN ↗</a
+          >
+        </p>
         <CascadeInspector v-if="lesson.module === 9" />
         <form class="quiz" @submit.prevent="checked = true">
           <h2>Comprueba lo aprendido</h2>
@@ -100,7 +125,7 @@ async function openLab() {
             {{
               passed
                 ? '¡Eso es! Ya puedes completar la lección.'
-                : 'Revisa tus respuestas: el selector encuentra elementos y una regla sin coincidencias no se aplica.'
+                : 'Revisa las ideas clave y las explicaciones de esta lección y vuelve a comprobar tus respuestas.'
             }}
           </p>
         </form>
@@ -113,7 +138,13 @@ async function openLab() {
             store.data.lessons[lesson.id] ? '✓ Lección completada' : 'Completar lección · +40 XP'
           }}
         </button>
-        <RouterLink class="text-link" :to="`/retos/m${Math.max(1, lesson.module)}`"
+        <section v-if="lesson.links?.length" class="theory-practice-links">
+          <h2>Ponlo en práctica</h2>
+          <RouterLink v-for="link in lesson.links" :key="link.to" class="text-link" :to="link.to"
+            >{{ link.label }} →</RouterLink
+          >
+        </section>
+        <RouterLink v-else class="text-link" :to="`/retos/m${Math.max(1, lesson.module)}`"
           >Practicar este módulo →</RouterLink
         >
       </article>
@@ -135,3 +166,27 @@ async function openLab() {
     </div>
   </section>
 </template>
+<style>
+.theory-explanation-section {
+  margin-block: 1.6rem;
+}
+.theory-explanation-section h2 {
+  font-size: 1.25rem;
+}
+.theory-practice-links {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+.lesson-body {
+  min-width: 0;
+}
+.lesson-body .lesson-ideas {
+  list-style: disc;
+  padding-inline-start: 1.4rem;
+}
+.lesson-body .lesson-ideas li {
+  margin-block: 0.8rem;
+  padding-inline-start: 0.3rem;
+}
+</style>

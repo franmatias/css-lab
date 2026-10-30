@@ -4,6 +4,7 @@ import { workshopBadges } from './designProgress'
 import { lessonGuides } from './lessonGuides'
 import { tableGameBadges } from './tableGame'
 import { studioGameBadges } from './studioGames'
+import { practicalLessons, type TheoryLesson } from './practicalTheory'
 export { gameLevels, planets, galaxyHtml } from './game'
 export type { GameLevel } from './game'
 
@@ -501,7 +502,7 @@ export const moduleNames = [
   'Pseudoelementos',
   'Especificidad y cascada',
 ]
-export const lessons = moduleNames.map((name, module) => ({
+export const lessons: TheoryLesson[] = moduleNames.map((name, module) => ({
   id: `m${module}`,
   module,
   name,
@@ -578,6 +579,8 @@ lessons.forEach((lesson, i) => {
   const [question, options, answer] = checks[i]!
   lesson.quiz[0] = { question, options: [...options], answer }
 })
+
+lessons.push(...practicalLessons)
 
 export const challengeSchema = z.object({
   id: z.string(),

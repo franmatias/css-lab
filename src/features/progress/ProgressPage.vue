@@ -127,8 +127,14 @@ function moduleCompleted(module: number) {
         >
         <h2>Lecciones</h2>
         <p>
-          ≈ {{ Object.keys(store.data.lessons).length * 6 + store.completed * 3 }} min de práctica
-          estimada
+          ≈
+          {{
+            lessons
+              .filter((lesson) => store.data.lessons[lesson.id])
+              .reduce((minutes, lesson) => minutes + lesson.minutes, 0) +
+            store.completed * 3
+          }}
+          min de práctica estimada
         </p>
       </article>
     </div>
