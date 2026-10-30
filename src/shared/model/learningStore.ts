@@ -9,6 +9,7 @@ import {
 } from '../../../packages/content/src'
 import { badgeProgress } from '@/domain/badges'
 import { visualGameScore } from '@/domain/visualGame'
+import { workshopIds } from '../../../packages/content/src/designProgress'
 import { challengeScore, dayDistance, localDate } from '@/domain/challenges'
 import {
   readLearningData,
@@ -32,6 +33,28 @@ export const useLearningStore = defineStore('learning', () => {
   const gamesCompleted = computed(
     () => Object.values(data.value.games).filter((game) => game.status === 'completed').length,
   )
+  const workshopsCompleted = computed(
+    () => workshopIds.filter((id) => data.value.workshops[id]?.completedAt).length,
+  )
+  function saveWorkshop(id: string, css: string, answer: string): void {
+    if (
+      !workshopIds.some((known) => known === id) ||
+      css.length > 20_000 ||
+      !['', '0', '1', '2'].includes(answer)
+    )
+      return
+    data.value.workshops[id] = { ...data.value.workshops[id], css, answer }
+  }
+  function completeWorkshop(id: string): number {
+    if (!workshopIds.some((known) => known === id)) return 0
+    const result = data.value.workshops[id]
+    if (!result || result.completedAt) return 0
+    result.completedAt = new Date().toISOString()
+    data.value.xp += 100
+    markActivity()
+    unlockBadges()
+    return 100
+  }
   const level = computed(() =>
     data.value.xp < 300
       ? 'Aprendiz'
@@ -241,6 +264,9 @@ export const useLearningStore = defineStore('learning', () => {
     saveFailed,
     completed,
     gamesCompleted,
+    workshopsCompleted,
+    saveWorkshop,
+    completeWorkshop,
     level,
     todayCount,
     mastery,

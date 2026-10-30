@@ -6,6 +6,7 @@ import { useLearningStore } from '@/shared/model/learningStore'
 import { localDate } from '@/domain/challenges'
 import { downloadFile } from '@/shared/utils/download'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
+import DesignInvitation from '@/shared/ui/DesignInvitation.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const store = useLearningStore()
@@ -92,6 +93,11 @@ function moduleCompleted(module: number) {
         <h2>XP total</h2>
       </article>
       <article class="learning-card">
+        <span class="stat-number">{{ store.workshopsCompleted }}/12</span>
+        <h2>{{ t('nav.design') }}</h2>
+        <RouterLink class="text-link" to="/diseno">{{ t('design.open') }}</RouterLink>
+      </article>
+      <article class="learning-card">
         <span class="stat-number">{{ store.data.streak.current }}</span>
         <h2>Días de racha</h2>
         <p>Mejor: {{ store.data.streak.best }}</p>
@@ -116,6 +122,7 @@ function moduleCompleted(module: number) {
       <p>Completa una lección o resuelve un reto para empezar a ver tu avance.</p>
       <RouterLink class="button button-primary" to="/retos">Elegir mi primer reto →</RouterLink>
     </div>
+    <DesignInvitation />
     <div class="learning-grid progress-panels">
       <section v-if="dueReviews.length" class="learning-card">
         <h2>Ideas listas para repasar</h2>

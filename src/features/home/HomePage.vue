@@ -8,6 +8,7 @@ import { challenges } from '../../../packages/content/src'
 import { dailyIndex, localDate } from '@/domain/challenges'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
+import DesignInvitation from '@/shared/ui/DesignInvitation.vue'
 
 const { t } = useI18n()
 const learning = useLearningStore()
@@ -58,6 +59,7 @@ const learningPaths = [
       >
     </section>
     <WelcomeTour />
+    <DesignInvitation />
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="eyebrow">

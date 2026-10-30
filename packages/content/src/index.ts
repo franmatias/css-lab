@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { gameBadges } from './game'
+import { workshopBadges } from './designProgress'
 export { gameLevels, planets, galaxyHtml } from './game'
 export type { GameLevel } from './game'
 
@@ -867,3 +868,4 @@ export const badgeDefinitions = [
   threshold: Number(threshold),
 }))
 badgeDefinitions.push(...gameBadges)
+badgeDefinitions.push(...workshopBadges)

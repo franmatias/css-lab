@@ -13,6 +13,30 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+it('persists workshop drafts, awards XP and badges once and imports older progress', () => {
+  const store = useLearningStore()
+  store.saveWorkshop('tablas', '.notas { border-collapse: collapse; }', '1')
+  expect(store.completeWorkshop('tablas')).toBe(100)
+  expect(store.data.xp).toBe(110)
+  expect(store.workshopsCompleted).toBe(1)
+  expect(store.data.badges['primer-diseno']).toBeDefined()
+  store.saveWorkshop('tablas', '/* Otro intento */', '')
+  expect(store.completeWorkshop('tablas')).toBe(0)
+  expect(store.data.xp).toBe(110)
+  expect(store.completeWorkshop('inventado')).toBe(0)
+  store.saveWorkshop('inventado', 'body {}', '0')
+  expect(store.data.workshops.inventado).toBeUndefined()
+  const snapshot = JSON.stringify(store.data)
+  store.reset()
+  expect(store.importData(snapshot)).toBe(true)
+  expect(store.workshopsCompleted).toBe(1)
+  const legacy = JSON.parse(snapshot)
+  delete legacy.workshops
+  expect(store.importData(JSON.stringify(legacy))).toBe(true)
+  expect(store.workshopsCompleted).toBe(0)
+  expect(store.data.xp).toBe(110)
+})
+
 it('awards visual-game points and badges once and preserves hints and imported legacy progress', () => {
   const store = useLearningStore()
   expect(store.playGame('galaxia-rocosos', false)).toBe(0)

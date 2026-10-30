@@ -30,6 +30,7 @@ export const es = {
     game: 'Juego visual',
     badges: 'Insignias',
     examples: 'Recetas CSS',
+    design: 'Diseño CSS',
   },
   home: {
     eyebrow: 'Tu espacio para aprender CSS',
