@@ -4,17 +4,20 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Implementado
 
+- Teoría con introducciones breves y cinco ideas por lección; HTML y selector editable en columnas mediante un componente compartido con el catálogo, con adaptación a una columna en móvil.
+- Segundo escenario `/juego/tablas/:id?`: 12 misiones de selección de celdas, filas, columnas y rangos, más interacción `:hover` con puntero, foco o control sin ratón. Evaluación exacta de nodos y comprobación de todas las posiciones en los retos interactivos. Dos insignias de tablas separadas de los logros de la galaxia.
+
 - Sección `/diseno/:id?` con 12 talleres de tablas, formularios, listas, Flexbox, Grid, responsive, BEM, SMACSS, variables, `clamp()`, `calc()`/`min()` y un proyecto integrador. Contenido validado con Zod y referencias originales.
 - Editor CSS con sintaxis y formato, borradores separados, solución de ayuda, traslado al Laboratorio y vista aislada con anchos interiores reales de 375/768/1200 px. Recorrido lateral contraíble, buscador y categorías.
 - Evaluación guiada de declaraciones mediante CSSOM, con selector y media query explícitos, más pregunta conceptual y observación visual. 100 XP por taller una sola vez, tres insignias nuevas y progreso compatible con exportaciones anteriores.
 
 - Rutas funcionales de aprendizaje, laboratorio, juego, recetas, progreso e insignias; carga por ruta, menú responsive accesible y foco al navegar.
 - Diez lecciones originales, ejemplos editables, errores frecuentes y dos preguntas por módulo. Completar una lección requiere superar su quiz y concede XP una sola vez.
-- Paquete `packages/content` sin dependencia de Vue: 51 fichas, 62 retos, 12 misiones visuales, 12 recetas y 40 insignias. Esquemas Zod, IDs estables, prerrequisitos acíclicos y soluciones verificadas en Chromium.
+- Paquete `packages/content` sin dependencia de Vue: 51 fichas, 62 retos, 12 misiones visuales, 12 recetas y 42 insignias. Esquemas Zod, IDs estables, prerrequisitos acíclicos y soluciones verificadas en Chromium.
 - Catálogo con búsqueda, categorías, favoritos persistentes y fichas con ejemplos interactivos y enlaces a MDN.
 - Siete tipos de reto mediante un registro: selección exacta, completar, corregir, aplicar estilo, especificidad, elección y optimización. El reto de estilo compara estilos computados en un Shadow DOM temporal; no ejecuta código del estudiante.
 - Diagnóstico de sintaxis o diferencias entre conjuntos; tres pistas; desbloqueo por módulo, salto tras tres intentos y retos integradores.
-- XP, cuatro niveles, racha local con un día de gracia semanal, objetivo diario, actividad semanal, dominio, galería de 40 insignias y repaso con cinco intervalos.
+- XP, cuatro niveles, racha local con un día de gracia semanal, objetivo diario, actividad semanal, dominio, galería de 42 insignias y repaso con cinco intervalos.
 - Juego visual de constelaciones con evaluación exacta sobre HTML inerte, objetivos y coincidencias diferenciados, animación de acierto, pistas y XP concedido una sola vez por misión.
 - Recetas útiles de combinaciones de selectores: búho, atributos, combinadores, `:focus-within`, `:has()`, `:checked`, `:not()`, `:nth-child()`, `:is()`, `:where()` y pseudoelementos.
 - Paneles de laboratorio y árbol DOM plegables, con distribución persistente; mapas de teoría y misiones contraíbles. El guardado se completa también al cerrar o recargar la página.
