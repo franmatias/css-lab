@@ -19,6 +19,7 @@ export const learningSchema = z.object({
         css: z.string().max(20_000),
         answer: z.string().max(1).default(''),
         completedAt: z.string().optional(),
+        steps: z.array(z.string().max(40)).max(32).default([]),
       }),
     )
     .default({}),

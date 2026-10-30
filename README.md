@@ -55,17 +55,23 @@ El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html`
 - `/ejemplos`: 12 recetas con HTML/CSS, explicación, errores frecuentes, referencia y vista interactiva. Incluyen espaciado con el búho, foco de teclado, formularios, tarjetas con `:has()`, navegación, listas y pseudoelementos. Cada ejemplo se abre en el Laboratorio.
 - El menú responsive se abre desde la cabecera, cierra con Escape, al pulsar fuera o al navegar y devuelve el foco al control adecuado. La navegación inferior sigue disponible.
 
-## Diseño CSS
+## Teoría aplicada y talleres CSS
 
 La teoría incluye siete lecciones prácticas nuevas en `/teoria/m10`–`/teoria/m16`: variables y funciones `var()`/`calc()`/`min()`/`max()`/`clamp()`, listas, menús con listas, tablas, formularios, uso adecuado de Flexbox y uso adecuado de Grid. Cada una contiene cinco ideas clave, tres apartados explicativos, un ejemplo HTML/CSS editable y formateado, tres preguntas y enlaces a talleres o juegos. Completar su cuestionario permite conseguir los 40 XP de la lección una sola vez.
 
 Los ejemplos tienen editores en dos columnas, vista previa aislada a 375/768/1200 px, escala opcional y traslado del código modificado al Laboratorio para guardarlo. El recuento de teoría en Progreso se amplía a 17 sin cambiar los identificadores ni los logros anteriores.
 
-En `/diseno` puedes buscar talleres por tema y categoría. El recorrido incluye tablas, formularios, listas, una página Flexbox, una galería Grid, una página responsive, BEM, SMACSS, variables, `clamp()`, `calc()`/`min()` y una página de cursos que integra las técnicas.
+En `/talleres` puedes buscar talleres por tema, categoría y avance. `/diseno` conserva los enlaces anteriores. Las tarjetas muestran descripción, duración, pasos realizados y porcentaje; un acceso permite retomar el primer taller en curso. El recorrido incluye tablas, formularios, listas, una página Flexbox, una galería Grid, una página responsive, BEM, SMACSS, variables, `clamp()`, `calc()`/`min()` y una página de cursos que integra las técnicas.
 
-Cada taller ofrece conceptos, pasos de observación, errores frecuentes, referencia original, HTML y CSS formateados. El editor resalta la sintaxis, permite probar una solución y conserva un borrador independiente por taller. La vista previa aislada prueba viewports reales de 375, 768 y 1200 px. El ejemplo también se puede abrir en el Laboratorio para editar HTML y CSS y compartirlo.
+Los doce talleres reúnen 53 pasos: objetivo, declaraciones comprobables individualmente, revisión responsive y pregunta final. El mapa de círculos distingue el paso activo y los realizados, permite navegar libremente y retoma el primer paso pendiente al volver. El guardado conserva código y pasos sin duplicar XP y reconoce como completos los talleres de versiones anteriores.
 
-La comprobación guiada verifica con CSSOM las declaraciones pedidas en un selector y contexto de media query concretos, además de una pregunta conceptual. No es una evaluación de toda la cascada ni de la calidad visual; los pasos indican qué comprobar manualmente. Completar un taller concede 100 XP una sola vez, cuenta para la actividad diaria y desbloquea tres insignias de diseño. Cargar la solución es una ayuda permitida. Reiniciar el código conserva el logro y sus puntos. Las copias de progreso anteriores siguen siendo importables.
+La mesa de trabajo coloca HTML de solo lectura encima del CSS del alumno, y la vista previa a la derecha en escritorio. El CSS de partida se consulta aparte; ambos se combinan en el resultado y al abrir el Laboratorio. Los botones Auto/375/768/1200 conservan anchos interiores reales, con ajuste visual opcional y bordes de diagnóstico. El árbol DOM resalta al pasar o enfocar un nodo y permite fijar una selección al pulsarlo. HTML, mapa y árbol se pueden contraer; en móvil los paneles se apilan.
+
+La comprobación guiada verifica con CSSOM las declaraciones pedidas en un selector y contexto de media query concretos, además de una pregunta conceptual. No es una evaluación de toda la cascada ni de la calidad visual. La revisión visual requiere probar móvil y escritorio y confirmar la observación. Completar todos los pasos con las declaraciones y respuesta correctas concede 100 XP una sola vez, cuenta para la actividad diaria y desbloquea tres insignias de diseño. Cargar la solución es una ayuda permitida y no completa pasos por sí sola. Reiniciar el código conserva los pasos históricos, el logro y sus puntos. Las copias de progreso anteriores siguen siendo importables.
+
+## Guía rápida
+
+La guía rápida se abre desde el icono de libro de la cabecera, el menú móvil o el acceso de cada taller. Incluye 96 referencias en 16 bloques: selectores básicos y de atributos, combinadores y búho, pseudoclases estructurales, estados, lógica y relaciones, pseudoelementos, caja, texto, fondos, Flexbox, Grid, funciones, responsive, componentes, organización y movimiento. La búsqueda ignora acentos y se puede filtrar por tema. La ventana respeta el teclado, se cierra con Esc y devuelve el foco, sin abandonar el ejercicio ni modificar su borrador. Su contenido se carga al abrirla.
 
 ## Publicación
 

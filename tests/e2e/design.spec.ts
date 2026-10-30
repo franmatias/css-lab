@@ -57,6 +57,7 @@ test('every workshop has a valid solution and incomplete or conditional declarat
   await expect(page.locator('.design-grid > article')).toHaveCount(2)
   await page.getByRole('link', { name: 'Componentes con nombres BEM', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Componentes con nombres BEM')
+  await page.getByText('Otros talleres', { exact: true }).click()
   await page
     .getByRole('navigation', { name: 'Recorrido de diseño' })
     .getByRole('link', { name: /Variables CSS/ })
@@ -72,6 +73,10 @@ test('workshops save drafts, check CSS and quiz, award once, export to the lab a
   page,
 }) => {
   await page.goto('/diseno/flexbox')
+  await page.getByRole('button', { name: 'He leído el objetivo' }).click()
+  await page.getByRole('button', { name: /Comprueba distintos tamaños Por hacer/ }).click()
+  await page.getByRole('button', { name: '1200', exact: true }).click()
+  await page.getByRole('button', { name: 'He revisado ambas vistas' }).click()
   const editor = page.getByRole('textbox', { name: 'CSS del taller', exact: true })
   await editor.fill('.tarjetas { display: flex; flex-wrap: wrap; }')
   await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
@@ -88,6 +93,7 @@ test('workshops save drafts, check CSS and quiz, award once, export to the lab a
   ).toBeChecked()
   await page.getByRole('button', { name: 'Abrir en el Laboratorio', exact: true }).click()
   await expect(page).toHaveURL(/laboratorio#lab=/)
+  await page.getByRole('textbox', { name: 'CSS del ejercicio' }).press('Control+End')
   await expect(page.getByRole('textbox', { name: 'CSS del ejercicio' })).toContainText(
     'flex-wrap: wrap',
   )
@@ -107,6 +113,7 @@ test('responsive and fluid workshop previews really change with the selected ifr
   page,
 }) => {
   await page.goto('/diseno/responsive')
+  await page.getByRole('button', { name: 'Ver ayuda y solución' }).click()
   await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
   const preview = page.frameLocator('iframe[title^="Vista previa del taller"]')
   await expect(preview.locator('.pagina')).toHaveCSS('grid-template-columns', /\d+px$/)
@@ -114,7 +121,7 @@ test('responsive and fluid workshop previews really change with the selected ifr
     .locator('.pagina')
     .evaluate((element) => getComputedStyle(element).gridTemplateColumns)
   expect(narrow.split(' ')).toHaveLength(1)
-  await page.getByRole('combobox', { name: 'Ancho de prueba' }).selectOption('1200')
+  await page.getByRole('button', { name: '1200', exact: true }).click()
   await expect
     .poll(
       async () =>
@@ -126,13 +133,14 @@ test('responsive and fluid workshop previews really change with the selected ifr
     )
     .toBe(2)
   await page.goto('/diseno/clamp')
+  await page.getByRole('button', { name: 'Ver ayuda y solución' }).click()
   await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
   const title = page.frameLocator('iframe[title^="Vista previa del taller"]').locator('.titular')
-  await page.getByRole('combobox', { name: 'Ancho de prueba' }).selectOption('375')
+  await page.getByRole('button', { name: '375', exact: true }).click()
   await expect
     .poll(() => title.evaluate((element) => parseFloat(getComputedStyle(element).fontSize)))
     .toBeCloseTo(27.25, 1)
-  await page.getByRole('combobox', { name: 'Ancho de prueba' }).selectOption('1200')
+  await page.getByRole('button', { name: '1200', exact: true }).click()
   await expect(title).toHaveCSS('font-size', '48px')
   await expect(page.locator('iframe')).toHaveAttribute('sandbox', '')
 })
@@ -146,15 +154,17 @@ test('design workshops are reachable from the mobile menu and accessible in both
   await page.getByRole('button', { name: 'Abrir menú', exact: true }).click()
   await page
     .getByRole('navigation', { name: 'Menú responsive' })
-    .getByRole('link', { name: 'Diseño CSS', exact: true })
+    .getByRole('link', { name: 'Talleres', exact: true })
     .click()
-  await expect(page).toHaveURL(/\/diseno$/)
+  await expect(page).toHaveURL(/\/talleres$/)
   await page.goto('/diseno/proyecto')
   for (const label of ['Sistema', 'Claro']) {
     await page.getByRole('button', { name: `Cambiar tema. Tema actual: ${label}` }).click()
     expect((await new AxeBuilder({ page }).exclude('iframe').analyze()).violations).toEqual([])
   }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
-  await page.getByRole('button', { name: 'Contraer Recorrido de diseño' }).click()
-  await expect(page.getByRole('navigation', { name: 'Recorrido de diseño' })).toBeHidden()
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
+    .toBe(true)
+  await page.getByRole('button', { name: 'Tu recorrido', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Pasos del taller' })).toBeHidden()
 })

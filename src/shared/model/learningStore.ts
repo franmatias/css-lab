@@ -60,7 +60,19 @@ export const useLearningStore = defineStore('learning', () => {
       !['', '0', '1', '2'].includes(answer)
     )
       return
-    data.value.workshops[id] = { ...data.value.workshops[id], css, answer }
+    data.value.workshops[id] = {
+      ...data.value.workshops[id],
+      steps: data.value.workshops[id]?.steps ?? [],
+      css,
+      answer,
+    }
+  }
+  function saveWorkshopSteps(id: string, steps: string[]): void {
+    const result = data.value.workshops[id]
+    if (!result || !workshopIds.some((known) => known === id)) return
+    result.steps = [...new Set(steps)]
+      .filter((step) => /^(brief|rule-\d|responsive|quiz)$/.test(step))
+      .slice(0, 32)
   }
   function completeWorkshop(id: string): number {
     if (!workshopIds.some((known) => known === id)) return 0
@@ -286,6 +298,7 @@ export const useLearningStore = defineStore('learning', () => {
     saveStudioDraft,
     workshopsCompleted,
     saveWorkshop,
+    saveWorkshopSteps,
     completeWorkshop,
     level,
     todayCount,

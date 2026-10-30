@@ -9,7 +9,7 @@ const { t } = useI18n()
       <h2>{{ t('design.entry') }}</h2>
       <p>{{ t('design.entryText') }}</p>
     </div>
-    <RouterLink class="button button-primary" to="/diseno">{{ t('design.open') }}</RouterLink>
+    <RouterLink class="button button-primary" to="/talleres">{{ t('design.open') }}</RouterLink>
   </section>
 </template>
 <style scoped>

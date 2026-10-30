@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch, defineAsyncComponent, provide } from 'vue'
 import { useEventListener, useMediaQuery } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
@@ -35,6 +35,13 @@ const noticeBadge = computed(() =>
 const { preference } = storeToRefs(themeStore)
 const themeIcons = { system: Monitor, light: Sun, dark: Moon }
 const menuOpen = ref(false)
+const guideOpen = ref(false)
+const QuickGuide = defineAsyncComponent(() => import('@/shared/ui/QuickGuide.vue'))
+function openGuide() {
+  closeMenu(menuOpen.value)
+  guideOpen.value = true
+}
+provide('openQuickGuide', openGuide)
 const header = ref<HTMLElement | null>(null)
 const menuButton = ref<HTMLButtonElement | null>(null)
 const compact = useMediaQuery('(max-width: 1200px)')
@@ -69,14 +76,14 @@ const sections = [
   { label: 'nav.theory', to: '/teoria', icon: BookOpenText },
   { label: 'nav.catalog', to: '/catalogo', icon: LibraryBig },
   { label: 'nav.lab', to: '/laboratorio', icon: FlaskConical },
-  { label: 'nav.design', to: '/diseno', icon: Braces },
+  { label: 'nav.design', to: '/talleres', icon: Braces },
   { label: 'nav.game', to: '/juego', icon: Orbit },
   { label: 'nav.challenges', to: '/retos', icon: Target },
   { label: 'nav.progress', to: '/progreso', icon: ChartNoAxesColumnIncreasing },
   { label: 'nav.badges', to: '/insignias', icon: Award },
 ] as const
 const mobileSections = sections.filter(
-  (section) => !['/juego', '/insignias', '/diseno'].includes(section.to),
+  (section) => !['/juego', '/insignias', '/talleres'].includes(section.to),
 )
 const desktopSections = sections.filter((section) => section.to !== '/insignias')
 const currentPage = computed(() => t(route.meta.titleKey ?? 'nav.home'))
@@ -129,6 +136,15 @@ watch(
         </nav>
 
         <div class="header-actions">
+          <button
+            class="theme-button quick-guide-shortcut"
+            type="button"
+            aria-label="Abrir guía rápida de CSS"
+            title="Guía rápida de CSS"
+            @click="openGuide"
+          >
+            <BookOpenText :size="18" aria-hidden="true" />
+          </button>
           <RouterLink
             class="badge-shortcut"
             to="/insignias"
@@ -187,6 +203,9 @@ watch(
         <RouterLink to="/ejemplos" @click="closeMenu(true)"
           ><Braces :size="19" aria-hidden="true" />{{ t('nav.examples') }}</RouterLink
         >
+        <button class="quick-guide-menu" type="button" @click="openGuide">
+          <BookOpenText :size="19" aria-hidden="true" />Guía rápida de CSS
+        </button>
       </nav>
     </header>
 
@@ -207,6 +226,7 @@ watch(
         <component :is="Component" :key="activeRoute.fullPath" />
       </RouterView>
     </main>
+    <QuickGuide v-if="guideOpen" @close="guideOpen = false" />
 
     <footer class="site-footer">
       <span class="footer-mark" aria-hidden="true">{ }</span>
@@ -230,3 +250,34 @@ watch(
     </nav>
   </div>
 </template>
+<style>
+.quick-guide-menu {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  min-height: 44px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+.workshop-guide-access {
+  display: flex;
+  justify-content: flex-end;
+  margin: -1rem 0 1rem;
+}
+.workshop-guide-access button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .header-actions .quick-guide-shortcut {
+    display: none;
+  }
+}
+</style>

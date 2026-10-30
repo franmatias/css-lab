@@ -266,7 +266,7 @@ function submit() {
             ><input v-model="animations" type="checkbox" />Animaciones del juego</label
           ><RouterLink class="text-link" to="/teoria/m5"
             >Repasar pseudoclases estructurales →</RouterLink
-          ><RouterLink class="text-link" to="/diseno/tablas">Diseñar una tabla →</RouterLink>
+          ><RouterLink class="text-link" to="/talleres/tablas">Diseñar una tabla →</RouterLink>
         </div>
       </div>
       <div v-else class="learning-card">

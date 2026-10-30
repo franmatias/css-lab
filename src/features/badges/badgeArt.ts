@@ -75,7 +75,7 @@ export function badgeDestination(badge: BadgeDefinition): string {
   if (['games', 'gameClean', 'gameOwl'].includes(badge.metric))
     return badge.metric === 'gameOwl' ? '/juego/galaxia-buho' : '/juego'
   if (badge.metric === 'tableGames') return '/juego/tablas'
-  if (badge.metric === 'workshops') return '/diseno'
+  if (badge.metric === 'workshops') return '/talleres'
   if (['visits', 'favorites'].includes(badge.metric)) return '/catalogo'
   if (badge.metric === 'lessons') return '/teoria'
   if (['share', 'universal'].includes(badge.metric)) return '/laboratorio'

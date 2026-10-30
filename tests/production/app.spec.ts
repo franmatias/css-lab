@@ -14,7 +14,7 @@ test('the compiled Pages app boots and opens every section under its repository 
     'Teoría',
     'Catálogo',
     'Laboratorio',
-    'Diseño CSS',
+    'Talleres',
     'Juego visual',
     'Retos',
     'Progreso',
@@ -23,7 +23,13 @@ test('the compiled Pages app boots and opens every section under its repository 
       .getByRole('navigation', { name: 'Navegación principal' })
       .getByRole('link', { name })
       .click()
-    await expect(page.getByRole('heading', { name, level: 1, exact: true })).toBeVisible()
+    await expect(
+      page.getByRole('heading', {
+        name: name === 'Talleres' ? 'Talleres CSS' : name,
+        level: 1,
+        exact: true,
+      }),
+    ).toBeVisible()
     if (name === 'Juego visual') {
       await page.getByRole('textbox', { name: 'Tu selector de la misión' }).fill('.rocoso')
       await page.getByRole('button', { name: 'Activar constelación' }).click()
@@ -40,6 +46,11 @@ test('the compiled Pages app boots and opens every section under its repository 
     page.getByRole('heading', { name: 'Insignias', level: 1, exact: true }),
   ).toBeVisible()
   await page.goto('/css-lab/diseno/listas')
+  await page.getByRole('button', { name: 'He leído el objetivo' }).click()
+  await page.getByRole('button', { name: /Comprueba distintos tamaños Por hacer/ }).click()
+  await page.getByRole('button', { name: '1200', exact: true }).click()
+  await page.getByRole('button', { name: 'He revisado ambas vistas' }).click()
+  await page.getByRole('button', { name: 'Ver ayuda y solución' }).click()
   await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
   await expect(page.getByRole('textbox', { name: 'CSS del taller' })).toContainText(
     'font-weight: 700',

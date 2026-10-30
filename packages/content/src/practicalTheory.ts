@@ -114,9 +114,9 @@ const seeds: z.input<typeof theoryLessonSchema>[] = [
         'El respaldo de var() no valida el tipo de la declaración. Tampoco debes mezclar longitudes y valores sin unidad en una suma incompatible.',
     },
     links: [
-      { label: 'Taller de variables', to: '/diseno/variables' },
-      { label: 'Taller de clamp()', to: '/diseno/clamp' },
-      { label: 'Taller de calc() y min()', to: '/diseno/calc' },
+      { label: 'Taller de variables', to: '/talleres/variables' },
+      { label: 'Taller de clamp()', to: '/talleres/clamp' },
+      { label: 'Taller de calc() y min()', to: '/talleres/calc' },
       { label: 'Juego de tipografía responsive', to: '/juego/responsive/responsive-tipografia' },
     ],
     reference:
@@ -216,7 +216,7 @@ const seeds: z.input<typeof theoryLessonSchema>[] = [
         'No añadas números como texto si la estructura ya es una lista ordenada. No esperes que propiedades como padding funcionen sobre ::marker.',
     },
     links: [
-      { label: 'Taller de listas', to: '/diseno/listas' },
+      { label: 'Taller de listas', to: '/talleres/listas' },
       { label: 'Receta de separadores', to: '/ejemplos/separadores' },
       { label: 'Practicar posiciones en una lista', to: '/retos/m5' },
     ],
@@ -317,7 +317,7 @@ const seeds: z.input<typeof theoryLessonSchema>[] = [
     links: [
       { label: 'Receta de navegación actual', to: '/ejemplos/navegacion-actual' },
       { label: 'Juego de navegación responsive', to: '/juego/responsive/responsive-navegacion' },
-      { label: 'Taller de Flexbox', to: '/diseno/flexbox' },
+      { label: 'Taller de Flexbox', to: '/talleres/flexbox' },
     ],
     reference:
       'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Typical_use_cases_of_flexbox',
@@ -422,7 +422,7 @@ const seeds: z.input<typeof theoryLessonSchema>[] = [
         'No cuentes solo las td al usar nth-child(): una th de cabecera de fila también ocupa una posición entre los hijos del tr.',
     },
     links: [
-      { label: 'Taller de tablas', to: '/diseno/tablas' },
+      { label: 'Taller de tablas', to: '/talleres/tablas' },
       { label: 'Juego de celdas, filas y columnas', to: '/juego/tablas' },
     ],
     reference:
@@ -531,7 +531,7 @@ const seeds: z.input<typeof theoryLessonSchema>[] = [
         'Evita input { width: 100%; } si también contiene casillas o radios. El borde de error del ejemplo no sustituye a los mensajes de validación de una aplicación.',
     },
     links: [
-      { label: 'Taller de formularios', to: '/diseno/formularios' },
+      { label: 'Taller de formularios', to: '/talleres/formularios' },
       { label: 'Receta de foco en el contenedor', to: '/ejemplos/foco-contenedor' },
       { label: 'Receta de validación visual', to: '/ejemplos/errores-formulario' },
     ],
@@ -637,7 +637,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #cbd5e1; }`,
         'Las líneas de Flexbox son independientes: no prometen la alineación bidimensional de Grid. No arregles el orden de lectura solo con order.',
     },
     links: [
-      { label: 'Taller de Flexbox', to: '/diseno/flexbox' },
+      { label: 'Taller de Flexbox', to: '/talleres/flexbox' },
       { label: 'Juego de Flexbox', to: '/juego/flexbox' },
       { label: 'Comparar con CSS Grid', to: '/teoria/m16' },
     ],
@@ -745,7 +745,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #cbd5e1; }`,
         'Una región nombrada debe ser rectangular. No confundas el orden visual de las áreas con el orden de lectura del DOM.',
     },
     links: [
-      { label: 'Taller de CSS Grid', to: '/diseno/grid' },
+      { label: 'Taller de CSS Grid', to: '/talleres/grid' },
       { label: 'Juego de CSS Grid', to: '/juego/grid' },
       { label: 'Juego de página responsive', to: '/juego/responsive/responsive-pagina' },
       { label: 'Comparar con Flexbox', to: '/teoria/m15' },

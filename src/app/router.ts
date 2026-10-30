@@ -41,7 +41,8 @@ export const router = createRouter({
       meta: { titleKey: 'nav.game' },
     },
     {
-      path: '/diseno/:id?',
+      path: '/talleres/:id?',
+      alias: '/diseno/:id?',
       name: 'design',
       component: () => import('@/features/design/DesignPage.vue'),
       meta: { titleKey: 'nav.design' },

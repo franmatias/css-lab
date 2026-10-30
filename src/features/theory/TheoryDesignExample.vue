@@ -18,17 +18,23 @@ const width = ref('768')
 const fit = ref(true)
 const message = ref('')
 const resetPending = ref(false)
+const preparing = ref(true)
 watch(
   () => props.example,
   async (example) => {
-    const [formattedHtml, formattedCss] = await Promise.all([
-      formatCode(example.html, 'html', { useTabs: false, tabWidth: 2 }),
-      formatCode(example.css, 'css', { useTabs: false, tabWidth: 2 }),
-    ])
-    if (props.example === example && html.value === example.html && css.value === example.css) {
-      html.value = formattedHtml
-      css.value = formattedCss
-      rendered.value = { html: formattedHtml, css: formattedCss }
+    preparing.value = true
+    try {
+      const [formattedHtml, formattedCss] = await Promise.all([
+        formatCode(example.html, 'html', { useTabs: false, tabWidth: 2 }),
+        formatCode(example.css, 'css', { useTabs: false, tabWidth: 2 }),
+      ])
+      if (props.example === example && html.value === example.html && css.value === example.css) {
+        html.value = formattedHtml
+        css.value = formattedCss
+        rendered.value = { html: formattedHtml, css: formattedCss }
+      }
+    } finally {
+      preparing.value = false
     }
   },
   { immediate: true },
@@ -73,7 +79,7 @@ async function reset() {
 }
 </script>
 <template>
-  <section class="theory-design-example">
+  <section class="theory-design-example" :aria-busy="preparing">
     <h2>{{ example.title }}</h2>
     <p>
       Edita un cambio cada vez y observa el resultado. Los cambios de este ejemplo son temporales;
@@ -145,6 +151,8 @@ async function reset() {
 </template>
 <style>
 .theory-design-example {
+  width: 100%;
+  max-width: 100%;
   border-block: 1px solid var(--border);
   padding-block: 1.5rem;
   margin-block: 1.5rem;
