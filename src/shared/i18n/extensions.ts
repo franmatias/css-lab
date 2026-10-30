@@ -102,7 +102,7 @@ export const extensions = {
     notFound: 'Esta misión no existe.',
     back: 'Elegir otra misión',
     entry: 'Juega con el DOM',
-    entryText: 'Conecta una galaxia de planetas con selectores y gana insignias.',
+    entryText: 'Practica con una galaxia o una tabla interactiva y gana insignias.',
     open: 'Entrar al juego →',
   },
   badges: {

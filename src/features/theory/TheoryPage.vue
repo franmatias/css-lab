@@ -57,11 +57,19 @@ async function openLab() {
         <h2>Al terminar podrás…</h2>
         <p>{{ lesson.objective }}</p>
         <p>{{ lesson.explanation }}</p>
-        <pre v-if="lesson.module === 0"><code>p {\n  color: blue;\n}</code></pre>
+        <h2>Ideas clave</h2>
+        <ul class="lesson-ideas">
+          <li v-for="idea in lesson.ideas" :key="idea">{{ idea }}</li>
+        </ul>
+        <RouterLink v-if="[5, 6].includes(lesson.module)" class="text-link" to="/juego/tablas"
+          >Practicar con una tabla interactiva →</RouterLink
+        >
+        <pre v-if="lesson.module === 0"><code>p {
+  color: blue;
+}</code></pre>
         <section v-for="entry in lessonEntries" :key="entry.id" class="lesson-example">
           <h2>{{ entry.name }}</h2>
           <p>{{ entry.detail }}</p>
-          <pre><code>{{ entry.html }}</code></pre>
           <SelectorDemo :entry="entry" />
           <details>
             <summary>Error frecuente</summary>

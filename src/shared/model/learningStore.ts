@@ -10,6 +10,8 @@ import {
 import { badgeProgress } from '@/domain/badges'
 import { visualGameScore } from '@/domain/visualGame'
 import { workshopIds } from '../../../packages/content/src/designProgress'
+import { tableMissions } from '../../../packages/content/src/tableGame'
+const allGameLevels = [...gameLevels, ...tableMissions]
 import { challengeScore, dayDistance, localDate } from '@/domain/challenges'
 import {
   readLearningData,
@@ -31,7 +33,10 @@ export const useLearningStore = defineStore('learning', () => {
     () => Object.values(data.value.challenges).filter((c) => c.status === 'completed').length,
   )
   const gamesCompleted = computed(
-    () => Object.values(data.value.games).filter((game) => game.status === 'completed').length,
+    () => gameLevels.filter((game) => data.value.games[game.id]?.status === 'completed').length,
+  )
+  const tableGamesCompleted = computed(
+    () => tableMissions.filter((game) => data.value.games[game.id]?.status === 'completed').length,
   )
   const workshopsCompleted = computed(
     () => workshopIds.filter((id) => data.value.workshops[id]?.completedAt).length,
@@ -130,7 +135,7 @@ export const useLearningStore = defineStore('learning', () => {
     if (!data.value.flags.includes(name)) data.value.flags.push(name)
   }
   function gameResult(id: string) {
-    if (!gameLevels.some((level) => level.id === id)) throw new Error('Misión desconocida.')
+    if (!allGameLevels.some((level) => level.id === id)) throw new Error('Misión desconocida.')
     return (data.value.games[id] ??= {
       attempts: 0,
       hintsUsed: 0,
@@ -143,7 +148,7 @@ export const useLearningStore = defineStore('learning', () => {
     if (result.status !== 'completed') result.hintsUsed = Math.min(3, result.hintsUsed + 1)
   }
   function playGame(id: string, correct: boolean): number {
-    const level = gameLevels.find((level) => level.id === id)
+    const level = allGameLevels.find((level) => level.id === id)
     if (!level) return 0
     const result = gameResult(id)
     if (result.status === 'completed') return 0
@@ -264,6 +269,7 @@ export const useLearningStore = defineStore('learning', () => {
     saveFailed,
     completed,
     gamesCompleted,
+    tableGamesCompleted,
     workshopsCompleted,
     saveWorkshop,
     completeWorkshop,

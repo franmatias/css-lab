@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { gameBadges } from './game'
 import { workshopBadges } from './designProgress'
+import { lessonGuides } from './lessonGuides'
+import { tableGameBadges } from './tableGame'
 export { gameLevels, planets, galaxyHtml } from './game'
 export type { GameLevel } from './game'
 
@@ -503,6 +505,7 @@ export const lessons = moduleNames.map((name, module) => ({
   module,
   name,
   minutes: module === 0 ? 5 : 8,
+  ideas: [] as string[],
   objective:
     module === 0
       ? 'Relacionar el árbol HTML con las partes de una regla CSS.'
@@ -539,18 +542,7 @@ export const lessons = moduleNames.map((name, module) => ({
   ],
 }))
 
-const explanations = [
-  'HTML describe la estructura y CSS su presentación. El navegador convierte las etiquetas HTML en un árbol DOM: cada elemento tiene un padre y puede tener hijos y hermanos. En p { color: blue; }, p es el selector, color es la propiedad y blue es el valor. Las llaves delimitan el bloque y el punto y coma separa declaraciones. Una regla puede coincidir con muchos elementos o con ninguno. Inspecciona el HTML antes de elegir un selector: la apariencia no cambia las relaciones del árbol. Prueba cambiar p por h2 y observa que cambia el conjunto seleccionado, no la estructura.',
-  'Los selectores básicos responden a cuatro preguntas. * encuentra todos los elementos; p encuentra una etiqueta; .destacado encuentra una clase; #principal encuentra un identificador. Una clase puede repetirse y un elemento puede tener varias clases separadas por espacios. Un ID debe ser único en el documento. En HTML escribes class="destacado", pero en CSS escribes .destacado: el punto no forma parte del nombre de la clase. Es preferible usar clases para estilos reutilizables. El selector universal puede ser útil para reinicios, pero normalmente debes acotar qué quieres cambiar. Prueba cada selector sobre el mismo HTML y cuenta las coincidencias.',
-  'Una coma significa alternativas: h2, p selecciona títulos h2 y párrafos. Sin espacio, p.destacado exige las dos condiciones en el mismo elemento. .tarjeta.activa exige ambas clases, sin importar su orden en class. En cambio .tarjeta .activa busca un descendiente: el espacio cambia por completo el significado. No necesitas escribir una clase por cada regla: puedes combinar condiciones existentes. Construye primero un selector amplio y añade una condición cada vez. Comprueba los distractores: seleccionar todos los objetivos no basta si tu selector también incluye elementos que no deberían estar.',
-  'Los atributos describen datos y estados en HTML. [title] comprueba su presencia; [type="email"] exige un valor exacto. Los operadores ^=, $= y *= buscan al principio, al final o en cualquier posición del valor. ~= encuentra una palabra completa en una lista separada por espacios, de modo que tag no es lo mismo que tag-nueva. |= coincide con el valor exacto o seguido por guion, útil para códigos de idioma como es y es-MX. Las comillas evitan ambigüedades. Puedes combinar varios filtros: a[title][href$=".pdf"]. Fíjate en la diferencia entre ausencia del atributo y atributo presente con valor vacío.',
-  'Los combinadores describen relaciones entre elementos. El espacio llega a cualquier descendiente; > solo a hijos directos. + selecciona el hermano inmediato posterior y ~ todos los hermanos posteriores que coincidan. Los hermanos deben compartir padre y el orden del HTML importa; el orden visual impuesto por CSS no cambia estas relaciones. El selector se interpreta buscando los elementos de su extremo derecho que satisfacen toda la cadena. .menu > li selecciona li, no menu. Dibuja el árbol e identifica padre, hijo y hermano antes de escribir. Prueba añadir un nivel de anidamiento para comprobar si necesitas espacio o >.',
-  'Las pseudoclases estructurales observan la posición en el DOM. :first-child y :last-child cuentan todos los hermanos, no solo los de la misma etiqueta. :first-of-type y :nth-of-type() cuentan únicamente elementos del mismo tipo. Los índices empiezan en 1. En :nth-child(2n), n recorre 0, 1, 2… y solo se aceptan posiciones positivas: el resultado son las posiciones pares. :nth-child(2n+1) encuentra las impares. :nth-last-child() cuenta desde el final. :empty exige que no haya hijos ni nodos de texto, por lo que un espacio puede impedir la coincidencia. :root selecciona la raíz del documento, normalmente html.',
-  'Las pseudoclases de estado responden a la interacción. :hover sigue al puntero; :active dura durante la pulsación; :focus indica quién recibe entrada y :focus-visible permite al navegador decidir cuándo mostrar el foco. :focus-within también puede seleccionar el contenedor de un control enfocado. No elimines el contorno de foco sin sustituto: permite navegar con teclado. :checked, :disabled y :invalid dependen del estado real de los controles y de sus restricciones HTML. En estos ejercicios los estados de interacción se simulan con clases sim-…, para obtener resultados estables sin mover realmente el puntero. Los controles conservan sus estados HTML reales.',
-  'Las pseudoclases lógicas permiten reunir condiciones con menos repetición. :is(h2, h3) ofrece alternativas y toma la mayor especificidad de sus argumentos. :where() selecciona de manera similar, pero todos sus argumentos aportan especificidad cero, ideal para estilos fáciles de sobrescribir. :not(.agotado) excluye una condición. :has(img) mira una relación con descendientes; :has(> img) exige un hijo directo y :has(+ p) puede observar el hermano siguiente. El elemento seleccionado sigue siendo el que aparece fuera del paréntesis. article:has(img) selecciona el artículo, no la imagen. Usa relaciones concretas para que la intención sea fácil de comprender.',
-  'Los pseudoelementos representan partes de un elemento o cajas generadas. Se escriben con dos puntos dobles para distinguirlos de las pseudoclases. ::before y ::after necesitan content para generar su caja; úsala para decoración, no como única fuente de información esencial. ::first-letter y ::first-line afectan partes del texto y admiten un conjunto limitado de propiedades. La primera línea cambia si cambia el ancho. ::marker controla viñetas, ::selection el texto seleccionado y ::placeholder el texto provisional de un campo. No son nodos que querySelectorAll devuelva directamente: el laboratorio señala el elemento de origen y el evaluador comprueba también el nombre del pseudoelemento.',
-  'La cascada decide qué declaración se aplica cuando varias coinciden. Primero importan el origen y la importancia; dentro de un mismo origen se consideran las capas, después la especificidad y finalmente el orden. La especificidad compara tres columnas: IDs, clases/atributos/pseudoclases y tipos/pseudoelementos. No conviertas las columnas en un número decimal: un ID gana a cualquier número de clases. :where() pesa cero; :is(), :not() y :has() toman la mayor especificidad de sus argumentos. En declaraciones normales, las reglas sin capa ganan a las de capas; entre capas gana la última. !important invierte el orden de las capas. La herencia aporta valores cuando no existe una declaración propia aplicable.',
-]
+const explanations = lessonGuides
 const checks = [
   [
     '¿Qué representa el DOM?',
@@ -580,7 +572,8 @@ const checks = [
   ],
 ] as const
 lessons.forEach((lesson, i) => {
-  lesson.explanation = explanations[i]!
+  lesson.explanation = explanations[i]!.intro
+  lesson.ideas = explanations[i]!.ideas
   const [question, options, answer] = checks[i]!
   lesson.quiz[0] = { question, options: [...options], answer }
 })
@@ -869,3 +862,4 @@ export const badgeDefinitions = [
 }))
 badgeDefinitions.push(...gameBadges)
 badgeDefinitions.push(...workshopBadges)
+badgeDefinitions.push(...tableGameBadges)
