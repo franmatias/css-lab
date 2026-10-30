@@ -21,8 +21,16 @@ const props = withDefaults(
     useTabs?: boolean
     tabWidth?: number
     formatting?: boolean
+    readOnly?: boolean
   }>(),
-  { fontSize: 14, wrap: true, useTabs: false, tabWidth: 2, formatting: false },
+  {
+    fontSize: 14,
+    wrap: true,
+    useTabs: false,
+    tabWidth: 2,
+    formatting: false,
+    readOnly: false,
+  },
 )
 const emit = defineEmits<{ 'update:modelValue': [value: string]; format: [] }>()
 const { t } = useI18n()
@@ -75,6 +83,29 @@ const theme = EditorView.theme({
     background: 'color-mix(in srgb, var(--primary) 18%, transparent)',
   },
   '.cm-cursor': { borderLeftColor: 'var(--primary)' },
+  '.cm-tooltip': {
+    backgroundColor: 'var(--surface)',
+    color: 'var(--text)',
+    border: '1px solid var(--border-strong)',
+    borderRadius: '8px',
+    boxShadow: 'var(--shadow-card)',
+  },
+  '.cm-tooltip.cm-tooltip-autocomplete > ul': {
+    fontFamily: '"JetBrains Mono Variable", Consolas, monospace',
+  },
+  '.cm-tooltip-autocomplete > ul > li': { color: 'var(--text)' },
+  '.cm-tooltip-autocomplete > ul > li:hover': { backgroundColor: 'var(--surface-2)' },
+  '.cm-tooltip-autocomplete > ul > li[aria-selected="true"], .cm-tooltip-autocomplete > ul > li[aria-selected="true"]:hover':
+    {
+      backgroundColor: 'var(--primary)',
+      color: 'var(--on-primary)',
+    },
+  '.cm-completionDetail, .cm-completionIcon': { color: 'inherit', opacity: '1' },
+  '.cm-completionMatchedText': { color: 'inherit', fontWeight: '700', textUnderlineOffset: '3px' },
+  '.cm-completionInfo, .cm-completionInfo code': {
+    color: 'var(--text)',
+    backgroundColor: 'var(--surface)',
+  },
   '&.cm-focused': { outline: '3px solid var(--primary)', outlineOffset: '-3px' },
 })
 function indentExtensions() {
@@ -96,6 +127,8 @@ onMounted(() => {
       doc: props.modelValue,
       extensions: [
         basicSetup,
+        EditorState.readOnly.of(props.readOnly),
+        EditorView.editable.of(!props.readOnly),
         syntaxHighlighting(highlight),
         props.language === 'html' ? html() : css(),
         theme,
@@ -115,6 +148,8 @@ onMounted(() => {
           tabindex: '0',
           'aria-label': props.label,
           'aria-multiline': 'true',
+          'aria-readonly': String(props.readOnly),
+          role: 'textbox',
           autocapitalize: 'off',
           autocomplete: 'off',
           spellcheck: 'false',
@@ -177,6 +212,7 @@ onBeforeUnmount(() => {
         {{ t('lab.editor.lines', { count: position.lines }) }}</span
       >
       <button
+        v-if="!readOnly"
         type="button"
         :disabled="formatting"
         :aria-label="t('lab.editor.formatLanguage', { language: language.toUpperCase() })"

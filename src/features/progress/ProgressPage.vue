@@ -110,7 +110,7 @@ function moduleCompleted(module: number) {
       <article class="learning-card">
         <span class="stat-number">{{ store.workshopsCompleted }}/12</span>
         <h2>{{ t('nav.design') }}</h2>
-        <RouterLink class="text-link" to="/diseno">{{ t('design.open') }}</RouterLink>
+        <RouterLink class="text-link" to="/talleres">{{ t('design.open') }}</RouterLink>
       </article>
       <article class="learning-card">
         <span class="stat-number">{{ store.data.streak.current }}</span>

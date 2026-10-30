@@ -45,7 +45,7 @@ export const extensions = {
     entry: 'Diseña tu siguiente interfaz',
     entryText:
       '12 talleres: tablas, formularios, listas, Flexbox, Grid, responsive, BEM, SMACSS y CSS fluido.',
-    open: 'Explorar Diseño CSS',
+    open: 'Explorar talleres',
   },
   panels: {
     expand: 'Extender {panel}',

@@ -37,6 +37,25 @@ it('persists workshop drafts, awards XP and badges once and imports older progre
   expect(store.data.xp).toBe(110)
 })
 
+it('keeps partial workshop steps through edits, export and legacy imports without awarding XP', () => {
+  const store = useLearningStore()
+  store.saveWorkshop('grid', '.galeria {}', '')
+  store.saveWorkshopSteps('grid', ['brief', 'rule-0', 'brief', 'unknown'])
+  store.saveWorkshop('grid', '.galeria { display: grid; }', '1')
+  expect(store.data.workshops.grid?.steps).toEqual(['brief', 'rule-0'])
+  expect(store.data.xp).toBe(0)
+  const snapshot = JSON.stringify(store.data)
+  store.reset()
+  expect(store.importData(snapshot)).toBe(true)
+  expect(store.data.workshops.grid?.steps).toEqual(['brief', 'rule-0'])
+  const legacy = JSON.parse(snapshot)
+  delete legacy.workshops.grid.steps
+  legacy.workshops.grid.completedAt = '2026-10-20T12:00:00Z'
+  expect(store.importData(JSON.stringify(legacy))).toBe(true)
+  expect(store.data.workshops.grid?.steps).toEqual([])
+  expect(store.workshopsCompleted).toBe(1)
+})
+
 it('persists studio drafts and awards each mode independently without duplicate points', () => {
   const store = useLearningStore()
   store.saveStudioDraft('flexbox-activar', '.pista { display: flex; }')

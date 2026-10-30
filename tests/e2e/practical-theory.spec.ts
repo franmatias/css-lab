@@ -85,6 +85,7 @@ test('the new examples apply real CSS, preserve table semantics and respond to v
   await expect(preview.locator('.tarjetas')).toHaveCSS('display', 'flex')
   await expect(preview.locator('.tarjetas')).toHaveCSS('flex-wrap', 'wrap')
   await page.goto('/teoria/m16')
+  await expect(page.locator('.theory-design-example')).toHaveAttribute('aria-busy', 'false')
   preview = page.frameLocator('iframe[title^="Vista de teoría:"]')
   await page.getByRole('combobox', { name: 'Ancho del ejemplo' }).selectOption('1200')
   await expect
@@ -123,6 +124,7 @@ test('a practical theory lesson reflows and has no automated accessibility viola
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/teoria/m16')
+  await expect(page.locator('.theory-design-example')).toHaveAttribute('aria-busy', 'false')
   for (const label of ['Sistema', 'Claro']) {
     await page.getByRole('button', { name: `Cambiar tema. Tema actual: ${label}` }).click()
     await expect(page.locator('body')).toHaveCSS(
@@ -134,6 +136,22 @@ test('a practical theory lesson reflows and has no automated accessibility viola
   }
   await page.setViewportSize({ width: 320, height: 900 })
   await expect
-    .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
-    .toBe(true)
+    .poll(() =>
+      page.evaluate(() => ({
+        fits: document.documentElement.scrollWidth <= innerWidth,
+        width: innerWidth,
+        scroll: document.documentElement.scrollWidth,
+        overflow: Array.from(
+          document.querySelectorAll(
+            'main > *, .theory-design-example, .theory-preview-controls, .badge-celebration > *',
+          ),
+        )
+          .filter((element) => element.getBoundingClientRect().right > innerWidth)
+          .map((element) => ({
+            class: element.className,
+            right: element.getBoundingClientRect().right,
+          })),
+      })),
+    )
+    .toEqual({ fits: true, width: 320, scroll: 320, overflow: [] })
 })

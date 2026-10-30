@@ -1,5 +1,48 @@
 import { expect, test } from '@playwright/test'
 
+test('autocomplete text and selection keep at least 4.5 to 1 contrast in both themes', async ({
+  page,
+}) => {
+  await page.goto('/talleres/grid')
+  const editor = page.getByRole('textbox', { name: 'CSS del taller', exact: true })
+  for (const theme of ['Sistema', 'Claro']) {
+    await page.getByRole('button', { name: `Cambiar tema. Tema actual: ${theme}` }).click()
+    await editor.fill('.tarjeta {\n col')
+    await editor.press('Control+Space')
+    const popup = page.locator('.cm-tooltip-autocomplete')
+    await expect(popup).toBeVisible()
+    const ratios = await popup.evaluate((element) => {
+      const luminance = (color: string) => {
+        const channels = (color.match(/[\d.]+/g) ?? [])
+          .slice(0, 3)
+          .map(Number)
+          .map((n) => n / 255)
+          .map((n) => (n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4))
+        return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!
+      }
+      return Array.from(element.querySelectorAll('li'))
+        .slice(0, 4)
+        .map((item) => {
+          let background: Element | null = item
+          while (
+            background &&
+            ['rgba(0, 0, 0, 0)', 'transparent'].includes(
+              getComputedStyle(background).backgroundColor,
+            )
+          )
+            background = background.parentElement
+          const a = luminance(getComputedStyle(item).color)
+          const b = luminance(getComputedStyle(background ?? element).backgroundColor)
+          return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+        })
+    })
+    expect(ratios.length).toBeGreaterThan(1)
+    for (const ratio of ratios) expect(ratio).toBeGreaterThanOrEqual(4.5)
+    await expect(popup.locator('[aria-selected="true"]')).toBeVisible()
+    await editor.press('Escape')
+  }
+})
+
 test('syntax has distinct colours and line numbers stay aligned after font changes', async ({
   page,
 }) => {
