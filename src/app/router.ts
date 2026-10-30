@@ -29,6 +29,12 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/juego/:mode(semantica|flexbox|grid|responsive)/:id?',
+      name: 'studio-game',
+      component: () => import('@/features/game/StudioGamePage.vue'),
+      meta: { titleKey: 'nav.game' },
+    },
+    {
       path: '/juego/tablas/:id?',
       name: 'table-game',
       component: () => import('@/features/game/TableGamePage.vue'),

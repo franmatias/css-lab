@@ -2,7 +2,7 @@
 
 **Selecciona, prueba, domina.** CSS Lab es una aplicación educativa en español para aprender selectores CSS experimentando, resolviendo retos y consultando el progreso local.
 
-La aplicación incluye diez lecciones, 51 fichas de catálogo, 62 retos, un juego gráfico de 12 misiones, 12 recetas prácticas, 12 talleres de diseño y un laboratorio editable. Resuelve retos, consigue las 42 insignias y exporta tu progreso sin crear una cuenta. Consulta el [estado y límites de la implementación](./docs/IMPLEMENTATION_STATUS.md) y el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
+La aplicación incluye diez lecciones, 51 fichas de catálogo, 62 retos, un juego gráfico de 12 misiones, 12 recetas prácticas, 12 talleres de diseño y un laboratorio editable. Resuelve retos, consigue las 50 insignias y exporta tu progreso sin crear una cuenta. Consulta el [estado y límites de la implementación](./docs/IMPLEMENTATION_STATUS.md) y el [plan de implementación](./docs/IMPLEMENTATION_PLAN.md).
 
 ## Desarrollo local
 
@@ -40,13 +40,18 @@ El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html`
 
 ## Juego, insignias y recetas
 
+- Cuatro recorridos nuevos con seis misiones cada uno: `/juego/semantica`, `/juego/flexbox`, `/juego/grid` y `/juego/responsive`. La semántica evalúa conjuntos exactos; los juegos de diseño comprueban las declaraciones solicitadas mediante CSSOM. Las vistas de objetivo y resultado comparten HTML y ancho de prueba. El ajuste visual al panel conserva el viewport interior real, por lo que las media queries siguen funcionando.
+- Los nuevos juegos guardan el código por misión, ofrecen tres pistas, permiten abrir el ejemplo en el Laboratorio y conceden XP una sola vez. Las ocho insignias nuevas tienen contadores independientes. Hay 48 misiones entre los seis escenarios.
+- La vitrina reúne 50 medallas vectoriales originales, con 50 emblemas diferentes, esmalte por familia, relieve metálico, cintas, estrellas y coronas. Sus cuatro distinciones visuales no alteran las condiciones de obtención. Incluye ampliación en un diálogo, estado adquirido/pendiente, recomendación de próxima conquista, ordenación y celebración al desbloquear.
+- Progreso ofrece un panel de nivel y XP, anillo de objetivo diario, racha, seis recorridos de juegos, actividad semanal, dominio por concepto y vitrina de seis medallas recientes o próximas. Se mantienen exportación, importación y ajustes accesibles.
+
 - `/juego/tablas`: 12 misiones con celdas, filas, columnas, rangos, `:nth-child()`, `:first-child`, `:last-child`, `:first-of-type`, `:hover` y `:has()`. El objetivo y la selección se distinguen por símbolos y bordes. Las filas se evalúan como elementos `tr`, no como un conjunto de celdas equivalente.
 - El puntero y el foco permiten recorrer la tabla; un selector de referencia ofrece el mismo ensayo sin ratón. El estado `:hover` se reproduce sobre HTML inerte, y las misiones interactivas verifican todas las celdas y el estado exterior para descartar soluciones fijas. Hay animación, pistas, puntos una sola vez y dos insignias propias, sin adelantar los logros de la galaxia.
 - Las diez lecciones muestran una introducción breve y cinco ideas clave en lista. Teoría y catálogo comparten una vista de HTML formateado y selector editable en dos columnas, apiladas en pantallas pequeñas.
 
 - `/juego`: una galaxia de seis planetas representa un árbol HTML. Escribe un selector para seleccionar exactamente los objetivos; la selección se ve en directo y el acierto activa una animación. Las 12 misiones cubren clases, atributos, combinadores, posición, negación, selector búho, `:has()` y `:is()`.
 - La primera resolución concede XP según dificultad y pistas. Repetir una misión no duplica sus puntos. El resultado se integra con la racha diaria, el progreso y la copia JSON.
-- `/insignias`: galería de 42 logros, con condiciones, avance, filtros por familia y fecha de obtención. Seis logros pertenecen al juego visual.
+- `/insignias`: galería de 50 logros, con condiciones, avance, filtros por familia y fecha de obtención. Seis logros pertenecen al juego visual.
 - `/ejemplos`: 12 recetas con HTML/CSS, explicación, errores frecuentes, referencia y vista interactiva. Incluyen espaciado con el búho, foco de teclado, formularios, tarjetas con `:has()`, navegación, listas y pseudoelementos. Cada ejemplo se abre en el Laboratorio.
 - El menú responsive se abre desde la cabecera, cierra con Escape, al pulsar fuera o al navegar y devuelve el foco al control adecuado. La navegación inferior sigue disponible.
 
@@ -69,7 +74,7 @@ La comprobación guiada verifica con CSSOM las declaraciones pedidas en un selec
 - Las preferencias y el progreso se guardan en el navegador; no hay cuentas, backend ni analítica externa.
 - El HTML/CSS que se añada al laboratorio no ejecutará JavaScript.
 - El contenido se mantiene en `packages/content`, validado con Zod y separado de Vue. Los retos verifican conjuntos exactos, estados simulados, pseudoelementos, respuestas de cascada o estilos computados según su estrategia.
-- Catálogo con búsqueda y favoritos; teoría con ejemplos editables y quiz; progreso con XP, racha, objetivo diario, 42 insignias y repasos espaciados.
+- Catálogo con búsqueda y favoritos; teoría con ejemplos editables y quiz; progreso con XP, racha, objetivo diario, 50 insignias y repasos espaciados.
 - Exportar progreso genera un JSON local; importar requiere el mismo esquema. No se sincronizan datos con servidores ni se instalan cookies de seguimiento.
 - Tipografías autoalojadas: Inter, Space Grotesk, JetBrains Mono y Atkinson Hyperlegible (SIL OFL).
 - Consulta las decisiones iniciales en [`docs/adr/`](./docs/adr/).

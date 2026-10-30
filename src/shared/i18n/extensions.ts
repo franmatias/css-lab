@@ -102,7 +102,8 @@ export const extensions = {
     notFound: 'Esta misión no existe.',
     back: 'Elegir otra misión',
     entry: 'Juega con el DOM',
-    entryText: 'Practica con una galaxia o una tabla interactiva y gana insignias.',
+    entryText:
+      '48 misiones: semántica, Flexbox, Grid, responsive, galaxia y tablas. Tu próxima conquista empieza aquí.',
     open: 'Entrar al juego →',
   },
   badges: {

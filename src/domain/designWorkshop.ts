@@ -7,7 +7,11 @@ const normalized = (value: string) =>
     .replace(/\s*([>,+~():])\s*/g, '$1')
 
 /** Checks the requested declarations, not the whole computed cascade or visual quality. */
-export function checkWorkshop(workshop: Workshop, css: string, answer: string) {
+export function checkWorkshop(
+  workshop: Pick<Workshop, 'checks' | 'correct'>,
+  css: string,
+  answer: string,
+) {
   if (css.length > 20_000) return { declarations: workshop.checks.map(() => false), quiz: false }
   const sheet = new CSSStyleSheet()
   sheet.replaceSync(css)

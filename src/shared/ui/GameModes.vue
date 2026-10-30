@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router'
+import { studioModes, studioNames } from '../../../packages/content/src/studioGames'
 const route = useRoute()
 </script>
 <template>
   <nav class="game-modes" aria-label="Escenarios del juego">
+    <RouterLink
+      v-for="mode in studioModes"
+      :key="mode"
+      :to="`/juego/${mode}`"
+      :aria-current="
+        route.name === 'studio-game' && route.params.mode === mode ? 'page' : undefined
+      "
+      >{{ studioNames[mode] }} · 6 misiones</RouterLink
+    >
     <RouterLink to="/juego" :aria-current="route.name === 'game' ? 'page' : undefined"
       >Galaxia · 12 misiones</RouterLink
     ><RouterLink to="/juego/tablas" :aria-current="route.name === 'table-game' ? 'page' : undefined"

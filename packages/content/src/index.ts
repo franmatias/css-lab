@@ -3,6 +3,7 @@ import { gameBadges } from './game'
 import { workshopBadges } from './designProgress'
 import { lessonGuides } from './lessonGuides'
 import { tableGameBadges } from './tableGame'
+import { studioGameBadges } from './studioGames'
 export { gameLevels, planets, galaxyHtml } from './game'
 export type { GameLevel } from './game'
 
@@ -863,3 +864,4 @@ export const badgeDefinitions = [
 badgeDefinitions.push(...gameBadges)
 badgeDefinitions.push(...workshopBadges)
 badgeDefinitions.push(...tableGameBadges)
+badgeDefinitions.push(...studioGameBadges)
