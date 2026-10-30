@@ -62,5 +62,12 @@ test('the compiled Pages app boots and opens every section under its repository 
   await page.goto('/css-lab/progreso')
   await expect(page.locator('.progress-hero')).toBeVisible()
   await expect(page.locator('.journey-grid')).toContainText('1 de 6 completadas')
+  await page.goto('/css-lab/teoria/m15')
+  await expect(
+    page.getByRole('heading', { name: 'Uso adecuado de Flexbox', level: 1, exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.frameLocator('iframe[title^="Vista de teoría:"]').locator('.tarjetas'),
+  ).toHaveCSS('display', 'flex')
   expect(errors).toEqual([])
 })

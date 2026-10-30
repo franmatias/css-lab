@@ -12,7 +12,7 @@ import {
 describe('content integrity', () => {
   it('ships the specified quantities with unique stable IDs and bounded HTML', () => {
     expect(entries).toHaveLength(51)
-    expect(lessons).toHaveLength(10)
+    expect(lessons).toHaveLength(17)
     expect(challenges).toHaveLength(62)
     expect(badgeDefinitions.length).toBeGreaterThanOrEqual(31)
     for (const collection of [entries, lessons, challenges, badgeDefinitions])
