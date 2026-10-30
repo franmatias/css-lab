@@ -22,11 +22,16 @@ import {
 } from '@lucide/vue'
 import { useThemeStore } from '@/features/theme/model/themeStore'
 import { useLearningStore } from '@/shared/model/learningStore'
+import { badgeDefinitions } from '../../packages/content/src'
+import BadgeCelebration from '@/shared/ui/BadgeCelebration.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const themeStore = useThemeStore()
 const learning = useLearningStore()
+const noticeBadge = computed(() =>
+  badgeDefinitions.find((badge) => learning.notice === `Insignia conseguida: ${badge.name}`),
+)
 const { preference } = storeToRefs(themeStore)
 const themeIcons = { system: Monitor, light: Sun, dark: Moon }
 const menuOpen = ref(false)
@@ -190,7 +195,8 @@ watch(
     </p>
 
     <main id="main-content" class="main-content">
-      <p v-if="learning.notice" class="achievement-notice" role="status">
+      <BadgeCelebration v-if="noticeBadge" :badge="noticeBadge" @dismiss="learning.notice = ''" />
+      <p v-else-if="learning.notice" class="achievement-notice" role="status">
         ✦ {{ learning.notice }}
         <button aria-label="Cerrar aviso" @click="learning.notice = ''">×</button>
       </p>
