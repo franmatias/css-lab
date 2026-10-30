@@ -45,11 +45,14 @@ export function badgeProgress(badge: BadgeDefinition, data: LearningData, challe
   }
   if (badge.metric.startsWith('studio-'))
     return {
-      current: studioMissions.filter(
-        (mission) =>
-          `studio-${mission.mode}` === badge.metric &&
-          data.games[mission.id]?.status === 'completed',
-      ).length,
+      current: Math.min(
+        badge.threshold,
+        studioMissions.filter(
+          (mission) =>
+            `studio-${mission.mode}` === badge.metric &&
+            data.games[mission.id]?.status === 'completed',
+        ).length,
+      ),
       target: badge.threshold,
     }
   return {
