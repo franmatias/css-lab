@@ -4,9 +4,10 @@ import { expect, test } from '@playwright/test'
 test('the selector demo updates its matches and explains invalid input', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: /deja de memorizar/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /da forma a tus ideas/i })).toBeVisible()
 
   const selector = page.getByRole('textbox', { name: 'Tu selector' })
+  await expect(page.getByRole('status')).toContainText('1 elementos coinciden')
   await selector.fill('article')
   await expect(page.getByRole('status')).toContainText('2 elementos coinciden')
 
@@ -15,6 +16,7 @@ test('the selector demo updates its matches and explains invalid input', async (
 })
 
 test('navigation loads sections, focuses the heading, and remembers theme', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 })
   await page.goto('/')
   await page
     .getByRole('navigation', { name: 'Navegación principal' })

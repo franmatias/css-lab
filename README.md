@@ -79,6 +79,16 @@ En `/juego` se muestran los seis juegos, con Galaxia al final. `/juego/galaxia` 
 
 La guía rápida se abre desde el icono de libro de la cabecera, el menú móvil o el acceso de cada taller. Incluye 96 referencias en 16 bloques: selectores básicos y de atributos, combinadores y búho, pseudoclases estructurales, estados, lógica y relaciones, pseudoelementos, caja, texto, fondos, Flexbox, Grid, funciones, responsive, componentes, organización y movimiento. La búsqueda ignora acentos y se puede filtrar por tema. La ventana respeta el teclado, se cierra con Esc y devuelve el foco, sin abandonar el ejercicio ni modificar su borrador. Su contenido se carga al abrirla.
 
+## Propiedades, efectos y nuevo Inicio
+
+Inicio reúne seis rutas de aprendizaje y accesos directos a sombras, transiciones, transformaciones y animaciones. El pie institucional identifica al IEZV - Departamento Informática y IAD.
+
+`/propiedades` ofrece 36 retos en 12 temas, con búsqueda y filtros de tema/estado. Cada reto presenta objetivo, HTML de solo lectura encima del CSS editable, vista previa lateral, anchos reales de 375/768/1200 px, ajuste visual, pausa/repetición, DOM con selección fija y ayuda. Se guardan los borradores por reto y las primeras resoluciones conceden 60 XP, además del bono diario existente. Progreso integra el nuevo recorrido; las copias antiguas siguen siendo importables.
+
+El comprobador compara los estilos computados del navegador con una referencia, en dos documentos temporales sin scripts y con igual viewport de 768 px. Acepta abreviaturas y valores equivalentes y considera la cascada, todos los elementos objetivo y los pseudoelementos solicitados. El ejercicio de fotogramas comprueba además sus extremos. No evalúa automáticamente la calidad estética ni toda la accesibilidad del diseño. Los documentos de evaluación se eliminan al terminar; la vista visible conserva su sandbox vacío. No se permiten recursos externos en estos retos.
+
+La teoría reúne ahora 25 lecciones. `/teoria/m17`–`/teoria/m24` añaden modelo de caja, tipografía/color/fondos, posicionamiento/capas, sombras/transparencias, transiciones, transformaciones, animaciones e imágenes/desbordamiento/accesibilidad. Cada una tiene ideas en lista, tres apartados, ejemplo editable, tres preguntas y enlaces de práctica y referencia. El agregador `packages/content/src/theory.ts` se carga en las rutas de aprendizaje para mantener ligero el arranque. Los temas anteriores conservan sus identificadores y completados.
+
 ## Publicación
 
 `.github/workflows/deploy.yml` comprueba cada pull request y publica automáticamente al hacer push a `main`. En GitHub, configura **Settings → Pages → Build and deployment → Source: GitHub Actions**. La URL prevista es <https://franmatias.github.io/css-lab/>.

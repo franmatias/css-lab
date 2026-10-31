@@ -56,6 +56,14 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Datos y compatibilidad
 
+### Ampliación de propiedades y efectos (noviembre de 2026)
+
+- Inicio actualizado con seis rutas de aprendizaje, avances de selectores y propiedades y accesos a efectos. Pie institucional: IEZV - Departamento Informática y IAD.
+- Nueva sección `/propiedades/:id?`: 36 retos en 12 temas con buscador y filtros, objetivo, requisitos, pista, solución consultable, HTML de referencia, CSS editable con formato y vista previa lateral. Anchos interiores reales de 375/768/1200 px, pausa/repetición y árbol DOM con selección fija.
+- Comprobación por estilos computados contra una referencia al mismo ancho de 768 px, contemplando cascada, abreviaturas, todos los elementos objetivo y pseudoelementos. El reto de fotogramas verifica los extremos de la secuencia. Cada primera resolución suma 60 XP; los borradores, intentos y completados se guardan y exportan sin duplicar recompensas.
+- Ocho lecciones nuevas, `/teoria/m17`–`/teoria/m24`: caja/medidas, tipografía/color/fondos, posición/capas, sombras/transparencias, transiciones, transformaciones, animaciones e imágenes/desbordamiento/accesibilidad. Total: 25 lecciones con los identificadores anteriores preservados. Los nuevos cuerpos de teoría se cargan solo en sus rutas.
+- Las vistas previas mantienen sandbox vacío. La evaluación emplea documentos temporales sin scripts y sin recursos externos, eliminados al terminar. La revisión automática de accesibilidad se realiza sobre la interfaz; los documentos de ejemplo se comprueban mediante pruebas de semántica y estilos, no mediante inyección de scripts.
+
 No se envían el código de los ejercicios ni el progreso a un servidor. Las fuentes y recursos de la interfaz se sirven desde el propio sitio. Los enlaces compartidos incluyen únicamente el borrador del laboratorio en el fragmento de URL; el progreso se transporta mediante un JSON exportado por el estudiante.
 
 El paquete de contenido puede ampliarse sin editar las pantallas. El cambio de un esquema persistente debe mantener lectores anteriores o incluir una migración y sus pruebas; los campos añadidos en esta entrega tienen valores predeterminados para borradores existentes.
