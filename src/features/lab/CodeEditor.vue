@@ -2,7 +2,12 @@
 import { css } from '@codemirror/lang-css'
 import { html } from '@codemirror/lang-html'
 import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language'
-import { Compartment, EditorState } from '@codemirror/state'
+import { Compartment, EditorState, Prec } from '@codemirror/state'
+import {
+  abbreviationTracker,
+  expandAbbreviation,
+  EmmetKnownSyntax,
+} from '@emmetio/codemirror6-plugin'
 import { keymap } from '@codemirror/view'
 import { indentWithTab } from '@codemirror/commands'
 import { basicSetup, EditorView } from 'codemirror'
@@ -36,9 +41,32 @@ const emit = defineEmits<{ 'update:modelValue': [value: string]; format: [] }>()
 const { t } = useI18n()
 const host = ref<HTMLDivElement | null>(null)
 const position = ref({ line: 1, column: 1, lines: 1 })
+const emmetMessage = ref('')
 let editor: EditorView | null = null
 const wrapping = new Compartment()
 const indentation = new Compartment()
+function expandEmmet() {
+  if (!editor || props.readOnly) return false
+  emmetMessage.value = ''
+  try {
+    const expanded = expandAbbreviation({
+      state: editor.state,
+      dispatch: (transaction) => {
+        // The editor's size filter may already have rejected the snippet changes.
+        if (!transaction.docChanged || transaction.newDoc.length > props.maxLength)
+          throw new Error('limit')
+        editor?.dispatch(transaction)
+      },
+    })
+    if (!expanded) emmetMessage.value = t('lab.editor.emmetEmpty')
+    editor.focus()
+    return expanded
+  } catch {
+    emmetMessage.value = t('lab.editor.emmetInvalid')
+    editor.focus()
+    return false
+  }
+}
 const highlight = HighlightStyle.define([
   { tag: [tags.comment, tags.docComment], color: 'var(--code-comment)', fontStyle: 'italic' },
   { tag: [tags.tagName, tags.className, tags.labelName], color: 'var(--code-tag)' },
@@ -106,12 +134,33 @@ const theme = EditorView.theme({
     color: 'var(--text)',
     backgroundColor: 'var(--surface)',
   },
+  '.emmet-tracker': { textDecorationColor: 'var(--primary)', textUnderlineOffset: '3px' },
   '&.cm-focused': { outline: '3px solid var(--primary)', outlineOffset: '-3px' },
 })
 function indentExtensions() {
   return [
     EditorState.tabSize.of(props.tabWidth),
     indentUnit.of(props.useTabs ? '\t' : ' '.repeat(props.tabWidth)),
+  ]
+}
+function emmetPreviewExtensions() {
+  return [
+    syntaxHighlighting(highlight),
+    EditorView.theme({
+      '&': {
+        color: 'var(--text)',
+        backgroundColor: 'var(--surface)',
+        fontSize: '12px',
+        maxHeight: '180px',
+        maxWidth: 'min(360px, 80vw)',
+      },
+      '.cm-scroller': {
+        fontFamily: '"JetBrains Mono Variable", Consolas, monospace',
+        overflow: 'auto',
+      },
+      '.cm-content': { padding: '6px 8px' },
+      '.cm-line': { padding: '0' },
+    }),
   ]
 }
 function updatePosition(view: EditorView) {
@@ -126,6 +175,18 @@ onMounted(() => {
     state: EditorState.create({
       doc: props.modelValue,
       extensions: [
+        props.readOnly
+          ? []
+          : Prec.high(
+              abbreviationTracker({
+                syntax: props.language === 'html' ? EmmetKnownSyntax.html : EmmetKnownSyntax.css,
+                previewEnabled: false,
+                preview: { html: emmetPreviewExtensions, css: emmetPreviewExtensions },
+                markTagPairs: false,
+                autoRenameTags: false,
+                autocompleteTab: ['stylesheet'],
+              }),
+            ),
         basicSetup,
         EditorState.readOnly.of(props.readOnly),
         EditorView.editable.of(!props.readOnly),
@@ -135,6 +196,14 @@ onMounted(() => {
         wrapping.of(props.wrap ? EditorView.lineWrapping : []),
         indentation.of(indentExtensions()),
         keymap.of([
+          {
+            key: 'Mod-Shift-e',
+            run: () => {
+              expandEmmet()
+              return true
+            },
+            preventDefault: true,
+          },
           {
             key: 'Mod-Shift-f',
             run: () => {
@@ -158,6 +227,7 @@ onMounted(() => {
           transaction.newDoc.length <= props.maxLength ? transaction : [],
         ),
         EditorView.updateListener.of((update) => {
+          if (update.docChanged) emmetMessage.value = ''
           if (update.docChanged) emit('update:modelValue', update.state.doc.toString())
           if (update.docChanged || update.selectionSet) updatePosition(update.view)
         }),
@@ -211,16 +281,47 @@ onBeforeUnmount(() => {
         >{{ t('lab.editor.position', { line: position.line, column: position.column }) }} ·
         {{ t('lab.editor.lines', { count: position.lines }) }}</span
       >
-      <button
-        v-if="!readOnly"
-        type="button"
-        :disabled="formatting"
-        :aria-label="t('lab.editor.formatLanguage', { language: language.toUpperCase() })"
-        :title="t('lab.editor.shortcut')"
-        @click="emit('format')"
-      >
-        {{ formatting ? t('lab.editor.formatting') : t('lab.editor.format') }}
-      </button>
+      <div v-if="!readOnly" class="lab-editor-actions">
+        <button
+          type="button"
+          :aria-label="t('lab.editor.emmetExpand', { language: language.toUpperCase() })"
+          :title="t('lab.editor.emmetShortcut')"
+          aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
+          @mousedown.prevent
+          @click="expandEmmet"
+        >
+          Emmet
+        </button>
+        <button
+          v-if="!readOnly"
+          type="button"
+          :disabled="formatting"
+          :aria-label="t('lab.editor.formatLanguage', { language: language.toUpperCase() })"
+          :title="t('lab.editor.shortcut')"
+          @click="emit('format')"
+        >
+          {{ formatting ? t('lab.editor.formatting') : t('lab.editor.format') }}
+        </button>
+      </div>
     </div>
+    <p v-if="emmetMessage" class="lab-emmet-message" role="status">{{ emmetMessage }}</p>
   </div>
 </template>
+<style>
+.lab-editor-status {
+  flex-wrap: wrap;
+}
+.lab-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.lab-emmet-message {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+}
+</style>

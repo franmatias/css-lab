@@ -63,6 +63,13 @@ export const es = {
   },
   lab: {
     editor: {
+      emmetExpand: 'Expandir abreviatura Emmet en {language}',
+      emmetShortcut:
+        'Emmet: Tab al escribir una abreviatura o Ctrl + Mayús + E (⌘ + Mayús + E en Mac). HTML: ul>li*3 · CSS: m24',
+      emmetEmpty:
+        'Coloca el cursor justo después de una abreviatura, como ul>li*3 en HTML o m24 dentro de una regla CSS.',
+      emmetInvalid:
+        'No se puede expandir esta abreviatura o supera el tamaño permitido. Tu código se conserva.',
       position: 'Ln {line}, Col {column}',
       lines: '{count} líneas',
       format: 'Formatear',
