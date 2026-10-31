@@ -29,6 +29,8 @@ El build incluye el prefijo `/css-lab/` de GitHub Pages y genera `dist/404.html`
 
 ## Herramientas del laboratorio
 
+- **Emmet** en todos los editores HTML y CSS editables: escribe una abreviatura y pulsa `Tab`, o usa el botón **Emmet** / `Ctrl + Mayús + E` (`⌘ + Mayús + E` en Mac). Ejemplos: `ul>li.item$*3`, `nav>ul>li*3>a` y, dentro de una regla CSS, `m24`, `p16` o `df`. Tras expandir, `Tab` y `Mayús + Tab` recorren los campos editables. Se conserva la indentación configurada y el límite de tamaño; los ejemplos de solo lectura no se modifican. El motor oficial se sirve con la aplicación, sin servicios externos.
+
 - Paneles HTML, CSS y vista previa plegables; distribución equilibrada o con prioridad al código o la vista. El árbol DOM también se puede contraer. Se conservan el contenido y las preferencias al recargar.
 
 - Código HTML/CSS con colores de sintaxis, números de línea alineados, posición del cursor y ajuste de líneas.
