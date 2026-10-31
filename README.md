@@ -69,6 +69,12 @@ La mesa de trabajo coloca HTML de solo lectura encima del CSS del alumno, y la v
 
 La comprobación guiada verifica con CSSOM las declaraciones pedidas en un selector y contexto de media query concretos, además de una pregunta conceptual. No es una evaluación de toda la cascada ni de la calidad visual. La revisión visual requiere probar móvil y escritorio y confirmar la observación. Completar todos los pasos con las declaraciones y respuesta correctas concede 100 XP una sola vez, cuenta para la actividad diaria y desbloquea tres insignias de diseño. Cargar la solución es una ayuda permitida y no completa pasos por sí sola. Reiniciar el código conserva los pasos históricos, el logro y sus puntos. Las copias de progreso anteriores siguen siendo importables.
 
+## Laboratorio y juegos
+
+El laboratorio permite fijar un nodo del árbol DOM con un clic y quitarlo con otro. La vista muestra su selector y borde; editar el HTML elimina la selección para no señalar un nodo distinto. El árbol vive junto a la vista previa y se desplaza de forma independiente. El fondo oscuro aplica una adaptación de prueba sobre el resultado, manteniendo intacto el código y el aislamiento del iframe.
+
+En `/juego` se muestran los seis juegos, con Galaxia al final. `/juego/galaxia` abre el escenario espacial y las direcciones de sus misiones siguen funcionando. Los otros cinco juegos usan la distribución de los talleres: objetivo y recorrido lateral, HTML arriba y respuesta debajo, resultado a la derecha. Semántica, Flexbox, Grid y responsive permiten alternar entre objetivo y resultado y probar tamaños mediante botones. La tabla conserva las interacciones de puntero, teclado y simulación táctil.
+
 ## Guía rápida
 
 La guía rápida se abre desde el icono de libro de la cabecera, el menú móvil o el acceso de cada taller. Incluye 96 referencias en 16 bloques: selectores básicos y de atributos, combinadores y búho, pseudoclases estructurales, estados, lógica y relaciones, pseudoelementos, caja, texto, fondos, Flexbox, Grid, funciones, responsive, componentes, organización y movimiento. La búsqueda ignora acentos y se puede filtrar por tema. La ventana respeta el teclado, se cierra con Esc y devuelve el foco, sin abandonar el ejercicio ni modificar su borrador. Su contenido se carga al abrirla.
