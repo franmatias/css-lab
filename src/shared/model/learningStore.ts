@@ -10,6 +10,7 @@ import {
 import { badgeProgress } from '@/domain/badges'
 import { visualGameScore } from '@/domain/visualGame'
 import { workshopIds } from '../../../packages/content/src/designProgress'
+import { propertyIds } from '../../../packages/content/src/propertyProgress'
 import { tableMissions } from '../../../packages/content/src/tableGame'
 import { studioMissions, type StudioMode } from '../../../packages/content/src/studioGames'
 const allGameLevels = [...gameLevels, ...tableMissions, ...studioMissions]
@@ -53,6 +54,29 @@ export const useLearningStore = defineStore('learning', () => {
   const workshopsCompleted = computed(
     () => workshopIds.filter((id) => data.value.workshops[id]?.completedAt).length,
   )
+  const propertiesCompleted = computed(
+    () => propertyIds.filter((id) => data.value.properties[id]?.completedAt).length,
+  )
+  function saveProperty(id: string, css: string): void {
+    if (!propertyIds.some((known) => known === id) || css.length > 12_000) return
+    data.value.properties[id] = {
+      ...data.value.properties[id],
+      attempts: data.value.properties[id]?.attempts ?? 0,
+      css,
+    }
+  }
+  function attemptProperty(id: string, correct: boolean): number {
+    if (!propertyIds.some((known) => known === id)) return 0
+    const result = data.value.properties[id]
+    if (!result) return 0
+    result.attempts++
+    if (!correct || result.completedAt) return 0
+    result.completedAt = new Date().toISOString()
+    data.value.xp += 60
+    markActivity()
+    unlockBadges()
+    return 60
+  }
   function saveWorkshop(id: string, css: string, answer: string): void {
     if (
       !workshopIds.some((known) => known === id) ||
@@ -297,6 +321,9 @@ export const useLearningStore = defineStore('learning', () => {
     studioCompleted,
     saveStudioDraft,
     workshopsCompleted,
+    propertiesCompleted,
+    saveProperty,
+    attemptProperty,
     saveWorkshop,
     saveWorkshopSteps,
     completeWorkshop,

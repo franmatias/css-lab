@@ -4,15 +4,17 @@ test('the compiled Pages app boots and opens every section under its repository 
   page,
 }) => {
   const errors: string[] = []
+  await page.setViewportSize({ width: 1600, height: 1000 })
   page.on('pageerror', (error) => errors.push(error.message))
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text())
   })
   await page.goto('/css-lab/')
-  await expect(page.getByRole('heading', { name: /deja de memorizar/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /da forma a tus ideas/i })).toBeVisible()
   for (const name of [
     'Teoría',
     'Catálogo',
+    'Propiedades',
     'Laboratorio',
     'Talleres',
     'Juegos',
@@ -25,7 +27,8 @@ test('the compiled Pages app boots and opens every section under its repository 
       .click()
     await expect(
       page.getByRole('heading', {
-        name: name === 'Talleres' ? 'Talleres CSS' : name,
+        name:
+          name === 'Talleres' ? 'Talleres CSS' : name === 'Propiedades' ? 'Propiedades CSS' : name,
         level: 1,
         exact: true,
       }),

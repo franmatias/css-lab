@@ -4,11 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { ArrowDown, ArrowRight, Check, CodeXml, FlaskConical, Sparkles } from '@lucide/vue'
 import { useLearningStore } from '@/shared/model/learningStore'
-import { challenges } from '../../../packages/content/src'
+import { challenges, lessons, entries } from '../../../packages/content/src'
+import { propertyIds, additionalTheoryIds } from '../../../packages/content/src/propertyProgress'
 import { dailyIndex, localDate } from '@/domain/challenges'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
-import DesignInvitation from '@/shared/ui/DesignInvitation.vue'
 
 const { t } = useI18n()
 const learning = useLearningStore()
@@ -36,9 +36,42 @@ const resultMessage = computed(() => {
 })
 
 const learningPaths = [
-  { title: 'nav.theory', description: 'home.demoCardOne', to: '/teoria', icon: CodeXml },
-  { title: 'nav.catalog', description: 'home.demoCardTwo', to: '/catalogo', icon: Sparkles },
-  { title: 'nav.challenges', description: 'home.demoCardThree', to: '/retos', icon: FlaskConical },
+  {
+    title: 'nav.theory',
+    description: `${lessons.length + additionalTheoryIds.length} lecciones con ideas clave, ejemplos editables y autoevaluación.`,
+    to: '/teoria',
+    icon: CodeXml,
+  },
+  {
+    title: 'nav.catalog',
+    description: `${entries.length} selectores para encontrar exactamente lo que quieres cambiar.`,
+    to: '/catalogo',
+    icon: Sparkles,
+  },
+  {
+    title: 'nav.properties',
+    description: `${propertyIds.length} retos de estilo: color, espacio, composición y movimiento.`,
+    to: '/propiedades',
+    icon: Sparkles,
+  },
+  {
+    title: 'nav.design',
+    description: 'Construye componentes y páginas paso a paso, con un mapa de objetivos.',
+    to: '/talleres',
+    icon: CodeXml,
+  },
+  {
+    title: 'nav.game',
+    description: 'Supera misiones de semántica, tablas, Flexbox, Grid y diseño responsive.',
+    to: '/juego',
+    icon: Sparkles,
+  },
+  {
+    title: 'nav.lab',
+    description: 'Tu espacio libre: escribe HTML y CSS, inspecciona el DOM y prueba tus ideas.',
+    to: '/laboratorio',
+    icon: FlaskConical,
+  },
 ] as const
 </script>
 
@@ -47,7 +80,8 @@ const learningPaths = [
     <section class="home-progress-strip" aria-label="Tu práctica diaria">
       <span
         ><strong>{{ learning.level }}</strong> · {{ learning.data.xp }} XP ·
-        {{ learning.completed }}/62 retos</span
+        {{ learning.completed }}/{{ challenges.length }} retos de selectores ·
+        {{ learning.propertiesCompleted }}/{{ propertyIds.length }} de propiedades</span
       >
       <span
         >Objetivo diario: {{ Math.min(learning.todayCount, learning.data.settings.dailyGoal) }}/{{
@@ -58,8 +92,6 @@ const learningPaths = [
         >Reto del día: {{ dailyChallenge.title }} →</RouterLink
       >
     </section>
-    <WelcomeTour />
-    <DesignInvitation />
     <section class="hero" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="eyebrow">
@@ -112,7 +144,7 @@ const learningPaths = [
             <article
               id="tarjeta-1"
               data-demo-id="one"
-              class="sample-tile"
+              class="sample-tile destacado"
               :class="{ 'is-matched': matchingIds?.includes('one') }"
             >
               <span class="tile-icon" aria-hidden="true"><Sparkles :size="17" /></span>
@@ -140,6 +172,34 @@ const learningPaths = [
       </section>
     </section>
 
+    <WelcomeTour />
+    <section class="home-effects" aria-labelledby="effects-title">
+      <div>
+        <p class="eyebrow">Nuevas conquistas</p>
+        <h2 id="effects-title">CSS con profundidad y movimiento</h2>
+        <p>
+          Eleva una tarjeta, suaviza un cambio y crea tu primera animación. Cada reto incluye
+          objetivo, pista, teoría y comprobación.
+        </p>
+        <RouterLink class="button button-primary" to="/propiedades"
+          >Explorar propiedades <ArrowRight :size="18" aria-hidden="true"
+        /></RouterLink>
+      </div>
+      <div class="home-effects-links">
+        <RouterLink to="/propiedades/sombra-caja"
+          ><span aria-hidden="true">◒</span> Sombras y transparencias
+          <ArrowRight :size="16" aria-hidden="true" /></RouterLink
+        ><RouterLink to="/propiedades/transicion-color"
+          ><span aria-hidden="true">↝</span> Transiciones
+          <ArrowRight :size="16" aria-hidden="true" /></RouterLink
+        ><RouterLink to="/propiedades/rotacion"
+          ><span aria-hidden="true">◇</span> Transformaciones
+          <ArrowRight :size="16" aria-hidden="true" /></RouterLink
+        ><RouterLink to="/propiedades/animacion-pulso"
+          ><span aria-hidden="true">✧</span> Animaciones <ArrowRight :size="16" aria-hidden="true"
+        /></RouterLink>
+      </div>
+    </section>
     <section class="learning-section" aria-labelledby="learning-title">
       <div class="section-heading">
         <div>
@@ -160,7 +220,7 @@ const learningPaths = [
             ><component :is="path.icon" :size="20" aria-hidden="true"
           /></span>
           <span class="learning-card-title">{{ t(path.title) }}</span>
-          <span class="learning-card-description">{{ t(path.description) }}</span>
+          <span class="learning-card-description">{{ path.description }}</span>
           <span class="learning-card-link"
             >{{ t('home.cardCta') }} <ArrowRight :size="15" aria-hidden="true"
           /></span>
@@ -170,3 +230,62 @@ const learningPaths = [
     <GameInvitation />
   </div>
 </template>
+<style>
+.home-effects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(130deg, var(--surface), var(--surface-2));
+}
+.home-effects h2 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.2;
+}
+.home-effects p {
+  color: var(--text-muted);
+}
+.home-effects-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.home-effects-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.home-effects-links a > span {
+  font-size: 2rem;
+  color: var(--primary);
+}
+.home-effects-links a:hover {
+  border-color: var(--primary);
+}
+@media (max-width: 760px) {
+  .home-effects {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+  .home-effects-links {
+    grid-template-columns: 1fr;
+  }
+  .home-effects-links a {
+    min-height: 60px;
+  }
+}
+</style>

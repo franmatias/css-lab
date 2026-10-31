@@ -12,6 +12,15 @@ const resultSchema = z.object({
 export const learningSchema = z.object({
   xp: z.number().int().nonnegative().default(0),
   lessons: z.record(z.string()).default({}),
+  properties: z
+    .record(
+      z.object({
+        css: z.string().max(12_000),
+        attempts: z.number().int().nonnegative().default(0),
+        completedAt: z.string().optional(),
+      }),
+    )
+    .default({}),
   challenges: z.record(resultSchema).default({}),
   workshops: z
     .record(

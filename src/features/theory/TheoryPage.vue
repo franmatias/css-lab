@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch, defineAsyncComponent } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { entries, lessons } from '../../../packages/content/src'
+import { entries } from '../../../packages/content/src'
+import { lessons } from '../../../packages/content/src/theory'
 import { useLearningStore } from '@/shared/model/learningStore'
 import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
@@ -40,8 +41,8 @@ async function openLab() {
     <p class="eyebrow">Una idea, un experimento</p>
     <h1 id="page-title" tabindex="-1">{{ lesson?.name ?? 'Teoría' }}</h1>
     <p class="section-intro">
-      {{ lessons.length }} lecciones abiertas: selectores, componentes y diseño de páginas. Sigue la
-      ruta recomendada o elige lo que quieras repasar.
+      {{ lessons.length }} lecciones abiertas: selectores, propiedades, componentes y movimiento.
+      Sigue la ruta recomendada o elige lo que quieras repasar.
     </p>
     <div class="learning-layout" :class="{ 'sidebar-collapsed': !sidebarOpen }">
       <CollapsibleSidebar v-model="sidebarOpen" class="learning-sidebar" :title="t('panels.map')">

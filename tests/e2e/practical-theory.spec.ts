@@ -5,7 +5,7 @@ test('all seven practical lessons display complete explanations, examples and qu
   page,
 }) => {
   await page.goto('/teoria')
-  await expect(page.getByText('17 lecciones abiertas:', { exact: false })).toBeVisible()
+  await expect(page.getByText('25 lecciones abiertas:', { exact: false })).toBeVisible()
   const lessons = await page.evaluate(async () => {
     const path = '/packages/content/src/practicalTheory.ts'
     const { practicalLessons } = await import(/* @vite-ignore */ path)
@@ -46,7 +46,7 @@ test('all seven practical lessons display complete explanations, examples and qu
   }
   await page.goto('/progreso')
   await expect(page.locator('.progress-xp .stat-number')).toHaveText('290')
-  await expect(page.locator('.stats-grid')).toContainText('7/17')
+  await expect(page.locator('.stats-grid')).toContainText('7/25')
   await page.goto('/teoria/m10')
   await expect(
     page.getByRole('button', { name: '✓ Lección completada', exact: true }),

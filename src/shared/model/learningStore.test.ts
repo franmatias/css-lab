@@ -13,6 +13,33 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+it('keeps property drafts and completion through edits and legacy imports, awarding XP once', () => {
+  const store = useLearningStore()
+  store.saveProperty('margen', '.muestra { margin: 24px; }')
+  expect(store.attemptProperty('margen', false)).toBe(0)
+  expect(store.data.xp).toBe(0)
+  expect(store.attemptProperty('margen', true)).toBe(60)
+  expect(store.data.xp).toBe(70)
+  store.saveProperty('margen', '/* repaso */')
+  expect(store.attemptProperty('margen', true)).toBe(0)
+  expect(store.propertiesCompleted).toBe(1)
+  expect(store.data.properties.margen?.attempts).toBe(3)
+  store.saveProperty('inventado', 'body {}')
+  expect(store.data.properties.inventado).toBeUndefined()
+  store.saveProperty('relleno', 'x'.repeat(12001))
+  expect(store.data.properties.relleno).toBeUndefined()
+  const saved = JSON.stringify(store.data)
+  store.reset()
+  expect(store.importData(saved)).toBe(true)
+  expect(store.data.properties.margen?.css).toBe('/* repaso */')
+  expect(store.propertiesCompleted).toBe(1)
+  const legacy = JSON.parse(saved)
+  delete legacy.properties
+  expect(store.importData(JSON.stringify(legacy))).toBe(true)
+  expect(store.propertiesCompleted).toBe(0)
+  expect(store.data.xp).toBe(70)
+})
+
 it('persists workshop drafts, awards XP and badges once and imports older progress', () => {
   const store = useLearningStore()
   store.saveWorkshop('tablas', '.notas { border-collapse: collapse; }', '1')

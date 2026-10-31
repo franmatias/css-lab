@@ -24,6 +24,7 @@ export const es = {
     home: 'Inicio',
     theory: 'Teoría',
     catalog: 'Catálogo',
+    properties: 'Propiedades',
     lab: 'Laboratorio',
     challenges: 'Retos',
     progress: 'Progreso',
@@ -34,9 +35,9 @@ export const es = {
   },
   home: {
     eyebrow: 'Tu espacio para aprender CSS',
-    title: 'Deja de memorizar. Empieza a seleccionar.',
+    title: 'Da forma a tus ideas con CSS.',
     intro:
-      'Prueba selectores en una página viva, descubre por qué funcionan y gana confianza con cada reto.',
+      'Selecciona, da estilo y construye. Aprende con ejemplos vivos, conquista propiedades y crea páginas que se adaptan y se mueven contigo.',
     start: 'Empieza por los selectores',
     explore: 'Explora el laboratorio',
     demoTitle: 'Pruébalo en directo',
