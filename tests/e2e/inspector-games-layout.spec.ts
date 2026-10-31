@@ -48,7 +48,7 @@ test('dark preview adapts explicit light surfaces without changing the source', 
   await page.goto('/laboratorio')
   await page
     .getByRole('textbox', { name: 'HTML del ejercicio', exact: true })
-    .fill('<main class="demo"><aside class="sidebar">Texto y enlaces</aside></main>')
+    .fill('<main class="demo"><div class="sidebar">Texto y enlaces</div></main>')
   const css = page.getByRole('textbox', { name: 'CSS del ejercicio', exact: true })
   await css.fill('body, .demo, .sidebar { background: #fff; color: #111; }')
   await page.getByText('Vista y ayudas visuales', { exact: true }).click()
