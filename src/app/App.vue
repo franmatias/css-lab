@@ -19,6 +19,7 @@ import {
   X,
   Award,
   Orbit,
+  Palette,
 } from '@lucide/vue'
 import { useThemeStore } from '@/features/theme/model/themeStore'
 import { useLearningStore } from '@/shared/model/learningStore'
@@ -44,7 +45,7 @@ function openGuide() {
 provide('openQuickGuide', openGuide)
 const header = ref<HTMLElement | null>(null)
 const menuButton = ref<HTMLButtonElement | null>(null)
-const compact = useMediaQuery('(max-width: 1200px)')
+const compact = useMediaQuery('(max-width: 1380px)')
 function closeMenu(returnFocus = false) {
   menuOpen.value = false
   if (returnFocus) menuButton.value?.focus()
@@ -75,6 +76,7 @@ const sections = [
   { label: 'nav.home', to: '/', icon: Braces },
   { label: 'nav.theory', to: '/teoria', icon: BookOpenText },
   { label: 'nav.catalog', to: '/catalogo', icon: LibraryBig },
+  { label: 'nav.properties', to: '/propiedades', icon: Palette },
   { label: 'nav.lab', to: '/laboratorio', icon: FlaskConical },
   { label: 'nav.design', to: '/talleres', icon: Braces },
   { label: 'nav.game', to: '/juego', icon: Orbit },
@@ -82,8 +84,8 @@ const sections = [
   { label: 'nav.progress', to: '/progreso', icon: ChartNoAxesColumnIncreasing },
   { label: 'nav.badges', to: '/insignias', icon: Award },
 ] as const
-const mobileSections = sections.filter(
-  (section) => !['/juego', '/insignias', '/talleres'].includes(section.to),
+const mobileSections = sections.filter((section) =>
+  ['/', '/propiedades', '/laboratorio', '/talleres', '/progreso'].includes(section.to),
 )
 const desktopSections = sections.filter((section) => section.to !== '/insignias')
 const currentPage = computed(() => t(route.meta.titleKey ?? 'nav.home'))
@@ -233,6 +235,7 @@ watch(
       <span>{{ t('app.footer') }}</span>
       <span class="footer-dot" aria-hidden="true"></span>
       <span>CSS Lab · 2026</span>
+      <span class="footer-institution">IEZV - Departamento Informática y IAD</span>
     </footer>
 
     <nav class="mobile-nav" :aria-label="t('app.mobileMenuLabel')">
@@ -251,6 +254,26 @@ watch(
   </div>
 </template>
 <style>
+.app-shell .site-footer {
+  flex-wrap: wrap;
+  padding: 1rem;
+  text-align: center;
+}
+.footer-institution {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+.app-shell .mobile-nav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+@media (max-width: 1380px) {
+  .site-header .desktop-nav {
+    display: none;
+  }
+  .header-actions .menu-toggle {
+    display: grid;
+  }
+}
 .quick-guide-menu {
   display: flex;
   width: 100%;

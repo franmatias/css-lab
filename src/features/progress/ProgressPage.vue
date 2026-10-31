@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { badgeDefinitions, challenges, lessons, moduleNames } from '../../../packages/content/src'
+import { badgeDefinitions, challenges, moduleNames } from '../../../packages/content/src'
+import { lessons } from '../../../packages/content/src/theory'
+import { propertyIds } from '../../../packages/content/src/propertyProgress'
 import { useLearningStore } from '@/shared/model/learningStore'
 import { localDate } from '@/domain/challenges'
 import { downloadFile } from '@/shared/utils/download'
@@ -106,6 +108,20 @@ function moduleCompleted(module: number) {
       llevarlo contigo.
     </p>
     <ProgressHero />
+    <section class="learning-card property-progress-card">
+      <p class="eyebrow">Tu estilo, paso a paso</p>
+      <h2>Propiedades conquistadas</h2>
+      <p>
+        <strong>{{ store.propertiesCompleted }} / {{ propertyIds.length }}</strong> retos
+        completados. Cada nueva conquista suma 60 XP.
+      </p>
+      <progress
+        :value="store.propertiesCompleted"
+        :max="propertyIds.length"
+        aria-label="Progreso de propiedades"
+      ></progress
+      ><RouterLink class="text-link" to="/propiedades">Continuar con propiedades →</RouterLink>
+    </section>
     <div class="stats-grid">
       <article class="learning-card">
         <span class="stat-number">{{ store.workshopsCompleted }}/12</span>

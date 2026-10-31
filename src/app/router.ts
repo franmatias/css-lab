@@ -7,6 +7,7 @@ declare module 'vue-router' {
       | 'nav.home'
       | 'nav.theory'
       | 'nav.catalog'
+      | 'nav.properties'
       | 'nav.lab'
       | 'nav.challenges'
       | 'nav.progress'
@@ -28,6 +29,12 @@ declare module 'vue-router' {
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/propiedades/:id?',
+      name: 'properties',
+      component: () => import('@/features/properties/PropertiesPage.vue'),
+      meta: { titleKey: 'nav.properties' },
+    },
     {
       path: '/juego',
       name: 'games',
