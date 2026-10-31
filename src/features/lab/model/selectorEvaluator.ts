@@ -132,7 +132,7 @@ export function createPreviewDocument(
     options.background === 'dark'
       ? `html, body { background-color: #111827 !important; color: #f3f4f6 !important; color-scheme: dark; }
     body * { color: #e5e7eb !important; }
-    body :where(article, aside, header, footer, main, section, nav, table, form, fieldset, input, select, textarea) { background-color: #1f2937 !important; border-color: #64748b !important; }
+    body :where(div, article, aside, header, footer, main, section, nav, ul, ol, li, table, form, fieldset, input, select, textarea) { background-color: #1f2937 !important; border-color: #64748b !important; }
     body :where(th, td) { border-color: #64748b !important; }
     body :where(thead, tbody tr:nth-child(even)) { background-color: #273449 !important; }
     body a { color: #c7d2fe !important; } body button { background-color: #3730a3 !important; color: #fff !important; }`
