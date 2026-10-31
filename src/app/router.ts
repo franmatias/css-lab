@@ -29,6 +29,18 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/juego',
+      name: 'games',
+      component: () => import('@/features/game/GamesPage.vue'),
+      meta: { titleKey: 'nav.game' },
+    },
+    {
+      path: '/juego/galaxia',
+      name: 'galaxy-home',
+      component: () => import('@/features/game/GamePage.vue'),
+      meta: { titleKey: 'nav.game' },
+    },
+    {
       path: '/juego/:mode(semantica|flexbox|grid|responsive)/:id?',
       name: 'studio-game',
       component: () => import('@/features/game/StudioGamePage.vue'),
@@ -48,7 +60,7 @@ export const router = createRouter({
       meta: { titleKey: 'nav.design' },
     },
     {
-      path: '/juego/:id?',
+      path: '/juego/:id',
       name: 'game',
       component: () => import('@/features/game/GamePage.vue'),
       meta: { titleKey: 'nav.game' },

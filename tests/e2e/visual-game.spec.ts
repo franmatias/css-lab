@@ -14,10 +14,8 @@ test('the responsive menu opens, closes with Escape and navigates on a narrow vi
   await expect(menu).toBeHidden()
   await expect(page.getByRole('button', { name: 'Abrir menú', exact: true })).toBeFocused()
   await page.getByRole('button', { name: 'Abrir menú', exact: true }).click()
-  await menu.getByRole('link', { name: 'Juego visual', exact: true }).click()
-  await expect(
-    page.getByRole('heading', { name: 'Juego visual', exact: true, level: 1 }),
-  ).toBeVisible()
+  await menu.getByRole('link', { name: 'Juegos', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Juegos', exact: true, level: 1 })).toBeVisible()
   await expect(menu).toBeHidden()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 })

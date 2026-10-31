@@ -15,7 +15,7 @@ test('the compiled Pages app boots and opens every section under its repository 
     'Catálogo',
     'Laboratorio',
     'Talleres',
-    'Juego visual',
+    'Juegos',
     'Retos',
     'Progreso',
   ]) {
@@ -30,7 +30,8 @@ test('the compiled Pages app boots and opens every section under its repository 
         exact: true,
       }),
     ).toBeVisible()
-    if (name === 'Juego visual') {
+    if (name === 'Juegos') {
+      await page.getByRole('link', { name: 'Galaxia de selectores', exact: true }).click()
       await page.getByRole('textbox', { name: 'Tu selector de la misión' }).fill('.rocoso')
       await page.getByRole('button', { name: 'Activar constelación' }).click()
       await expect(page.locator('.galaxy-board')).toHaveClass(/is-won/)

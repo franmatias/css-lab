@@ -14,10 +14,13 @@ const route = useRoute()
       "
       >{{ studioNames[mode] }} · 6 misiones</RouterLink
     >
-    <RouterLink to="/juego" :aria-current="route.name === 'game' ? 'page' : undefined"
-      >Galaxia · 12 misiones</RouterLink
-    ><RouterLink to="/juego/tablas" :aria-current="route.name === 'table-game' ? 'page' : undefined"
+    <RouterLink to="/juego/tablas" :aria-current="route.name === 'table-game' ? 'page' : undefined"
       >Tablas · 12 misiones</RouterLink
+    >
+    <RouterLink
+      to="/juego/galaxia"
+      :aria-current="['game', 'galaxy-home'].includes(String(route.name)) ? 'page' : undefined"
+      >Galaxia · 12 misiones</RouterLink
     >
   </nav>
 </template>

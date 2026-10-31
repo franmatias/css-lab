@@ -61,7 +61,7 @@ export const extensions = {
   },
   game: {
     eyebrow: 'Una galaxia. Un selector. Tu siguiente descubrimiento.',
-    title: 'Juego visual',
+    title: 'Galaxia de selectores',
     intro:
       'Escribe un selector que encuentre exactamente los planetas marcados. Mira la selección en directo y activa la constelación al acertar.',
     progress: '{count} de {total} misiones completadas',

@@ -61,14 +61,10 @@ test('Flexbox and Grid puzzles render the written CSS and format without submitt
   await expect(page.locator('.studio-feedback')).toContainText('+100 XP')
   await page.goto('/juego/grid')
   await editor.fill('.pista { display: grid; grid-template-columns: repeat(3, 1fr); }')
-  await expect
-    .poll(
-      async () =>
-        (
-          await preview.locator('.pista').evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-        ).split(' ').length,
-    )
-    .toBe(3)
+  await expect(preview.locator('.pista')).toHaveCSS(
+    'grid-template-columns',
+    /^\d+(?:\.\d+)?px \d+(?:\.\d+)?px \d+(?:\.\d+)?px$/,
+  )
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.studio-feedback')).toContainText('+100 XP')
 })
@@ -83,28 +79,13 @@ test('responsive games keep the real viewport while scaling the preview and reac
       '.pagina { display: grid; gap: 1rem; } @media (min-width: 48rem) { .pagina { grid-template-columns: repeat(3, 1fr); } }',
     )
   const preview = page.frameLocator('iframe[title="Resultado de tu código"]')
-  await expect
-    .poll(
-      async () =>
-        (
-          await preview
-            .locator('.pagina')
-            .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-        ).split(' ').length,
-    )
-    .toBe(3)
-  expect(await preview.locator('body').evaluate(() => innerWidth)).toBe(1200)
-  await page.getByRole('combobox', { name: 'Ancho de prueba', exact: true }).selectOption('375')
-  await expect
-    .poll(
-      async () =>
-        (
-          await preview
-            .locator('.pagina')
-            .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-        ).split(' ').length,
-    )
-    .toBe(1)
+  await expect(preview.locator('.pagina')).toHaveCSS(
+    'grid-template-columns',
+    /^\d+(?:\.\d+)?px \d+(?:\.\d+)?px \d+(?:\.\d+)?px$/,
+  )
+  await expect(preview.locator('html')).toHaveJSProperty('clientWidth', 1200)
+  await page.getByRole('button', { name: '375 px', exact: true }).click()
+  await expect(preview.locator('.pagina')).toHaveCSS('grid-template-columns', /^\d+(?:\.\d+)?px$/)
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.studio-feedback')).toContainText('+180 XP')
   await expect(page.locator('iframe').first()).toHaveAttribute('sandbox', '')
@@ -164,6 +145,8 @@ for (const path of [
       )
     }
     await page.setViewportSize({ width: 320, height: 900 })
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
+      .toBe(true)
   })
 }
