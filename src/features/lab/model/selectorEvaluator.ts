@@ -98,6 +98,7 @@ export interface PreviewOptions {
   background?: 'light' | 'dark' | 'checker'
   changedIds?: number[]
   inspectedId?: number | null
+  inspectedSelector?: string
 }
 
 export function createPreviewDocument(
@@ -126,6 +127,16 @@ export function createPreviewDocument(
   }
 
   const escapedCss = css.replace(/</g, '\\3C ')
+  // Presentation-only adaptation. The student's source is preserved verbatim.
+  const darkCss =
+    options.background === 'dark'
+      ? `html, body { background-color: #111827 !important; color: #f3f4f6 !important; color-scheme: dark; }
+    body * { color: #e5e7eb !important; }
+    body :where(article, aside, header, footer, main, section, nav, table, form, fieldset, input, select, textarea) { background-color: #1f2937 !important; border-color: #64748b !important; }
+    body :where(th, td) { border-color: #64748b !important; }
+    body :where(thead, tbody tr:nth-child(even)) { background-color: #273449 !important; }
+    body a { color: #c7d2fe !important; } body button { background-color: #3730a3 !important; color: #fff !important; }`
+      : ''
   const colors = {
     amber: ['#b45309', '180 83 9'],
     indigo: ['#4f46e5', '79 70 229'],
@@ -136,7 +147,8 @@ export function createPreviewDocument(
   const border = mode === 'border' || mode === 'both'
   const fill = mode === 'fill' || mode === 'both'
   const highlightCss = `[data-csslab-match] { ${border ? `outline: 2px dashed ${color} !important; outline-offset: 3px !important;` : ''} ${fill ? `background-color: rgb(${rgb} / 14%) !important;` : ''} }
-    [data-csslab-inspect] { outline: 3px solid #4f46e5 !important; outline-offset: 5px !important; }
+    [data-csslab-inspect] { outline: 2px solid #f59e0b !important; outline-offset: 2px !important; box-shadow: 0 0 0 4px rgb(245 158 11 / 16%) !important; }
+    [data-csslab-inspection-caption] { position: fixed; top: 4px; right: 4px; z-index: 2147483647; max-width: calc(100% - 8px); padding: 3px 8px; border-radius: 4px; background: #fbbf24 !important; color: #111827 !important; font: 700 12px/1.5 monospace; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; pointer-events: none; }
     ${options.numbers ? `[data-csslab-label] { position: relative; } [data-csslab-label]::after { content: attr(data-csslab-label); position: absolute; top: -11px; right: -11px; z-index: 1000; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 10px; background: ${color}; color: white; font: bold 12px/20px system-ui; text-align: center; }` : ''}
     ${options.animations ? '@keyframes csslab-change { from { box-shadow: 0 0 0 6px rgb(79 70 229 / 35%); filter: brightness(1.12); } to { box-shadow: 0 0 0 0 transparent; filter: none; } } [data-csslab-changed] { animation: csslab-change 650ms ease-out 1; } @keyframes csslab-arrive { from { opacity: .55; } to { opacity: 1; } } body { animation: csslab-arrive 180ms ease-out 1; }' : ''}
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }`
@@ -148,7 +160,18 @@ export function createPreviewDocument(
       .map((name) => ` ${name}="${element.getAttribute(name)}"`)
       .join('')
 
-  return `<!doctype html><html lang="es"${internalAttributes(document.documentElement)}><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; form-action 'none'; base-uri 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${baseCss}\n${escapedCss}\n${highlightCss}</style></head><body${internalAttributes(document.body)}>${document.body.innerHTML}</body></html>`
+  if (
+    options.inspectedSelector &&
+    options.inspectedId !== null &&
+    options.inspectedId !== undefined
+  ) {
+    const caption = document.createElement('div')
+    caption.setAttribute('data-csslab-inspection-caption', '')
+    caption.setAttribute('aria-hidden', 'true')
+    caption.textContent = options.inspectedSelector
+    document.body.appendChild(caption)
+  }
+  return `<!doctype html><html lang="es"${internalAttributes(document.documentElement)}><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; form-action 'none'; base-uri 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${baseCss}\n${escapedCss}\n${darkCss}\n${highlightCss}</style></head><body${internalAttributes(document.body)}>${document.body.innerHTML}</body></html>`
 }
 
 export const defaultLabDraft: LabDraft = { ...DEFAULT_LAB_DRAFT }
