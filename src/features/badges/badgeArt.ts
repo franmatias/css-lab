@@ -73,7 +73,7 @@ export function badgeDestination(badge: BadgeDefinition): string {
   if (badge.metric.startsWith('studio-')) return `/juego/${badge.metric.slice(7)}`
   if (badge.metric === 'module') return `/retos/m${badge.threshold}`
   if (['games', 'gameClean', 'gameOwl'].includes(badge.metric))
-    return badge.metric === 'gameOwl' ? '/juego/galaxia-buho' : '/juego'
+    return badge.metric === 'gameOwl' ? '/juego/galaxia-buho' : '/juego/galaxia'
   if (badge.metric === 'tableGames') return '/juego/tablas'
   if (badge.metric === 'workshops') return '/talleres'
   if (['visits', 'favorites'].includes(badge.metric)) return '/catalogo'

@@ -61,7 +61,7 @@ test('every table solution selects the right nodes and handles pointer transitio
   await page.goto('/insignias')
   await page.getByRole('combobox', { name: 'Familia', exact: true }).selectOption('Juego de tablas')
   await expect(page.locator('.achievement-card.unlocked')).toContainText(['Una celda, una idea'])
-  await page.goto('/juego')
+  await page.goto('/juego/galaxia')
   await expect(page.getByText('0 de 12 misiones completadas', { exact: true })).toBeVisible()
 })
 

@@ -48,7 +48,7 @@ const journeys = computed(() => [
   {
     id: 'galaxia',
     title: 'Galaxia',
-    to: '/juego',
+    to: '/juego/galaxia',
     completed: store.gamesCompleted,
     total: gameLevels.length,
     icon: Orbit,

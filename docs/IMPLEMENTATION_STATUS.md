@@ -4,6 +4,9 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Implementado
 
+- Laboratorio: selección DOM fijada y conmutable por clic, selector exacto visible y borde ámbar; la selección se invalida al cambiar el HTML. Árbol integrado en el panel de vista previa, con desplazamiento local y espacio de trabajo acotado a la pantalla en escritorio. El modo oscuro de prueba adapta superficies y texto después del CSS sin modificar el borrador ni los permisos del iframe.
+- «Juegos» abre una portada de seis recorridos, con Galaxia en último lugar y entrada propia `/juego/galaxia`. Se conservan las rutas individuales antiguas. Semántica, Flexbox, Grid, responsive y tablas comparten HTML arriba, respuesta debajo y vista previa a la derecha; objetivos y misiones quedan en el lateral. Botones de tamaño, comparación entre objetivo y resultado, borradores, pistas, XP y logros conservados.
+
 - Autocompletado de los editores ligado a la paleta de la aplicación: fondo, texto, selección, iconos y detalle legibles en claro y oscuro. Una prueba mide contraste mínimo 4,5:1 en las opciones normales y seleccionadas de ambos temas.
 
 - Guía rápida ampliada: 96 referencias en 16 bloques con ejemplos y explicación breve. Búsqueda sin distinción de acentos, filtro temático, acceso global y desde talleres, ventana modal nativa y carga diferida. Comprobada con teclado, ambos temas y pantalla de 320 px.

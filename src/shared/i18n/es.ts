@@ -27,7 +27,7 @@ export const es = {
     lab: 'Laboratorio',
     challenges: 'Retos',
     progress: 'Progreso',
-    game: 'Juego visual',
+    game: 'Juegos',
     badges: 'Insignias',
     examples: 'Recetas CSS',
     design: 'Talleres',

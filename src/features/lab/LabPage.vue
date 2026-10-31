@@ -6,7 +6,7 @@ import { RotateCcw, Share2, ShieldCheck } from '@lucide/vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLabStore } from './model/labStore'
 import { createPreviewDocument, evaluateSelector } from './model/selectorEvaluator'
-import { createDomTree } from './model/domTree'
+import { createDomTree, getDomNodeSelector } from './model/domTree'
 import { decodeSharedLabDraft, encodeSharedLabDraft } from './model/shareLabDraft'
 import CodeEditor from './CodeEditor.vue'
 import DomTree from './DomTree.vue'
@@ -59,6 +59,16 @@ const formatMessage = ref('')
 const formatError = ref(false)
 watch(preferences, (value) => writeLabPreferences(value), { deep: true })
 const hoveredNode = ref<number | null>(null)
+const selectedNode = ref<number | null>(null)
+const inspectedNode = computed(() => selectedNode.value ?? hoveredNode.value)
+function clearSelection() {
+  selectedNode.value = null
+  hoveredNode.value = null
+}
+function selectNode(key: number) {
+  selectedNode.value = selectedNode.value === key ? null : key
+  hoveredNode.value = null
+}
 const learning = useLearningStore()
 const template = ref('')
 const history = ref<string[]>([])
@@ -137,6 +147,10 @@ const animateUpdate = ref(true)
 const hasPendingChanges = computed(() => JSON.stringify(draft.value) !== appliedDraft.value)
 function refreshPreview() {
   const next = evaluateSelector(draft.value)
+  if (next.sanitizedHtml !== previewEvaluation.value.sanitizedHtml) {
+    selectedNode.value = null
+    hoveredNode.value = null
+  }
   changes.value = detectPreviewChanges(
     previewEvaluation.value.sanitizedHtml,
     next,
@@ -165,11 +179,15 @@ const previewDocument = computed(() =>
   createPreviewDocument(previewEvaluation.value, previewCss.value, {
     ...preferences.value,
     changedIds: changes.value.ids,
-    inspectedId: hoveredNode.value,
+    inspectedId: inspectedNode.value,
+    inspectedSelector: getDomNodeSelector(previewEvaluation.value, inspectedNode.value),
     animations: preferences.value.animations && animateUpdate.value,
   }),
 )
 const domTree = computed(() => createDomTree(previewEvaluation.value))
+const inspectedSelector = computed(() =>
+  getDomNodeSelector(previewEvaluation.value, inspectedNode.value),
+)
 async function formatEditors(language: 'html' | 'css' | 'both' = 'both') {
   if (formatting.value) return
   formatting.value = language
@@ -687,6 +705,9 @@ function movePanel(direction: number): void {
             </div>
           </details>
         </div>
+        <p v-if="preferences.background === 'dark'" class="lab-theme-note">
+          Adaptación oscura de prueba: cambia la presentación, no tu código.
+        </p>
         <div class="lab-preview-ruler">
           <span>{{
             preferences.width === 'auto'
@@ -709,6 +730,50 @@ function movePanel(direction: number): void {
             referrerpolicy="no-referrer"
           />
         </div>
+        <section class="lab-dom-tree" aria-labelledby="lab-tree-title">
+          <h2 id="lab-tree-title">
+            <button
+              class="lab-tree-toggle"
+              type="button"
+              :aria-label="
+                t(preferences.collapsed.tree ? 'panels.expand' : 'panels.collapse', {
+                  panel: t('panels.tree'),
+                })
+              "
+              :aria-expanded="!preferences.collapsed.tree"
+              aria-controls="lab-tree-content"
+              @click="preferences.collapsed.tree = !preferences.collapsed.tree"
+            >
+              {{ t('lab.treeTitle') }}
+              <span aria-hidden="true">{{ preferences.collapsed.tree ? '＋' : '−' }}</span>
+            </button>
+          </h2>
+          <div v-show="!preferences.collapsed.tree" id="lab-tree-content">
+            <p>
+              Pasa por un nodo para destacarlo. Haz clic para fijar la selección y vuelve a pulsarlo
+              para quitarla.
+            </p>
+            <p class="lab-inspected-selector" aria-live="polite">
+              <code>{{ inspectedSelector || 'Ningún elemento seleccionado' }}</code
+              ><button
+                v-if="selectedNode !== null"
+                class="lab-small-button"
+                type="button"
+                @click="clearSelection"
+              >
+                Quitar selección
+              </button>
+            </p>
+            <div class="lab-tree-nodes">
+              <DomTree
+                :nodes="domTree"
+                :selected-key="selectedNode"
+                @inspect="hoveredNode = $event"
+                @select="selectNode"
+              />
+            </div>
+          </div>
+        </section>
         <p class="lab-change-summary" aria-live="polite">
           {{
             t('lab.previewControls.changes', {
@@ -720,30 +785,6 @@ function movePanel(direction: number): void {
         </p>
       </section>
     </div>
-
-    <section class="lab-dom-tree" aria-labelledby="lab-tree-title">
-      <h2 id="lab-tree-title">
-        <button
-          class="lab-tree-toggle"
-          type="button"
-          :aria-label="
-            t(preferences.collapsed.tree ? 'panels.expand' : 'panels.collapse', {
-              panel: t('panels.tree'),
-            })
-          "
-          :aria-expanded="!preferences.collapsed.tree"
-          aria-controls="lab-tree-content"
-          @click="preferences.collapsed.tree = !preferences.collapsed.tree"
-        >
-          {{ t('lab.treeTitle') }}
-          <span aria-hidden="true">{{ preferences.collapsed.tree ? '＋' : '−' }}</span>
-        </button>
-      </h2>
-      <div v-show="!preferences.collapsed.tree" id="lab-tree-content">
-        <p>{{ t('lab.treeDescription') }}</p>
-        <DomTree :nodes="domTree" @inspect="hoveredNode = $event" />
-      </div>
-    </section>
 
     <div class="lab-info-row">
       <section class="lab-specificity" :aria-label="t('lab.specificityLabel')">

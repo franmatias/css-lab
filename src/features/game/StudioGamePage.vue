@@ -13,6 +13,7 @@ import CodeEditor from '@/features/lab/CodeEditor.vue'
 import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
 import GameModes from '@/shared/ui/GameModes.vue'
 import GameFrame from './GameFrame.vue'
+import GameWorkbench from './GameWorkbench.vue'
 import '@/features/lab/lab.css'
 import './studio-game.css'
 const route = useRoute()
@@ -31,6 +32,7 @@ const html = ref('')
 const baseDisplay = ref('')
 const width = ref('375')
 const fit = ref(true)
+const previewTab = ref('result')
 const sidebarOpen = ref(true)
 const feedback = ref('')
 const won = ref(false)
@@ -151,7 +153,7 @@ function restart() {
 }
 </script>
 <template>
-  <section class="learning-page studio-game-page">
+  <section class="learning-page studio-game-page game-guided-page">
     <p class="eyebrow">Construye una idea. Mira cómo cobra forma.</p>
     <h1 id="page-title" tabindex="-1">
       {{ mode ? `Juego de ${studioNames[mode]}` : 'Juego no encontrado' }}
@@ -169,20 +171,8 @@ function restart() {
       guarda en este navegador.
     </p>
     <div class="studio-layout" :class="{ 'sidebar-collapsed': !sidebarOpen }">
-      <CollapsibleSidebar v-model="sidebarOpen" title="Misiones del recorrido"
-        ><nav aria-label="Misiones del recorrido">
-          <RouterLink
-            v-for="(item, index) in missions"
-            :key="item.id"
-            :to="`/juego/${item.mode}/${item.id}`"
-            :aria-current="mission?.id === item.id ? 'page' : undefined"
-            >{{ store.data.games[item.id]?.status === 'completed' ? '✓' : index + 1 }} ·
-            {{ item.title }}</RouterLink
-          >
-        </nav></CollapsibleSidebar
-      >
-      <div v-if="mission" class="studio-content">
-        <header class="learning-card studio-mission">
+      <aside class="game-guide">
+        <header v-if="mission && sidebarOpen" class="learning-card studio-mission">
           <p class="eyebrow">
             Misión {{ missions.indexOf(mission) + 1 }} · {{ '★'.repeat(mission.level) }} · Hasta
             {{ score }} XP
@@ -190,145 +180,200 @@ function restart() {
           <h2>{{ mission.title }}</h2>
           <p>{{ mission.goal }}</p>
         </header>
-        <div class="studio-view-controls">
-          <label
-            >Ancho de prueba<select v-model="width">
-              <option value="375">375 px · Móvil</option>
-              <option value="768">768 px · Tableta</option>
-              <option value="1200">1200 px · Escritorio</option>
-            </select></label
-          ><label class="check-option"
-            ><input v-model="fit" type="checkbox" />Ajustar la vista al panel</label
-          ><label class="check-option"
-            ><input v-model="animate" type="checkbox" />Animación al acertar</label
-          >
-        </div>
-        <div
-          :key="winKey"
-          class="studio-compare"
-          :class="{ 'is-won': won, 'with-motion': animate }"
+        <CollapsibleSidebar v-model="sidebarOpen" title="Misiones del recorrido"
+          ><nav aria-label="Misiones del recorrido">
+            <RouterLink
+              v-for="item in missions"
+              :key="item.id"
+              :class="{ 'mission-done': store.data.games[item.id]?.status === 'completed' }"
+              :to="`/juego/${item.mode}/${item.id}`"
+              :aria-current="mission?.id === item.id ? 'page' : undefined"
+              >{{ item.title }}</RouterLink
+            >
+          </nav></CollapsibleSidebar
         >
-          <section class="learning-card">
-            <h2>Tu objetivo</h2>
-            <p>
-              {{
-                mode === 'semantica'
-                  ? 'Los elementos pedidos aparecen marcados en ámbar.'
-                  : 'Esta es la distribución que debes construir.'
-              }}
-            </p>
-            <GameFrame
-              :document="targetPreview"
-              :width="width"
-              :fit="fit"
-              title="Objetivo de la misión"
-            />
-          </section>
-          <section class="learning-card">
-            <h2>Tu resultado</h2>
-            <p>
-              {{
-                mode === 'semantica'
-                  ? 'Tu selector marca elementos en color cian.'
-                  : 'Aquí se aplica tu CSS sobre la misma estructura HTML.'
-              }}
-            </p>
-            <GameFrame
-              :document="playerPreview"
-              :width="width"
-              :fit="fit"
-              title="Resultado de tu código"
-            />
-          </section>
-        </div>
-        <form class="learning-card studio-answer" @submit.prevent="submit">
-          <h2>{{ mode === 'semantica' ? 'Escribe tu selector' : 'Dale forma con CSS' }}</h2>
-          <template v-if="mode === 'semantica'"
-            ><label for="studio-selector">Tu selector de la página</label
-            ><input
-              id="studio-selector"
-              v-model="answer"
-              maxlength="160"
-              autocomplete="off"
-              spellcheck="false"
-              autocapitalize="off"
-              placeholder="main > article"
-            />
-            <p aria-live="polite">
-              {{
-                live?.error
-                  ? 'Revisa la sintaxis del selector.'
-                  : `${live?.extra ?? 0} elementos de más · ${live?.missing ?? 0} elementos pendientes`
-              }}
-            </p></template
-          ><template v-else
-            ><p>
-              Comprobación guiada: usa el selector y las declaraciones del enunciado. Observa
-              también el resultado visual; esta comprobación no evalúa toda la cascada.
-            </p>
-            <div class="studio-code-editor">
-              <CodeEditor
-                v-model="answer"
-                language="css"
-                label="Tu CSS para la misión"
-                :max-length="20000"
-                @format="format"
-              /></div
-          ></template>
-          <div class="card-actions">
-            <button class="button button-primary" type="submit">Comprobar misión</button
-            ><button
-              class="button button-secondary"
-              type="button"
-              :disabled="hints >= 3 || result?.status === 'completed'"
-              @click="store.gameHint(mission.id)"
+      </aside>
+      <div v-if="mission" class="studio-content">
+        <GameWorkbench
+          ><template #source
+            ><section class="game-code-panel">
+              <h2>Código HTML <small>Solo lectura</small></h2>
+              <div class="game-html-editor">
+                <CodeEditor
+                  :key="mission.id"
+                  :model-value="html"
+                  language="html"
+                  label="HTML de la misión"
+                  :max-length="12000"
+                  read-only
+                />
+              </div></section></template
+          ><template #editor>
+            <form class="learning-card studio-answer" @submit.prevent="submit">
+              <h2>{{ mode === 'semantica' ? 'Escribe tu selector' : 'Dale forma con CSS' }}</h2>
+              <template v-if="mode === 'semantica'"
+                ><label for="studio-selector">Tu selector de la página</label
+                ><input
+                  id="studio-selector"
+                  v-model="answer"
+                  maxlength="160"
+                  autocomplete="off"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  placeholder="main > article"
+                />
+                <p aria-live="polite">
+                  {{
+                    live?.error
+                      ? 'Revisa la sintaxis del selector.'
+                      : `${live?.extra ?? 0} elementos de más · ${live?.missing ?? 0} elementos pendientes`
+                  }}
+                </p></template
+              ><template v-else
+                ><p>
+                  Comprobación guiada: usa el selector y las declaraciones del enunciado. Observa
+                  también el resultado visual; esta comprobación no evalúa toda la cascada.
+                </p>
+                <div class="studio-code-editor">
+                  <CodeEditor
+                    v-model="answer"
+                    language="css"
+                    label="Tu CSS para la misión"
+                    :max-length="20000"
+                    @format="format"
+                  /></div
+              ></template>
+              <div class="card-actions">
+                <button class="button button-primary" type="submit">Comprobar misión</button
+                ><button
+                  class="button button-secondary"
+                  type="button"
+                  :disabled="hints >= 3 || result?.status === 'completed'"
+                  @click="store.gameHint(mission.id)"
+                >
+                  Pista {{ Math.min(3, hints + 1) }} · −20 XP</button
+                ><button
+                  class="button button-secondary"
+                  type="button"
+                  @click="resetPending = !resetPending"
+                >
+                  Reiniciar código</button
+                ><button class="button button-secondary" type="button" @click="openLab">
+                  Abrir en el Laboratorio
+                </button>
+              </div>
+              <div v-if="resetPending">
+                <p>¿Quieres borrar este intento? Conservarás los puntos y los logros.</p>
+                <button type="button" class="button button-secondary" @click="restart">
+                  Sí, reiniciar código
+                </button>
+              </div>
+              <p class="studio-feedback" role="status">{{ feedback }}</p>
+              <ul v-if="checks?.length" class="studio-checks">
+                <li v-for="(check, index) in mission.checks" :key="index">
+                  {{ checks[index] ? '✓' : '○' }}
+                  <code>{{ check.selector }} · {{ check.property }}: {{ check.value }}</code
+                  ><span v-if="check.media"> · @media {{ check.media }}</span>
+                </li>
+              </ul>
+              <ol v-if="hints" class="studio-hints">
+                <li v-for="hint in mission.hints.slice(0, hints)" :key="hint">
+                  <pre>{{ hint }}</pre>
+                </li>
+              </ol>
+              <RouterLink
+                v-if="(won || result?.status === 'completed') && next"
+                class="text-link"
+                :to="`/juego/${next.mode}/${next.id}`"
+                >Siguiente misión →</RouterLink
+              ><RouterLink v-else-if="won && !next" class="text-link" to="/insignias"
+                >Ver mis nuevas medallas →</RouterLink
+              >
+            </form>
+            <details class="game-base-source">
+              <summary>CSS de partida · Solo lectura</summary>
+              <div class="game-html-editor">
+                <CodeEditor
+                  :key="mission.id"
+                  :model-value="baseDisplay"
+                  language="css"
+                  label="CSS de partida de la misión"
+                  :max-length="20000"
+                  read-only
+                />
+              </div></details></template
+          ><template #preview>
+            <div class="studio-view-controls">
+              <div class="game-size-buttons" role="group" aria-label="Tamaños de prueba">
+                <button
+                  v-for="size in ['375', '768', '1200']"
+                  :key="size"
+                  type="button"
+                  :aria-pressed="width === size"
+                  @click="width = size"
+                >
+                  {{ size }} px
+                </button>
+              </div>
+              <label class="check-option"
+                ><input v-model="fit" type="checkbox" />Ajustar la vista al panel</label
+              ><label class="check-option"
+                ><input v-model="animate" type="checkbox" />Animación al acertar</label
+              >
+            </div>
+            <div class="game-preview-tabs" role="group" aria-label="Comparar objetivo y resultado">
+              <button
+                type="button"
+                :aria-pressed="previewTab === 'result'"
+                @click="previewTab = 'result'"
+              >
+                Tu resultado</button
+              ><button
+                type="button"
+                :aria-pressed="previewTab === 'target'"
+                @click="previewTab = 'target'"
+              >
+                Ver objetivo
+              </button>
+            </div>
+            <div
+              :key="winKey"
+              class="studio-compare"
+              :class="{ 'is-won': won, 'with-motion': animate }"
             >
-              Pista {{ Math.min(3, hints + 1) }} · −20 XP</button
-            ><button
-              class="button button-secondary"
-              type="button"
-              @click="resetPending = !resetPending"
-            >
-              Reiniciar código</button
-            ><button class="button button-secondary" type="button" @click="openLab">
-              Abrir en el Laboratorio
-            </button>
-          </div>
-          <div v-if="resetPending">
-            <p>¿Quieres borrar este intento? Conservarás los puntos y los logros.</p>
-            <button type="button" class="button button-secondary" @click="restart">
-              Sí, reiniciar código
-            </button>
-          </div>
-          <p class="studio-feedback" role="status">{{ feedback }}</p>
-          <ul v-if="checks?.length" class="studio-checks">
-            <li v-for="(check, index) in mission.checks" :key="index">
-              {{ checks[index] ? '✓' : '○' }}
-              <code>{{ check.selector }} · {{ check.property }}: {{ check.value }}</code
-              ><span v-if="check.media"> · @media {{ check.media }}</span>
-            </li>
-          </ul>
-          <ol v-if="hints" class="studio-hints">
-            <li v-for="hint in mission.hints.slice(0, hints)" :key="hint">
-              <pre>{{ hint }}</pre>
-            </li>
-          </ol>
-          <RouterLink
-            v-if="(won || result?.status === 'completed') && next"
-            class="text-link"
-            :to="`/juego/${next.mode}/${next.id}`"
-            >Siguiente misión →</RouterLink
-          ><RouterLink v-else-if="won && !next" class="text-link" to="/insignias"
-            >Ver mis nuevas medallas →</RouterLink
-          >
-        </form>
-        <details class="learning-card studio-source">
-          <summary>Explorar el HTML y el CSS de partida</summary>
-          <h3>HTML</h3>
-          <pre tabindex="0" aria-label="HTML de la misión"><code>{{html}}</code></pre>
-          <h3>CSS de partida</h3>
-          <pre tabindex="0" aria-label="CSS de partida"><code>{{baseDisplay}}</code></pre>
-        </details>
+              <section v-show="previewTab === 'target'" class="learning-card">
+                <h2>Tu objetivo</h2>
+                <p>
+                  {{
+                    mode === 'semantica'
+                      ? 'Los elementos pedidos aparecen marcados en ámbar.'
+                      : 'Esta es la distribución que debes construir.'
+                  }}
+                </p>
+                <GameFrame
+                  :document="targetPreview"
+                  :width="width"
+                  :fit="fit"
+                  title="Objetivo de la misión"
+                />
+              </section>
+              <section v-show="previewTab === 'result'" class="learning-card">
+                <h2>Tu resultado</h2>
+                <p>
+                  {{
+                    mode === 'semantica'
+                      ? 'Tu selector marca elementos en color cian.'
+                      : 'Aquí se aplica tu CSS sobre la misma estructura HTML.'
+                  }}
+                </p>
+                <GameFrame
+                  :document="playerPreview"
+                  :width="width"
+                  :fit="fit"
+                  title="Resultado de tu código"
+                />
+              </section></div></template
+        ></GameWorkbench>
       </div>
       <section v-else class="learning-card">
         <h2>Esta misión no existe</h2>

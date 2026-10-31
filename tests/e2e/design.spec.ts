@@ -116,30 +116,18 @@ test('responsive and fluid workshop previews really change with the selected ifr
   await page.getByRole('button', { name: 'Ver ayuda y solución' }).click()
   await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
   const preview = page.frameLocator('iframe[title^="Vista previa del taller"]')
-  await expect(preview.locator('.pagina')).toHaveCSS('grid-template-columns', /\d+px$/)
-  const narrow = await preview
-    .locator('.pagina')
-    .evaluate((element) => getComputedStyle(element).gridTemplateColumns)
-  expect(narrow.split(' ')).toHaveLength(1)
+  await expect(preview.locator('.pagina')).toHaveCSS('grid-template-columns', /^\d+(?:\.\d+)?px$/)
   await page.getByRole('button', { name: '1200', exact: true }).click()
-  await expect
-    .poll(
-      async () =>
-        (
-          await preview
-            .locator('.pagina')
-            .evaluate((element) => getComputedStyle(element).gridTemplateColumns)
-        ).split(' ').length,
-    )
-    .toBe(2)
+  await expect(preview.locator('.pagina')).toHaveCSS(
+    'grid-template-columns',
+    /^\d+(?:\.\d+)?px \d+(?:\.\d+)?px$/,
+  )
   await page.goto('/diseno/clamp')
   await page.getByRole('button', { name: 'Ver ayuda y solución' }).click()
   await page.getByRole('button', { name: 'Cargar solución CSS' }).click()
   const title = page.frameLocator('iframe[title^="Vista previa del taller"]').locator('.titular')
   await page.getByRole('button', { name: '375', exact: true }).click()
-  await expect
-    .poll(() => title.evaluate((element) => parseFloat(getComputedStyle(element).fontSize)))
-    .toBeCloseTo(27.25, 1)
+  await expect(title).toHaveCSS('font-size', '27.25px')
   await page.getByRole('button', { name: '1200', exact: true }).click()
   await expect(title).toHaveCSS('font-size', '48px')
   await expect(page.locator('iframe')).toHaveAttribute('sandbox', '')
