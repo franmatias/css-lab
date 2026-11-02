@@ -1,5 +1,6 @@
 import type { LearningData } from './progress'
-import { gameLevels, type Challenge } from '../../packages/content/src'
+import { gameLevels } from '../../packages/content/src/game'
+import type { Challenge } from '../../packages/content/src/challenges'
 import { tableMissions } from '../../packages/content/src/tableGame'
 import { workshopIds } from '../../packages/content/src/designProgress'
 import { studioMissions } from '../../packages/content/src/studioGames'

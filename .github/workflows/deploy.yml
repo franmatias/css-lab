@@ -28,11 +28,24 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:coverage
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e
       - run: pnpm build
       - run: pnpm exec playwright test --config playwright.production.config.ts
+      - name: Lighthouse mobile budgets
+        run: |
+          export CHROME_PATH="$(node --input-type=module -e "import {chromium} from '@playwright/test'; console.log(chromium.executablePath())")"
+          pnpm test:lighthouse
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-evidence
+          path: |
+            coverage
+            test-results
+            .lighthouseci
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: github.ref != 'refs/heads/main'
         with:

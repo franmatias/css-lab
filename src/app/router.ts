@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { i18n } from './i18n'
+import HomePage from '@/features/home/HomePage.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -87,7 +88,7 @@ export const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/features/home/HomePage.vue'),
+      component: HomePage,
       meta: { titleKey: 'nav.home' },
     },
     {

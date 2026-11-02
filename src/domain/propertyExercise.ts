@@ -17,6 +17,7 @@ export async function checkProperty(
       'Usa CSS local de hasta 12 000 caracteres, sin importaciones ni recursos externos.',
     )
   const frames: HTMLIFrameElement[] = []
+  const cleanup: (() => void)[] = []
   async function render(answer: string): Promise<Document> {
     const frame = document.createElement('iframe')
     frames.push(frame)
@@ -35,6 +36,10 @@ export async function checkProperty(
         if (frame.contentDocument) resolve(frame.contentDocument)
         else reject(new Error('No se ha podido leer el resultado.'))
       }
+      cleanup.push(() => {
+        window.clearTimeout(timeout)
+        frame.onload = null
+      })
     })
     const safeCss = (
       exercise.baseCss +
@@ -101,6 +106,7 @@ export async function checkProperty(
     }
     return results
   } finally {
+    cleanup.forEach((dispose) => dispose())
     frames.forEach((frame) => frame.remove())
   }
 }

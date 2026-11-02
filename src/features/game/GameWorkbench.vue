@@ -11,6 +11,7 @@
 }
 .game-guided-page.learning-page {
   padding-top: 0.5rem;
+  overflow-wrap: anywhere;
 }
 .game-guided-page .learning-card {
   display: block;
@@ -109,6 +110,7 @@
 }
 .game-code-panel h2 {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.5rem;
   font-size: 0.95rem;

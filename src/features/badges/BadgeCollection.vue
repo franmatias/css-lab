@@ -16,6 +16,11 @@ const filter = ref<'all' | 'unlocked' | 'locked'>('all')
 const family = ref('')
 const sort = ref('collection')
 const selected = ref<BadgeDefinition | null>(null)
+function selectBadge(badge: BadgeDefinition, event: Event) {
+  // Safari does not focus buttons on pointer clicks; dialog needs an explicit return target.
+  if (event.currentTarget instanceof HTMLElement) event.currentTarget.focus({ preventScroll: true })
+  selected.value = badge
+}
 const families = [...new Set(badgeDefinitions.map((badge) => badgeFamily(badge.metric)))]
 const filters = ['all', 'unlocked', 'locked'] as const
 const allItems = computed(() =>
@@ -97,7 +102,7 @@ function date(value: string) {
           >
         </div>
       </div>
-      <button class="featured-medal" @click="selected = featured">
+      <button class="featured-medal" @click="selectBadge(featured, $event)">
         <span class="eyebrow">{{
           latest ? 'Tu última conquista' : 'Una conquista que te espera'
         }}</span
@@ -172,7 +177,7 @@ function date(value: string) {
         <button
           class="medal-art-button"
           :aria-label="`Ver insignia ${badge.name}`"
-          @click="selected = badge"
+          @click="selectBadge(badge, $event)"
         >
           <BadgeMedal
             :badge="badge"

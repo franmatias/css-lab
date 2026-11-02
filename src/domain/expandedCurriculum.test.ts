@@ -2,8 +2,12 @@ import { expect, it } from 'vitest'
 import { entries, expandedEntries, moduleNames } from '../../packages/content/src/catalog'
 import { lessons, theoryCategories } from '../../packages/content/src/theory'
 import { theoryLessonSchema } from '../../packages/content/src/practicalTheory'
-import { propertyExercises } from '../../packages/content/src/properties'
-import { propertyIds, additionalTheoryIds } from '../../packages/content/src/propertyProgress'
+import { propertyExercises, propertyExerciseSchema } from '../../packages/content/src/properties'
+import {
+  propertyIds,
+  additionalTheoryIds,
+  theoryLessonCount,
+} from '../../packages/content/src/propertyProgress'
 import { catalogCount, curriculumSlugs } from '../../packages/content/src/curriculumIds'
 import { curriculumTopics, expandedLessons } from '../../packages/content/src/expandedCurriculum'
 import { entrySchema } from '../../packages/content/src'
@@ -14,6 +18,7 @@ it('provides 100 unique lessons, properties and catalogue cards with stable meta
   expect(lessons.map((lesson) => lesson.id)).toEqual(Array.from({ length: 100 }, (_, i) => 'm' + i))
   expect(propertyIds).toEqual(propertyExercises.map((item) => item.id))
   expect(catalogCount).toBe(entries.length)
+  expect(theoryLessonCount).toBe(lessons.length)
   expect(additionalTheoryIds).toEqual(lessons.slice(17).map((item) => item.id))
   expect(curriculumSlugs).toEqual(curriculumTopics.map((item) => item.slug))
   expect(moduleNames).toHaveLength(20)
@@ -24,6 +29,13 @@ it('provides 100 unique lessons, properties and catalogue cards with stable meta
   for (const lesson of lessons) expect(theoryLessonSchema.safeParse(lesson).success).toBe(true)
   for (const item of propertyExercises)
     expect(lessons.some((lesson) => item.theory === '/teoria/' + lesson.id)).toBe(true)
+  for (const item of propertyExercises) {
+    expect(propertyExerciseSchema.safeParse(item).success, item.id).toBe(true)
+    const fixture = new DOMParser().parseFromString(item.html, 'text/html')
+    expect(fixture.querySelectorAll('*').length, item.id).toBeLessThanOrEqual(120)
+    for (const check of item.checks)
+      expect(fixture.querySelectorAll(check.selector).length, item.id).toBeGreaterThan(0)
+  }
   expect(expandedEntries).toHaveLength(49)
   expect(expandedLessons).toHaveLength(75)
   for (const lesson of expandedLessons) {
@@ -38,4 +50,16 @@ it('provides 100 unique lessons, properties and catalogue cards with stable meta
   }
   expect(extraLabTemplates).toHaveLength(10)
   expect(new Set(extraLabTemplates.map((item) => item.id)).size).toBe(10)
+})
+
+it('rejects malformed property contracts before publication', () => {
+  const item = propertyExercises[0]!
+  for (const changes of [
+    { checks: [] },
+    { solution: '' },
+    { html: 'x'.repeat(12_001) },
+    { theory: '/missing' },
+    { checks: [{ selector: '', property: 'color' }] },
+  ])
+    expect(propertyExerciseSchema.safeParse({ ...item, ...changes }).success).toBe(false)
 })

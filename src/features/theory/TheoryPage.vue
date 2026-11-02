@@ -8,6 +8,8 @@ import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
 import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
 import { useI18n } from 'vue-i18n'
+import { theoryVisual } from './theoryVisuals'
+import TheoryVisual from './TheoryVisual.vue'
 const TheoryDesignExample = defineAsyncComponent(() => import('./TheoryDesignExample.vue'))
 const { t } = useI18n()
 const sidebarOpen = ref(true)
@@ -35,6 +37,7 @@ const route = useRoute()
 const router = useRouter()
 const store = useLearningStore()
 const lesson = computed(() => lessons.find((l) => l.id === route.params.slug))
+const visual = computed(() => (lesson.value ? theoryVisual(lesson.value.id) : undefined))
 const lessonEntries = computed(() => entries.filter((e) => e.module === lesson.value?.module))
 const answers = ref<Record<number, number>>({})
 const checked = ref(false)
@@ -107,6 +110,7 @@ async function openLab() {
         <ul class="lesson-ideas">
           <li v-for="idea in lesson.ideas" :key="idea">{{ idea }}</li>
         </ul>
+        <TheoryVisual v-if="visual" :key="lesson.id" :visual="visual" />
         <section
           v-for="section in lesson.sections"
           :key="section.title"

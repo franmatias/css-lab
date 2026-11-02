@@ -1,18 +1,32 @@
 import { expandedPropertyExercises } from './expandedCurriculum'
-export interface PropertyExercise {
-  id: string
-  title: string
-  category: string
-  description: string
-  theory: string
-  html: string
-  baseCss: string
-  starter: string
-  solution: string
-  hint: string
-  checks: { selector: string; property: string; pseudo?: string }[]
-  keyframes?: string
-}
+import { z } from 'zod'
+
+export const propertyExerciseSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  theory: z.string().regex(/^\/teoria\/m\d+$/),
+  html: z.string().min(1).max(12_000),
+  baseCss: z.string().max(12_000),
+  starter: z.string().max(12_000),
+  solution: z.string().min(1).max(12_000),
+  hint: z.string().min(1),
+  checks: z
+    .array(
+      z.object({
+        selector: z.string().min(1).max(160),
+        property: z.string().min(1),
+        pseudo: z
+          .string()
+          .regex(/^::[a-z-]+$/)
+          .optional(),
+      }),
+    )
+    .min(1),
+  keyframes: z.string().min(1).optional(),
+})
+export type PropertyExercise = z.infer<typeof propertyExerciseSchema>
 const card = `<main class="escena">
   <article class="muestra">
     <h2>Tu próxima idea</h2>

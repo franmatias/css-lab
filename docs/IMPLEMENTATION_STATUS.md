@@ -1,6 +1,6 @@
 # Estado de la implementación de CSS Lab
 
-Actualizado: **2 de noviembre de 2026**. Código revisado: **da3d874** de main. [Plan vigente](./IMPLEMENTATION_PLAN.md).
+Actualizado: **2 de noviembre de 2026**. Revisión de calidad en **feat/quality-validation**. [Plan vigente](./IMPLEMENTATION_PLAN.md).
 
 Este estado sustituye los recuentos históricos de 10, 17 y 25 lecciones o 36 retos de Propiedades. La aplicación está publicada en [Pages](https://franmatias.github.io/css-lab/). No se declara cierre integral ni certificación de la v1.0.
 
@@ -43,17 +43,18 @@ Vista → árbol y divisores libres de arrastre no están implementados. Existen
 
 ## Evidencia de calidad
 
-Última entrega funcional, da3d874:
+Ver [informe](./QUALITY_REPORT.md), [guiones de revisión humana](./HUMAN_VALIDATION.md) y [flujo de integración](../.github/workflows/deploy.yml).
 
-- **45 pruebas unitarias, 71 de navegador y una de producción: 117 comprobaciones** superadas antes de esta revisión documental.
-- Cardinalidad, IDs, esquemas de lecciones/fichas, enlaces y metadatos.
-- Soluciones y borradores vacíos de los 100 retos de Propiedades evaluados en Chromium.
-- Objetivos reales de las fichas nuevas; diez plantillas nuevas; guardado, favoritos y progreso.
-- Laboratorio, Emmet, juegos, talleres, copias, temas y navegación.
-- axe sobre la interfaz y reflujo a 320 px. Los iframes que impiden inyección se excluyen de axe; hay otras pruebas de estructura/estilos, sin acreditar accesibilidad manual de todo el material.
-- Lint, formato, tipos, build y rutas de Pages en [Actions](../.github/workflows/deploy.yml).
+- 60 pruebas unitarias/de componente; cobertura de dominio 99,10 % de líneas, 94,07 % de ramas y 96,77 % de funciones.
+- Umbrales globales de 90 % en las cuatro métricas, sin excluir archivos difíciles del dominio.
+- 71 pruebas verificadas en Chromium y 71 en WebKit. Firefox se añade a CI; su instalación local falla antes de arrancar por una dependencia de Windows.
+- Dos pruebas de producción: rutas bajo /css-lab/ y presupuesto inicial completo.
+- Inicio: JS inicial 117,91 kB gzip; mediana Lighthouse móvil 90 en rendimiento, 100 en accesibilidad, LCP 2,299 s y CLS 0.
+- Soluciones de cien propiedades, ejemplos del catálogo, talleres y juegos comprobados en navegador; esquemas y objetivos del contenido validados.
+- Corregidos contraste con movimiento reducido, devolución del foco y temporizadores del evaluador.
+- CI impide publicar si fallan cobertura, matriz de navegador, producción o Lighthouse, y conserva los informes.
 
-[Playwright](../playwright.config.ts) declara Chromium, no una matriz Firefox/Safari. [Vitest](../vite.config.ts) no establece un umbral de cobertura. El último fragmento principal fue aproximadamente 147,98 KB gzip: no es toda la carga inicial ni una medición del LCP.
+axe y Lighthouse no acreditan accesibilidad manual de los ejemplos aislados. El rendimiento se refiere a Inicio en laboratorio, no a datos de usuarios reales.
 
 ## Pendientes
 
@@ -62,9 +63,9 @@ Vista → árbol y divisores libres de arrastre no están implementados. Existen
 - [ ] Revisión editorial independiente: exactitud, dificultad, redundancias, tiempos, ejemplos, cuestionarios y referencias.
 - [ ] Dos rondas de cinco estudiantes y corrección documentada de incidencias.
 - [ ] Auditoría manual con lector de pantalla, teclado, zoom y preferencias.
-- [ ] Lighthouse y presupuestos en CI: rendimiento ≥90, accesibilidad ≥95, LCP móvil <2,5 s y JS inicial completo <150 KB gzip.
-- [ ] Cobertura de dominio ≥90 % y pruebas de componentes críticos.
-- [ ] Verificación documentada en Firefox y WebKit/Safari.
+- [x] Lighthouse y presupuestos en CI: rendimiento ≥90, accesibilidad ≥95, LCP móvil <2,5 s y JS inicial completo <150 KB gzip.
+- [x] Cobertura de dominio ≥90 % y prueba del panel compartido.
+- [ ] Safari real y tecnologías de asistencia; matriz automática Chromium/Firefox/WebKit incorporada en CI.
 
 ### Diferencias funcionales y mantenibilidad
 
@@ -72,7 +73,7 @@ Vista → árbol y divisores libres de arrastre no están implementados. Existen
 - [ ] Implementar o aceptar arrastre de paneles y DOM bidireccional preservando aislamiento.
 - [ ] Localización y corrección contextual de errores; aceptación del alcance de cascada y optimización.
 - [ ] Textos restantes en i18n; el producto sigue en español.
-- [ ] Esquema Zod propio para Propiedades.
+- [x] Esquema Zod propio para Propiedades y validación de los cien retos.
 - [ ] Límites de importación entre features, catálogo de componentes, ADRs y controles de licencias/herramientas de contribución.
 
 ### Opcionales
@@ -85,3 +86,7 @@ Vista → árbol y divisores libres de arrastre no están implementados. Existen
 - [ ] PWA y soporte offline garantizado.
 
 Los módulos avanzados previstos para Hito 6 ya se han incorporado. El [plan](./IMPLEMENTATION_PLAN.md) propone el orden del cierre; cuentas, backend, ranking y sincronización en la nube siguen fuera de alcance.
+
+## Ampliación visual de teoría
+
+Diez SVG locales, calculadora de caja, recorrido responsive y animación con curvas y pausa. Reproducción voluntaria y alternativa con movimiento reducido. [Detalles y validación](./THEORY_VISUALS.md). La matriz vigente contiene 61 pruebas unitarias/de componente, 75 casos por navegador y dos de producción.
