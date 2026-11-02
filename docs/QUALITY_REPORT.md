@@ -2,7 +2,13 @@
 
 Fecha: **2 de noviembre de 2026**. Rama: **feat/quality-validation**. Alcance: cierre técnico de los pendientes P1; los criterios que requieren personas siguen abiertos. [Guiones y hojas de registro](./HUMAN_VALIDATION.md).
 
-## Resultados técnicos locales
+## Entrega verificada y publicada
+
+Código de producto: **60fe9e8**. [Actions: validación y despliegue superados](https://github.com/franmatias/css-lab/actions/runs/41524347399). La entrega incluye diez ilustraciones SVG, los ejemplos visuales de caja/responsive/movimiento y doce experimentos de propiedades. Se han superado 66 pruebas unitarias/de componente, 81 casos por navegador en Chromium/Firefox/WebKit (243 en total), dos pruebas de producción y los presupuestos Lighthouse. Los informes JSON por motor están en los artefactos quality-browser; cobertura, producción y Lighthouse se conservan en quality-evidence.
+
+El [plan](./IMPLEMENTATION_PLAN.md) y el [estado](./IMPLEMENTATION_STATUS.md) mantienen abiertas las revisiones humanas. [Detalle de los doce experimentos](./PROPERTY_PLAYGROUNDS.md).
+
+## Resultados técnicos locales del cierre base
 
 Entorno: Windows, Node 20.18.0, pnpm 9.15.9, Vitest 3.2.7 y Playwright 1.64.1. Se usa la instalación de navegadores gestionada por Playwright; WebKit automatizado no equivale a Safari con VoiceOver.
 

@@ -4,7 +4,7 @@
   "node": "20.18.0",
   "pnpm": "9.15.9",
   "playwright": "1.64.1",
-  "unitTests": 60,
+  "unitTests": 66,
   "domainCoverage": {
     "lines": {
       "total": 674,
@@ -36,12 +36,6 @@
       "skipped": 0,
       "pct": "Unknown"
     }
-  },
-  "localBrowserValidation": {
-    "chromium": 71,
-    "webkit": 71,
-    "firefox": "Bloqueado al arrancar por configuración en paralelo de Windows; incluido en CI Ubuntu",
-    "note": "135 pruebas superadas en la matriz; siete interrumpidas por suspensión del equipo y superadas al repetir sin modificar tiempos."
   },
   "productionTests": 2,
   "initialJavaScript": {
@@ -84,5 +78,26 @@
       "cls": 0
     }
   ],
-  "humanValidation": "Pendiente: revisión docente independiente, diez sesiones con estudiantes, lector de pantalla y Safari real"
+  "humanValidation": "Pendiente: revisión docente independiente, diez sesiones con estudiantes, lector de pantalla y Safari real",
+  "baselineUnitTests": 60,
+  "baselineLocalBrowserValidation": {
+    "chromium": 71,
+    "webkit": 71,
+    "firefox": "Bloqueado al arrancar por configuración en paralelo de Windows; incluido en CI Ubuntu",
+    "note": "135 pruebas superadas en la matriz; siete interrumpidas por suspensión del equipo y superadas al repetir sin modificar tiempos."
+  },
+  "releaseValidation": {
+    "sourceCommit": "60fe9e8c17e2d3eaafb36e16aab26fb05ba89d6c",
+    "actions": "https://github.com/franmatias/css-lab/actions/runs/41524347399",
+    "result": "success",
+    "unitTests": 66,
+    "browserCases": {
+      "total": 243,
+      "firefox": 81,
+      "chromium": 81,
+      "webkit": 81
+    },
+    "productionTests": 2,
+    "deployed": true
+  }
 }

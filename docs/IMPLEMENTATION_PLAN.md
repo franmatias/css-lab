@@ -1,6 +1,6 @@
 # Plan de implementación de CSS Lab
 
-Actualizado: **2 de noviembre de 2026**. Revisión de calidad en **feat/quality-validation**.
+Actualizado: **2 de noviembre de 2026**. Producto validado: **60fe9e8**. [Validación y despliegue](https://github.com/franmatias/css-lab/actions/runs/41524347399).
 
 La [especificación v1.0](../spec-css-lab.md) se conserva como referencia histórica. Este plan incorpora las ampliaciones solicitadas y sustituye la secuencia de arranque por las tareas reales de cierre. Las estimaciones iniciales no son un calendario vigente: faltan auditorías y pruebas con estudiantes.
 
@@ -20,7 +20,7 @@ La aplicación está publicada y supera el alcance de contenido inicial. **No eq
 | Progreso             | XP, niveles, racha, actividad, dominio, copias JSON y 50 insignias SVG.                                                       |
 | Referencias          | Guía rápida de 96 referencias en 16 bloques y 12 recetas.                                                                     |
 | Inicio               | Accesos actualizados y pie «IEZV - Departamento Informática y IAD».                                                           |
-| Verificación técnica | 60 pruebas unitarias/de componente, matriz de tres navegadores en CI y dos pruebas de producción.                             |
+| Verificación técnica | 66 pruebas unitarias/de componente, 243 casos en Chromium/Firefox/WebKit y dos pruebas de producción.                         |
 
 Se conservan identificadores, progreso, favoritos y compatibilidad de copias anteriores. La evidencia se detalla en [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md).
 
@@ -40,14 +40,14 @@ Se conservan identificadores, progreso, favoritos y compatibilidad de copias ant
 
 El [informe de calidad](./QUALITY_REPORT.md) registra resultados, condiciones y límites. Los [guiones de revisión humana](./HUMAN_VALIDATION.md) están listos.
 
-| Prioridad | Elemento                                 | Estado                                                                                                                                                                                          |
-| --------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P1        | Revisión editorial de los 300 contenidos | Contratos, enlaces, objetivos y soluciones comprobados. Falta revisión independiente de exactitud, dificultad, tiempos, redundancias y preguntas.                                               |
-| P1        | Dos rondas con estudiantes               | Guion y hojas preparados. Pendientes diez sesiones, resultados, correcciones y repruebas.                                                                                                       |
-| P1        | Accesibilidad manual                     | Foco y contraste corregidos y verificados automáticamente. Falta lector de pantalla, zoom real y revisión del material aislado.                                                                 |
-| P1        | Rendimiento y CI                         | Implementado: Inicio con medianas Lighthouse 90 rendimiento, 100 accesibilidad y LCP 2,299 s; JS inicial completo 117,91 kB gzip. CI exige ≥90/≥95, LCP ≤2,5 s y JS <150 kB.                    |
-| P1        | Cobertura y componentes                  | Implementado: 60 pruebas; líneas 99,10 %, ramas 94,07 %, funciones 96,77 %. Umbrales globales del 90 % en src/domain y prueba del panel compartido.                                             |
-| P1        | Compatibilidad                           | Matriz Chromium/Firefox/WebKit en CI. Chromium y WebKit verificados localmente; Firefox local no arranca por dependencia de Windows. Safari real y tecnologías de asistencia siguen pendientes. |
+| Prioridad | Elemento                                 | Estado                                                                                                                                                                       |
+| --------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1        | Revisión editorial de los 300 contenidos | Contratos, enlaces, objetivos y soluciones comprobados. Falta revisión independiente de exactitud, dificultad, tiempos, redundancias y preguntas.                            |
+| P1        | Dos rondas con estudiantes               | Guion y hojas preparados. Pendientes diez sesiones, resultados, correcciones y repruebas.                                                                                    |
+| P1        | Accesibilidad manual                     | Foco y contraste corregidos y verificados automáticamente. Falta lector de pantalla, zoom real y revisión del material aislado.                                              |
+| P1        | Rendimiento y CI                         | Implementado: Inicio con medianas Lighthouse 90 rendimiento, 100 accesibilidad y LCP 2,299 s; JS inicial completo 117,91 kB gzip. CI exige ≥90/≥95, LCP ≤2,5 s y JS <150 kB. |
+| P1        | Cobertura y componentes                  | Implementado: 66 pruebas; líneas 99,10 %, ramas 94,07 %, funciones 96,77 %. Umbrales globales del 90 % en src/domain y prueba del panel compartido.                          |
+| P1        | Compatibilidad                           | Matriz Chromium/Firefox/WebKit en CI. 81 casos por motor verificados en Chromium, Firefox y WebKit en CI. Safari real y tecnologías de asistencia siguen pendientes.         |
 
 No se declara cierre completo de los Hitos 2–5 hasta contar con la evidencia humana. El informe registra el alcance exacto de los controles.
 

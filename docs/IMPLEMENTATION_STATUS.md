@@ -1,6 +1,6 @@
 # Estado de la implementación de CSS Lab
 
-Actualizado: **2 de noviembre de 2026**. Revisión de calidad en **feat/quality-validation**. [Plan vigente](./IMPLEMENTATION_PLAN.md).
+Actualizado: **2 de noviembre de 2026**. Producto validado: **60fe9e8**. [Validación y despliegue](https://github.com/franmatias/css-lab/actions/runs/41524347399). [Plan vigente](./IMPLEMENTATION_PLAN.md).
 
 Este estado sustituye los recuentos históricos de 10, 17 y 25 lecciones o 36 retos de Propiedades. La aplicación está publicada en [Pages](https://franmatias.github.io/css-lab/). No se declara cierre integral ni certificación de la v1.0.
 
@@ -45,9 +45,9 @@ Vista → árbol y divisores libres de arrastre no están implementados. Existen
 
 Ver [informe](./QUALITY_REPORT.md), [guiones de revisión humana](./HUMAN_VALIDATION.md) y [flujo de integración](../.github/workflows/deploy.yml).
 
-- 60 pruebas unitarias/de componente; cobertura de dominio 99,10 % de líneas, 94,07 % de ramas y 96,77 % de funciones.
+- 66 pruebas unitarias/de componente; cobertura de dominio 99,10 % de líneas, 94,07 % de ramas y 96,77 % de funciones.
 - Umbrales globales de 90 % en las cuatro métricas, sin excluir archivos difíciles del dominio.
-- 71 pruebas verificadas en Chromium y 71 en WebKit. Firefox se añade a CI; su instalación local falla antes de arrancar por una dependencia de Windows.
+- 81 casos por navegador verificados en Chromium, Firefox y WebKit: 243 casos en CI. La limitación de Firefox en este Windows no afecta a la matriz validada en Ubuntu.
 - Dos pruebas de producción: rutas bajo /css-lab/ y presupuesto inicial completo.
 - Inicio: JS inicial 117,91 kB gzip; mediana Lighthouse móvil 90 en rendimiento, 100 en accesibilidad, LCP 2,299 s y CLS 0.
 - Soluciones de cien propiedades, ejemplos del catálogo, talleres y juegos comprobados en navegador; esquemas y objetivos del contenido validados.
