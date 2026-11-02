@@ -148,5 +148,21 @@ for (const path of [
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
       .toBe(true)
+      .catch(async (cause: Error) => {
+        const layout = await page.evaluate(() => ({
+          viewport: innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          outside: Array.from(document.querySelectorAll('main *'))
+            .map((el) => ({
+              tag: el.tagName,
+              className: String(el.className),
+              right: el.getBoundingClientRect().right,
+              left: el.getBoundingClientRect().left,
+            }))
+            .filter((el) => el.right > innerWidth + 1 && el.left < innerWidth)
+            .slice(0, 15),
+        }))
+        throw new Error(`Reflow diagnostic: ${JSON.stringify(layout)}\n${cause.message}`)
+      })
   })
 }

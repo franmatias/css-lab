@@ -30,6 +30,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test:coverage
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: WebKit narrow viewport regression
+        run: pnpm exec playwright test tests/e2e/rewards-studio.spec.ts --project=webkit --grep 'semantica has'
       - run: pnpm test:e2e
       - run: pnpm build
       - run: pnpm exec playwright test --config playwright.production.config.ts
