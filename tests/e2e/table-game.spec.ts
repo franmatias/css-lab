@@ -7,7 +7,8 @@ test('theory presents distinct ideas and HTML and selectors use two columns that
   await page.setViewportSize({ width: 1440, height: 1000 })
   for (const path of ['/teoria/m5', '/catalogo/m5-posicion']) {
     await page.goto(path)
-    if (path.startsWith('/teoria')) await expect(page.locator('.lesson-ideas > li')).toHaveCount(5)
+    if (path.startsWith('/teoria'))
+      await expect(page.locator('.lesson-body > .lesson-ideas > li')).toHaveCount(5)
     const demo = page.locator('.selector-demo').first()
     await expect(demo.getByRole('heading', { name: 'Código HTML', exact: true })).toBeVisible()
     const grid = await demo.evaluate((element) =>
