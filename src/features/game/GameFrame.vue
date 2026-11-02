@@ -30,6 +30,9 @@ const scale = computed(() =>
 <style>
 .studio-frame {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  contain: inline-size;
   overflow: auto;
   border: 1px solid var(--border-strong);
   border-radius: 0.6rem;

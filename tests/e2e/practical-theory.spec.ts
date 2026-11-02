@@ -4,6 +4,8 @@ import { expect, test } from '@playwright/test'
 test('all seven practical lessons display complete explanations, examples and quizzes and award XP once', async ({
   page,
 }) => {
+  // This journey visits seven lessons and completes all quizzes in one persistent session.
+  test.setTimeout(90_000)
   await page.goto('/teoria')
   await expect(page.getByText('100 lecciones abiertas:', { exact: false })).toBeVisible()
   const lessons = await page.evaluate(async () => {

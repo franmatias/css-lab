@@ -117,6 +117,8 @@ test('properties catalog, editor, persistent completion, DOM selection and respo
 test('eight new theory lessons have experiments and quizzes and maintain completion', async ({
   page,
 }) => {
+  // Eight complete lessons share a session so their accumulated progress can be verified.
+  test.setTimeout(90_000)
   await page.goto('/teoria')
   const lessons = await page.evaluate(async () => {
     const path = '/packages/content/src/theory.ts'
