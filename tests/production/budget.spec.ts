@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { gzipSync } from 'node:zlib'
+import { writeFile } from 'node:fs/promises'
 
 test('complete initial JavaScript stays under 150 kB gzip, including lazy startup chunks', async ({
   page,
@@ -19,8 +20,10 @@ test('complete initial JavaScript stays under 150 kB gzip, including lazy startu
     [...scripts].map(async ([url, size]) => ({ url, gzipBytes: await size })),
   )
   const total = resources.reduce((sum, item) => sum + item.gzipBytes, 0)
+  const reportPath = testInfo.outputPath('initial-javascript.json')
+  await writeFile(reportPath, JSON.stringify({ resources, total, budget: 150_000 }, null, 2))
   await testInfo.attach('initial-javascript.json', {
-    body: JSON.stringify({ resources, total, budget: 150_000 }, null, 2),
+    path: reportPath,
     contentType: 'application/json',
   })
   expect(resources.length).toBeGreaterThan(0)

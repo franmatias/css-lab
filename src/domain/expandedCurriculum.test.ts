@@ -3,7 +3,11 @@ import { entries, expandedEntries, moduleNames } from '../../packages/content/sr
 import { lessons, theoryCategories } from '../../packages/content/src/theory'
 import { theoryLessonSchema } from '../../packages/content/src/practicalTheory'
 import { propertyExercises, propertyExerciseSchema } from '../../packages/content/src/properties'
-import { propertyIds, additionalTheoryIds } from '../../packages/content/src/propertyProgress'
+import {
+  propertyIds,
+  additionalTheoryIds,
+  theoryLessonCount,
+} from '../../packages/content/src/propertyProgress'
 import { catalogCount, curriculumSlugs } from '../../packages/content/src/curriculumIds'
 import { curriculumTopics, expandedLessons } from '../../packages/content/src/expandedCurriculum'
 import { entrySchema } from '../../packages/content/src'
@@ -14,6 +18,7 @@ it('provides 100 unique lessons, properties and catalogue cards with stable meta
   expect(lessons.map((lesson) => lesson.id)).toEqual(Array.from({ length: 100 }, (_, i) => 'm' + i))
   expect(propertyIds).toEqual(propertyExercises.map((item) => item.id))
   expect(catalogCount).toBe(entries.length)
+  expect(theoryLessonCount).toBe(lessons.length)
   expect(additionalTheoryIds).toEqual(lessons.slice(17).map((item) => item.id))
   expect(curriculumSlugs).toEqual(curriculumTopics.map((item) => item.slug))
   expect(moduleNames).toHaveLength(20)

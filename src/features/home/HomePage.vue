@@ -6,7 +6,7 @@ import { ArrowDown, ArrowRight, Check, CodeXml, FlaskConical, Sparkles } from '@
 import { useLearningStore } from '@/shared/model/learningStore'
 import { challenges } from '../../../packages/content/src/challenges'
 import { catalogCount } from '../../../packages/content/src/curriculumIds'
-import { propertyIds } from '../../../packages/content/src/propertyProgress'
+import { propertyIds, theoryLessonCount } from '../../../packages/content/src/propertyProgress'
 import { dailyIndex, localDate } from '@/domain/calendar'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
@@ -39,7 +39,7 @@ const resultMessage = computed(() => {
 const learningPaths = [
   {
     title: 'nav.theory',
-    description: `100 lecciones con ideas clave, ejemplos editables y autoevaluación.`,
+    description: `${theoryLessonCount} lecciones con ideas clave, ejemplos editables y autoevaluación.`,
     to: '/teoria',
     icon: CodeXml,
   },
