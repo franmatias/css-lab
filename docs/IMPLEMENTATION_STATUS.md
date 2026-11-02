@@ -90,3 +90,7 @@ Los módulos avanzados previstos para Hito 6 ya se han incorporado. El [plan](./
 ## Ampliación visual de teoría
 
 Diez SVG locales, calculadora de caja, recorrido responsive y animación con curvas y pausa. Reproducción voluntaria y alternativa con movimiento reducido. [Detalles y validación](./THEORY_VISUALS.md). La matriz vigente contiene 61 pruebas unitarias/de componente, 75 casos por navegador y dos de producción.
+
+## Experimentos de propiedades
+
+Entregados doce experimentos con parámetros, CSS generado y escenas aisladas, además de reproducción controlada y movimiento reducido. [Detalle](./PROPERTY_PLAYGROUNDS.md). Recuentos vigentes: 66 pruebas unitarias/de componente, 81 casos por navegador y dos de producción. Las revisiones con personas siguen pendientes.

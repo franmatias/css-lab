@@ -85,4 +85,12 @@ test('the compiled Pages app boots and opens every section under its repository 
     page.frameLocator('iframe[title^="Vista de teoría:"]').locator('.tarjetas'),
   ).toHaveCSS('display', 'flex')
   expect(errors).toEqual([])
+  const playground = page.getByRole('region', { name: 'Experimentos de propiedades', exact: true })
+  await playground.getByRole('combobox', { name: 'Dirección de Flexbox' }).selectOption('column')
+  await expect(
+    page
+      .frameLocator('iframe[title="Experimento interactivo: Distribuir con Flexbox"]')
+      .locator('.muestra'),
+  ).toHaveCSS('flex-direction', 'column')
+  expect(errors).toEqual([])
 })
