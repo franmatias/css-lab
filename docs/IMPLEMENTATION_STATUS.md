@@ -1,76 +1,87 @@
-# Estado de la implementación
+# Estado de la implementación de CSS Lab
 
-La aplicación extiende la base existente de Hitos 0–1. Esta entrega implementa los recorridos de aprendizaje de los Hitos 2–4 y mantiene los requisitos de publicación en GitHub Pages.
+Actualizado: **2 de noviembre de 2026**. Código revisado: **da3d874** de main. [Plan vigente](./IMPLEMENTATION_PLAN.md).
 
-## Implementado
+Este estado sustituye los recuentos históricos de 10, 17 y 25 lecciones o 36 retos de Propiedades. La aplicación está publicada en [Pages](https://franmatias.github.io/css-lab/). No se declara cierre integral ni certificación de la v1.0.
 
-- Laboratorio: selección DOM fijada y conmutable por clic, selector exacto visible y borde ámbar; la selección se invalida al cambiar el HTML. Árbol integrado en el panel de vista previa, con desplazamiento local y espacio de trabajo acotado a la pantalla en escritorio. El modo oscuro de prueba adapta superficies y texto después del CSS sin modificar el borrador ni los permisos del iframe.
-- «Juegos» abre una portada de seis recorridos, con Galaxia en último lugar y entrada propia `/juego/galaxia`. Se conservan las rutas individuales antiguas. Semántica, Flexbox, Grid, responsive y tablas comparten HTML arriba, respuesta debajo y vista previa a la derecha; objetivos y misiones quedan en el lateral. Botones de tamaño, comparación entre objetivo y resultado, borradores, pistas, XP y logros conservados.
+## Inventario vigente
 
-- Autocompletado de los editores ligado a la paleta de la aplicación: fondo, texto, selección, iconos y detalle legibles en claro y oscuro. Una prueba mide contraste mínimo 4,5:1 en las opciones normales y seleccionadas de ambos temas.
+| Área                | Estado                                                                                                             | Evidencia                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Teoría              | 100 lecciones m0–m99; categorías, búsqueda, completados, ejemplos y quiz.                                          | [Agregador](../packages/content/src/theory.ts), [ampliación](../packages/content/src/expandedCurriculum.ts), [pantalla](../src/features/theory/TheoryPage.vue).                  |
+| Propiedades         | 100 retos, requisitos, ayuda, soluciones, borradores y 60 XP iniciales.                                            | [Contenido](../packages/content/src/properties.ts), [metadatos](../packages/content/src/propertyProgress.ts), [evaluador](../src/domain/propertyExercise.ts).                    |
+| Catálogo            | 100 fichas en 19 categorías, favoritos y ejemplos; conserva las 51 originales.                                     | [Contenido](../packages/content/src/catalog.ts), [pantalla](../src/features/catalog/CatalogPage.vue).                                                                            |
+| Retos de selectores | 62 retos con siete estrategias, pistas, integradores y repaso.                                                     | [Contenido](../packages/content/src/index.ts), [evaluación](../src/domain/challenges.ts).                                                                                        |
+| Talleres            | 12 talleres, 53 pasos, objetivos, círculos y revisión responsive; alias /diseno compatible.                        | [Pantalla](../src/features/design/DesignPage.vue), [metadatos](../packages/content/src/designProgress.ts).                                                                       |
+| Juegos              | Seis recorridos y 48 misiones: 12 de Galaxia, 12 de tablas y seis por cada modo Semántica/Flexbox/Grid/Responsive. | [Galaxia](../packages/content/src/game.ts), [tablas](../packages/content/src/tableGame.ts), [otros](../packages/content/src/studioGames.ts).                                     |
+| Laboratorio         | 15 plantillas, formato, Emmet, DOM, ayudas visuales, deshacer y compartir.                                         | [Pantalla](../src/features/lab/LabPage.vue), [plantillas nuevas](../src/features/lab/model/extraLabTemplates.ts), [editor](../src/features/lab/CodeEditor.vue).                  |
+| Progreso            | XP, niveles, racha, actividad, dominio, módulo al 80 % con integradores, repasos y JSON; 50 insignias SVG.         | [Store](../src/shared/model/learningStore.ts), [pantalla](../src/features/progress/ProgressPage.vue), [esquema](../src/domain/progress.ts), [métricas](../src/domain/badges.ts). |
+| Referencias         | Guía de 96 referencias en 16 bloques y 12 recetas.                                                                 | [Guía](../packages/content/src/quickReference.ts), [recetas](../src/features/examples/ExamplesPage.vue).                                                                         |
+| Inicio y navegación | Accesos actualizados, reto del día, temas, menú responsive y pie institucional IEZV.                               | [Inicio](../src/features/home/HomePage.vue), [estructura](../src/app/App.vue), [rutas](../src/app/router.ts).                                                                    |
 
-- Guía rápida ampliada: 96 referencias en 16 bloques con ejemplos y explicación breve. Búsqueda sin distinción de acentos, filtro temático, acceso global y desde talleres, ventana modal nativa y carga diferida. Comprobada con teclado, ambos temas y pantalla de 320 px.
+## Comportamientos entregados
 
-- «Diseño CSS» pasa a «Talleres», con ruta `/talleres` y alias compatible `/diseno`. Catálogo de 12 talleres y 53 pasos, progreso porcentual, búsqueda por estado y reanudación. Objetivo explícito, mapa de círculos navegable, comprobaciones individuales y revisión visual responsive confirmada por el alumno. El guardado conserva pasos parciales y logros anteriores.
-- Mesa de trabajo con HTML encima de CSS, vista previa a la derecha, botones Auto/375/768/1200, ajuste opcional al panel, bordes y árbol DOM con selección persistente. Código inicial de solo lectura separado del CSS del alumno; traslado combinado al Laboratorio. Paneles plegables y adaptación móvil.
+- Sintaxis y números de línea, formato con espacios/tabulaciones y Emmet por Tab, Ctrl/⌘ + Mayús + E o botón. Campos editables y protección de tamaño; los ejemplos de solo lectura no cambian.
+- Árbol DOM con selección fija y conmutable, borde y selector. Cambiar HTML invalida selecciones obsoletas. Árbol y vista se desplazan en su panel.
+- Viewports reales con ajuste visual opcional. HTML encima de CSS y resultado lateral en talleres y juegos guiados; Galaxia mantiene su escenario.
+- Bordes, fondos, colores y contornos de ayuda; adaptación oscura de prueba sin cambiar el CSS guardado. Movimiento reducido y celebraciones configurables.
+- Progreso, IDs y favoritos anteriores conservados; no se duplican recompensas. Exportación/importación, respaldo de datos corruptos, recordatorio de copia y sincronización entre pestañas.
+- Carga por rutas, fuentes locales y ausencia de analítica externa.
 
-- Teoría ampliada a 17 lecciones: las diez de selectores y siete de CSS aplicado, con IDs nuevos `m10`–`m16`. Variables y funciones matemáticas, listas, menús, tablas, formularios, Flexbox y Grid. Cada lección nueva incorpora cinco ideas clave, tres apartados, ejemplo HTML/CSS editable con sintaxis y formato, tres preguntas y referencias originales.
-- Ejemplos prácticos con vista aislada, anchos de prueba reales, traslado al Laboratorio y carga del editor solo al abrir un ejemplo. Progreso contabiliza las 17 lecciones y estima minutos con su duración declarada. Los puntos de finalización no se duplican.
+## Aislamiento y límites de evaluación
 
-- Colección de 50 medallas con ilustración SVG por logro, acabado metálico, esmaltes de familia, cuatro distinciones visuales, detalle ampliable con foco nativo del navegador y celebración al desbloquear. Recomendación de siguiente objetivo y ordenación por proximidad o fecha.
-- Juegos de semántica, Flexbox, Grid y responsive: seis misiones cada uno, 24 nuevas y 48 entre todos los escenarios. Selección exacta para semántica y evaluación guiada de declaraciones con CSSOM para distribución; no se afirma evaluar toda la cascada ni la calidad visual. Vista de objetivo y resultado, escala opcional conservando viewports reales de 375/768/1200 px y borrador persistente por misión.
-- Progreso rediseñado con nivel, XP, anillo de objetivo diario, seis recorridos independientes, actividad semanal y una selección de medallas. Ocho logros nuevos para los cuatro recorridos, compatibles con los datos locales y las copias anteriores.
+Las vistas visibles conservan sandbox vacío y CSP restrictiva, con HTML saneado y sin scripts del alumno. Propiedades usa documentos temporales sin scripts, del mismo tamaño, y los retira al terminar; permite imágenes locales en datos y bloquea recursos CSS externos. El progreso no se envía a servidores.
 
-- Teoría con introducciones breves y cinco ideas por lección; HTML y selector editable en columnas mediante un componente compartido con el catálogo, con adaptación a una columna en móvil.
-- Segundo escenario `/juego/tablas/:id?`: 12 misiones de selección de celdas, filas, columnas y rangos, más interacción `:hover` con puntero, foco o control sin ratón. Evaluación exacta de nodos y comprobación de todas las posiciones en los retos interactivos. Dos insignias de tablas separadas de los logros de la galaxia.
+- Selectores: nodos de DOM inerte y estados transitorios simulados por clases.
+- Pseudoelementos: nombre separado y elementos de origen, sin tratarlos como nodos DOM.
+- Talleres/juegos de distribución: declaraciones, contexto y pregunta o revisión guiada, no evaluación estética general.
+- Propiedades: estilos computados y cascada de la escena; el reto de fotogramas comprueba sus extremos.
+- Cascada: reglas explícitas, no inspección de toda la cascada real.
+- Optimización: longitud frente a referencia, no demostración de un mínimo global.
 
-- Sección `/diseno/:id?` con 12 talleres de tablas, formularios, listas, Flexbox, Grid, responsive, BEM, SMACSS, variables, `clamp()`, `calc()`/`min()` y un proyecto integrador. Contenido validado con Zod y referencias originales.
-- Editor CSS con sintaxis y formato, borradores separados, solución de ayuda, traslado al Laboratorio y vista aislada con anchos interiores reales de 375/768/1200 px. Recorrido lateral contraíble, buscador y categorías.
-- Evaluación guiada de declaraciones mediante CSSOM, con selector y media query explícitos, más pregunta conceptual y observación visual. 100 XP por taller una sola vez, tres insignias nuevas y progreso compatible con exportaciones anteriores.
+Vista → árbol y divisores libres de arrastre no están implementados. Existen árbol → vista, selección fija, distribuciones predefinidas y plegado.
 
-- Rutas funcionales de aprendizaje, laboratorio, juego, recetas, progreso e insignias; carga por ruta, menú responsive accesible y foco al navegar.
-- Diez lecciones originales de selectores y siete de diseño aplicado, ejemplos editables, errores frecuentes y dos o tres preguntas por módulo. Completar una lección requiere superar su quiz y concede XP una sola vez.
-- Paquete `packages/content` sin dependencia de Vue: 51 fichas, 62 retos, 12 misiones visuales, 12 recetas y 50 insignias. Esquemas Zod, IDs estables, prerrequisitos acíclicos y soluciones verificadas en Chromium.
-- Catálogo con búsqueda, categorías, favoritos persistentes y fichas con ejemplos interactivos y enlaces a MDN.
-- Siete tipos de reto mediante un registro: selección exacta, completar, corregir, aplicar estilo, especificidad, elección y optimización. El reto de estilo compara estilos computados en un Shadow DOM temporal; no ejecuta código del estudiante.
-- Diagnóstico de sintaxis o diferencias entre conjuntos; tres pistas; desbloqueo por módulo, salto tras tres intentos y retos integradores.
-- XP, cuatro niveles, racha local con un día de gracia semanal, objetivo diario, actividad semanal, dominio, galería de 50 insignias y repaso con cinco intervalos.
-- Juego visual de constelaciones con evaluación exacta sobre HTML inerte, objetivos y coincidencias diferenciados, animación de acierto, pistas y XP concedido una sola vez por misión.
-- Recetas útiles de combinaciones de selectores: búho, atributos, combinadores, `:focus-within`, `:has()`, `:checked`, `:not()`, `:nth-child()`, `:is()`, `:where()` y pseudoelementos.
-- Paneles de laboratorio y árbol DOM plegables, con distribución persistente; mapas de teoría y misiones contraíbles. El guardado se completa también al cerrar o recargar la página.
-- Progreso validado dentro de `csslab:v1`, copia de datos corruptos, sincronización entre pestañas, exportación/importación JSON y confirmación antes de reiniciar.
-- Laboratorio existente ampliado con cinco plantillas, deshacer/rehacer, copiar, descargar, árbol DOM navegable y comparador de cascada. Se conserva el iframe sin permisos y el intercambio de borradores comprimidos.
-- Tipografías autoalojadas, temas claro/oscuro/sistema, alto contraste, lectura espaciada, movimiento reducido y bienvenida omitible.
-- CI con lint, formato, tipos, pruebas, compilación y publicación desde `main`.
+## Evidencia de calidad
 
-## Límites que requieren una siguiente revisión
+Última entrega funcional, da3d874:
 
-- La señalización del DOM va desde el árbol hacia la vista previa; el iframe de origen opaco no comunica eventos del puntero a la aplicación. Se mantiene el aislamiento sin scripts.
-- El comparador de cascada contrasta dos reglas declaradas del mismo origen. No inspecciona automáticamente toda la cascada de un documento ni modela transiciones, animaciones, estilos inline o todos los orígenes del navegador.
-- La optimización acepta conjuntos correctos y compara longitud con la referencia; no pretende demostrar una solución mínima global.
-- Los ejemplos de pseudoelementos señalan los elementos de origen; su evaluación verifica el nombre del pseudoelemento. No se simula una selección de texto real.
-- El modo de lectura aumenta espaciado y cambia de fuente. No sustituye una evaluación individual de legibilidad.
-- Los textos de interfaz incorporados en esta entrega aún deben completar su extracción al catálogo i18n; la aplicación es únicamente española.
-- La cobertura del 90 %, Lighthouse con presupuestos en CI, catálogo de componentes, auditoría manual con lector de pantalla, revisión editorial independiente y las dos rondas de cinco usuarios siguen pendientes. No se declara certificación WCAG ni cierre de todos los criterios de la v1.0.
-- PWA, modos contrarreloj y paquetes importables pertenecen al Hito 6 y no forman parte de esta entrega.
+- **45 pruebas unitarias, 71 de navegador y una de producción: 117 comprobaciones** superadas antes de esta revisión documental.
+- Cardinalidad, IDs, esquemas de lecciones/fichas, enlaces y metadatos.
+- Soluciones y borradores vacíos de los 100 retos de Propiedades evaluados en Chromium.
+- Objetivos reales de las fichas nuevas; diez plantillas nuevas; guardado, favoritos y progreso.
+- Laboratorio, Emmet, juegos, talleres, copias, temas y navegación.
+- axe sobre la interfaz y reflujo a 320 px. Los iframes que impiden inyección se excluyen de axe; hay otras pruebas de estructura/estilos, sin acreditar accesibilidad manual de todo el material.
+- Lint, formato, tipos, build y rutas de Pages en [Actions](../.github/workflows/deploy.yml).
 
-## Datos y compatibilidad
+[Playwright](../playwright.config.ts) declara Chromium, no una matriz Firefox/Safari. [Vitest](../vite.config.ts) no establece un umbral de cobertura. El último fragmento principal fue aproximadamente 147,98 KB gzip: no es toda la carga inicial ni una medición del LCP.
 
-### Biblioteca ampliada a 100 (noviembre de 2026)
+## Pendientes
 
-- 100 retos de Propiedades, 100 lecciones de Teoría y 100 fichas de Catálogo. Se conservan todos los IDs anteriores y los nuevos siguen las mismas reglas de progreso, favoritos y XP.
-- 75 lecciones nuevas con categorías y filtros de búsqueda/completado; 64 retos con enlaces directos a su teoría; 49 fichas adicionales en diez categorías nuevas (19 categorías de catálogo en total).
-- El Laboratorio dispone de 15 plantillas: diez incorporaciones con HTML, CSS y selector inicial propios, formateado, vista aislada y deshacer. Incluyen Flexbox, Grid, responsive, formularios, tablas, variables, efectos, details y BEM.
-- Comprobaciones de cardinalidad, unicidad, esquemas y enlaces; soluciones y borradores vacíos de los 100 retos evaluados en Chromium; objetivos reales en todas las fichas nuevas; carga de las diez plantillas y revisión a 320 px.
+### Calidad y validación con personas
 
-### Ampliación de propiedades y efectos (noviembre de 2026)
+- [ ] Revisión editorial independiente: exactitud, dificultad, redundancias, tiempos, ejemplos, cuestionarios y referencias.
+- [ ] Dos rondas de cinco estudiantes y corrección documentada de incidencias.
+- [ ] Auditoría manual con lector de pantalla, teclado, zoom y preferencias.
+- [ ] Lighthouse y presupuestos en CI: rendimiento ≥90, accesibilidad ≥95, LCP móvil <2,5 s y JS inicial completo <150 KB gzip.
+- [ ] Cobertura de dominio ≥90 % y pruebas de componentes críticos.
+- [ ] Verificación documentada en Firefox y WebKit/Safari.
 
-- Inicio actualizado con seis rutas de aprendizaje, avances de selectores y propiedades y accesos a efectos. Pie institucional: IEZV - Departamento Informática y IAD.
-- Nueva sección `/propiedades/:id?`: 36 retos en 12 temas con buscador y filtros, objetivo, requisitos, pista, solución consultable, HTML de referencia, CSS editable con formato y vista previa lateral. Anchos interiores reales de 375/768/1200 px, pausa/repetición y árbol DOM con selección fija.
-- Comprobación por estilos computados contra una referencia al mismo ancho de 768 px, contemplando cascada, abreviaturas, todos los elementos objetivo y pseudoelementos. El reto de fotogramas verifica los extremos de la secuencia. Cada primera resolución suma 60 XP; los borradores, intentos y completados se guardan y exportan sin duplicar recompensas.
-- Ocho lecciones nuevas, `/teoria/m17`–`/teoria/m24`: caja/medidas, tipografía/color/fondos, posición/capas, sombras/transparencias, transiciones, transformaciones, animaciones e imágenes/desbordamiento/accesibilidad. Total: 25 lecciones con los identificadores anteriores preservados. Los nuevos cuerpos de teoría se cargan solo en sus rutas.
-- Las vistas previas mantienen sandbox vacío. La evaluación emplea documentos temporales sin scripts y sin recursos externos, eliminados al terminar. La revisión automática de accesibilidad se realiza sobre la interfaz; los documentos de ejemplo se comprueban mediante pruebas de semántica y estilos, no mediante inyección de scripts.
+### Diferencias funcionales y mantenibilidad
 
-No se envían el código de los ejercicios ni el progreso a un servidor. Las fuentes y recursos de la interfaz se sirven desde el propio sitio. Los enlaces compartidos incluyen únicamente el borrador del laboratorio en el fragmento de URL; el progreso se transporta mediante un JSON exportado por el estudiante.
+- [ ] Nivel y compatibilidad individual en Catálogo.
+- [ ] Implementar o aceptar arrastre de paneles y DOM bidireccional preservando aislamiento.
+- [ ] Localización y corrección contextual de errores; aceptación del alcance de cascada y optimización.
+- [ ] Textos restantes en i18n; el producto sigue en español.
+- [ ] Esquema Zod propio para Propiedades.
+- [ ] Límites de importación entre features, catálogo de componentes, ADRs y controles de licencias/herramientas de contribución.
 
-El paquete de contenido puede ampliarse sin editar las pantallas. El cambio de un esquema persistente debe mantener lectores anteriores o incluir una migración y sus pruebas; los campos añadidos en esta entrega tienen valores predeterminados para borradores existentes.
+### Opcionales
+
+- [ ] Mascota o guía con estados.
+- [ ] Resumen imprimible de progreso.
+- [ ] Retos procedurales con semilla.
+- [ ] Contrarreloj y duelo.
+- [ ] Paquetes de retos importables.
+- [ ] PWA y soporte offline garantizado.
+
+Los módulos avanzados previstos para Hito 6 ya se han incorporado. El [plan](./IMPLEMENTATION_PLAN.md) propone el orden del cierre; cuentas, backend, ranking y sincronización en la nube siguen fuera de alcance.
