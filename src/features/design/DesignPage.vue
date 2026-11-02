@@ -41,7 +41,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const learning = useLearningStore()
-const openGuide = inject<() => void>('openQuickGuide')
+const openGuide = inject<(event?: Event) => void>('openQuickGuide')
 const current = computed(() => workshops.find((item) => item.id === route.params.id))
 const category = ref('')
 const query = ref('')
@@ -306,7 +306,9 @@ const resume = computed(() =>
         </div>
       </header>
       <div class="workshop-guide-access">
-        <button class="text-link" @click="openGuide?.()">Consultar guía rápida de CSS ↗</button>
+        <button class="text-link" @click="openGuide?.($event)">
+          Consultar guía rápida de CSS ↗
+        </button>
       </div>
       <div class="workshop-layout">
         <aside class="workshop-guide">

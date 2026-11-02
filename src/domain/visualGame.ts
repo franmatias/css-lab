@@ -40,6 +40,4 @@ export function evaluateVisualGame(
     return { ...empty, error: true }
   }
 }
-export function visualGameScore(level: number, hints: number): number {
-  return Math.max(20, 60 + level * 40 - Math.min(3, Math.max(0, hints)) * 20)
-}
+export { visualGameScore } from './calendar'

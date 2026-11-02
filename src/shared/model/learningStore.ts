@@ -1,20 +1,17 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { learningSchema, type LearningData } from '@/domain/progress'
-import {
-  badgeDefinitions,
-  challenges,
-  gameLevels,
-  type Challenge,
-} from '../../../packages/content/src'
+import { badgeDefinitions } from '../../../packages/content/src/badges'
+import { challenges, type Challenge } from '../../../packages/content/src/challenges'
+import { gameLevels } from '../../../packages/content/src/game'
 import { badgeProgress } from '@/domain/badges'
-import { visualGameScore } from '@/domain/visualGame'
+import { visualGameScore } from '@/domain/calendar'
 import { workshopIds } from '../../../packages/content/src/designProgress'
 import { propertyIds } from '../../../packages/content/src/propertyProgress'
 import { tableMissions } from '../../../packages/content/src/tableGame'
 import { studioMissions, type StudioMode } from '../../../packages/content/src/studioGames'
 const allGameLevels = [...gameLevels, ...tableMissions, ...studioMissions]
-import { challengeScore, dayDistance, localDate } from '@/domain/challenges'
+import { challengeScore, dayDistance, localDate } from '@/domain/calendar'
 import {
   readLearningData,
   writeLearningData,

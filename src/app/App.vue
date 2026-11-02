@@ -23,7 +23,7 @@ import {
 } from '@lucide/vue'
 import { useThemeStore } from '@/features/theme/model/themeStore'
 import { useLearningStore } from '@/shared/model/learningStore'
-import { badgeDefinitions } from '../../packages/content/src'
+import { badgeDefinitions } from '../../packages/content/src/badges'
 import BadgeCelebration from '@/shared/ui/BadgeCelebration.vue'
 
 const { t } = useI18n()
@@ -38,9 +38,20 @@ const themeIcons = { system: Monitor, light: Sun, dark: Moon }
 const menuOpen = ref(false)
 const guideOpen = ref(false)
 const QuickGuide = defineAsyncComponent(() => import('@/shared/ui/QuickGuide.vue'))
-function openGuide() {
+let guideTrigger: HTMLElement | null = null
+function openGuide(event?: Event) {
+  guideTrigger = menuOpen.value
+    ? menuButton.value
+    : event?.currentTarget instanceof HTMLElement
+      ? event.currentTarget
+      : (document.activeElement as HTMLElement)
   closeMenu(menuOpen.value)
   guideOpen.value = true
+}
+async function closeGuide() {
+  guideOpen.value = false
+  await nextTick()
+  if (guideTrigger?.isConnected) guideTrigger.focus({ preventScroll: true })
 }
 provide('openQuickGuide', openGuide)
 const header = ref<HTMLElement | null>(null)
@@ -228,7 +239,7 @@ watch(
         <component :is="Component" :key="activeRoute.fullPath" />
       </RouterView>
     </main>
-    <QuickGuide v-if="guideOpen" @close="guideOpen = false" />
+    <QuickGuide v-if="guideOpen" @close="closeGuide" />
 
     <footer class="site-footer">
       <span class="footer-mark" aria-hidden="true">{ }</span>

@@ -14,5 +14,12 @@ export default defineConfig(({ command, isPreview }) => ({
   test: {
     environment: 'jsdom',
     include: ['src/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/domain/**/*.ts'],
+      exclude: ['src/domain/**/*.test.ts'],
+      reporter: ['text', 'json-summary', 'html'],
+      thresholds: { lines: 90, statements: 90, functions: 90, branches: 90 },
+    },
   },
 }))

@@ -4,10 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { ArrowDown, ArrowRight, Check, CodeXml, FlaskConical, Sparkles } from '@lucide/vue'
 import { useLearningStore } from '@/shared/model/learningStore'
-import { challenges, lessons } from '../../../packages/content/src'
+import { challenges } from '../../../packages/content/src/challenges'
 import { catalogCount } from '../../../packages/content/src/curriculumIds'
-import { propertyIds, additionalTheoryIds } from '../../../packages/content/src/propertyProgress'
-import { dailyIndex, localDate } from '@/domain/challenges'
+import { propertyIds } from '../../../packages/content/src/propertyProgress'
+import { dailyIndex, localDate } from '@/domain/calendar'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
 import GameInvitation from '@/shared/ui/GameInvitation.vue'
 
@@ -39,7 +39,7 @@ const resultMessage = computed(() => {
 const learningPaths = [
   {
     title: 'nav.theory',
-    description: `${lessons.length + additionalTheoryIds.length} lecciones con ideas clave, ejemplos editables y autoevaluación.`,
+    description: `100 lecciones con ideas clave, ejemplos editables y autoevaluación.`,
     to: '/teoria',
     icon: CodeXml,
   },
