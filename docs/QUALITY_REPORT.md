@@ -55,3 +55,7 @@ Instalar con pnpm 9.15.9 y el archivo de bloqueo; usar Node indicado en .nvmrc. 
 - Safari real y dispositivos táctiles con tecnologías de asistencia, además del WebKit automatizado.
 
 Estos puntos tienen guion y registro preparados, pero **no se han realizado ni se declara conformidad WCAG completa**. Las funcionalidades P2 y las extensiones opcionales del plan tampoco se convierten en entregadas por terminar los controles técnicos.
+
+## Ampliación visual de teoría
+
+La entrega posterior incorpora diez SVG y demostraciones de caja, responsive y movimiento. Añade una prueba de recursos y cuatro casos de navegador por motor: 61 pruebas unitarias/de componente y 75 casos por navegador en la matriz vigente. Las ocho ejecuciones específicas en Chromium/WebKit y las dos de producción pasan localmente. Ver [alcance y controles](./THEORY_VISUALS.md). La tabla anterior conserva los resultados del cierre técnico base; los nuevos recuentos no se atribuyen a aquella ejecución.

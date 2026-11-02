@@ -86,3 +86,7 @@ axe y Lighthouse no acreditan accesibilidad manual de los ejemplos aislados. El 
 - [ ] PWA y soporte offline garantizado.
 
 Los módulos avanzados previstos para Hito 6 ya se han incorporado. El [plan](./IMPLEMENTATION_PLAN.md) propone el orden del cierre; cuentas, backend, ranking y sincronización en la nube siguen fuera de alcance.
+
+## Ampliación visual de teoría
+
+Diez SVG locales, calculadora de caja, recorrido responsive y animación con curvas y pausa. Reproducción voluntaria y alternativa con movimiento reducido. [Detalles y validación](./THEORY_VISUALS.md). La matriz vigente contiene 61 pruebas unitarias/de componente, 75 casos por navegador y dos de producción.

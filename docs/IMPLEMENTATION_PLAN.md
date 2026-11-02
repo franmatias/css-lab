@@ -87,3 +87,7 @@ Cuentas, backend, sincronización en la nube, ranking global y colaboración en 
 6. Registrar el cierre de v1.0 con evidencias y limitaciones; después seleccionar extensiones.
 
 No se cerrarán los Hitos 2–5 solo por ampliar contenido o tener CI en verde. Registrar responsable, evidencia y fecha para cada pendiente cuando existan.
+
+## Cambio incorporado: teoría visual
+
+Entregados diez esquemas SVG y demostraciones de caja, responsive y movimiento, con controles de pausa y respeto a movimiento reducido. [Detalle de la ampliación](./THEORY_VISUALS.md). Se añaden una prueba de recursos y cuatro casos por navegador a los controles de calidad; las revisiones humanas mantienen su estado pendiente.
