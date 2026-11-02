@@ -91,3 +91,7 @@ No se cerrarán los Hitos 2–5 solo por ampliar contenido o tener CI en verde. 
 ## Cambio incorporado: teoría visual
 
 Entregados diez esquemas SVG y demostraciones de caja, responsive y movimiento, con controles de pausa y respeto a movimiento reducido. [Detalle de la ampliación](./THEORY_VISUALS.md). Se añaden una prueba de recursos y cuatro casos por navegador a los controles de calidad; las revisiones humanas mantienen su estado pendiente.
+
+## Cambio incorporado: experimentos de propiedades
+
+Doce tipos de experimento amplían el modelo de caja: gradientes, posición, transformaciones, fondos, funciones, tipografía, unidades, animación, transición, sombras, Flexbox y Grid. Controles, resultado real, CSS generado, copia y continuación en Laboratorio. [Alcance y validación](./PROPERTY_PLAYGROUNDS.md). Se añaden cinco pruebas de modelo y seis casos por navegador: 66 pruebas unitarias/de componente, 81 casos por navegador y dos de producción.

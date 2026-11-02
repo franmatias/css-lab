@@ -10,6 +10,8 @@ import CollapsibleSidebar from '@/shared/ui/CollapsibleSidebar.vue'
 import { useI18n } from 'vue-i18n'
 import { theoryVisual } from './theoryVisuals'
 import TheoryVisual from './TheoryVisual.vue'
+import { lessonPlaygrounds } from './propertyPlaygrounds'
+const PropertyPlaygrounds = defineAsyncComponent(() => import('./PropertyPlaygrounds.vue'))
 const TheoryDesignExample = defineAsyncComponent(() => import('./TheoryDesignExample.vue'))
 const { t } = useI18n()
 const sidebarOpen = ref(true)
@@ -38,6 +40,7 @@ const router = useRouter()
 const store = useLearningStore()
 const lesson = computed(() => lessons.find((l) => l.id === route.params.slug))
 const visual = computed(() => (lesson.value ? theoryVisual(lesson.value.id) : undefined))
+const playgrounds = computed(() => (lesson.value ? lessonPlaygrounds(lesson.value.id) : []))
 const lessonEntries = computed(() => entries.filter((e) => e.module === lesson.value?.module))
 const answers = ref<Record<number, number>>({})
 const checked = ref(false)
@@ -111,6 +114,12 @@ async function openLab() {
           <li v-for="idea in lesson.ideas" :key="idea">{{ idea }}</li>
         </ul>
         <TheoryVisual v-if="visual" :key="lesson.id" :visual="visual" />
+        <PropertyPlaygrounds
+          v-if="playgrounds.length"
+          :key="lesson.id + '-properties'"
+          :kinds="playgrounds"
+          :lesson-id="lesson.id"
+        />
         <section
           v-for="section in lesson.sections"
           :key="section.title"
