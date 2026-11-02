@@ -56,6 +56,13 @@ La aplicación extiende la base existente de Hitos 0–1. Esta entrega implement
 
 ## Datos y compatibilidad
 
+### Biblioteca ampliada a 100 (noviembre de 2026)
+
+- 100 retos de Propiedades, 100 lecciones de Teoría y 100 fichas de Catálogo. Se conservan todos los IDs anteriores y los nuevos siguen las mismas reglas de progreso, favoritos y XP.
+- 75 lecciones nuevas con categorías y filtros de búsqueda/completado; 64 retos con enlaces directos a su teoría; 49 fichas adicionales en diez categorías nuevas (19 categorías de catálogo en total).
+- El Laboratorio dispone de 15 plantillas: diez incorporaciones con HTML, CSS y selector inicial propios, formateado, vista aislada y deshacer. Incluyen Flexbox, Grid, responsive, formularios, tablas, variables, efectos, details y BEM.
+- Comprobaciones de cardinalidad, unicidad, esquemas y enlaces; soluciones y borradores vacíos de los 100 retos evaluados en Chromium; objetivos reales en todas las fichas nuevas; carga de las diez plantillas y revisión a 320 px.
+
 ### Ampliación de propiedades y efectos (noviembre de 2026)
 
 - Inicio actualizado con seis rutas de aprendizaje, avances de selectores y propiedades y accesos a efectos. Pie institucional: IEZV - Departamento Informática y IAD.

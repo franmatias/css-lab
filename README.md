@@ -85,13 +85,23 @@ La guía rápida se abre desde el icono de libro de la cabecera, el menú móvil
 
 Inicio reúne seis rutas de aprendizaje y accesos directos a sombras, transiciones, transformaciones y animaciones. El pie institucional identifica al IEZV - Departamento Informática y IAD.
 
-`/propiedades` ofrece 36 retos en 12 temas, con búsqueda y filtros de tema/estado. Cada reto presenta objetivo, HTML de solo lectura encima del CSS editable, vista previa lateral, anchos reales de 375/768/1200 px, ajuste visual, pausa/repetición, DOM con selección fija y ayuda. Se guardan los borradores por reto y las primeras resoluciones conceden 60 XP, además del bono diario existente. Progreso integra el nuevo recorrido; las copias antiguas siguen siendo importables.
+`/propiedades` ofrece 100 retos en categorías ampliadas, con búsqueda y filtros de tema/estado. Cada reto presenta objetivo, HTML de solo lectura encima del CSS editable, vista previa lateral, anchos reales de 375/768/1200 px, ajuste visual, pausa/repetición, DOM con selección fija y ayuda. Se guardan los borradores por reto y las primeras resoluciones conceden 60 XP, además del bono diario existente. Progreso integra el nuevo recorrido; las copias antiguas siguen siendo importables.
 
 El comprobador compara los estilos computados del navegador con una referencia, en dos documentos temporales sin scripts y con igual viewport de 768 px. Acepta abreviaturas y valores equivalentes y considera la cascada, todos los elementos objetivo y los pseudoelementos solicitados. El ejercicio de fotogramas comprueba además sus extremos. No evalúa automáticamente la calidad estética ni toda la accesibilidad del diseño. Los documentos de evaluación se eliminan al terminar; la vista visible conserva su sandbox vacío. No se permiten recursos externos en estos retos.
 
-La teoría reúne ahora 25 lecciones. `/teoria/m17`–`/teoria/m24` añaden modelo de caja, tipografía/color/fondos, posicionamiento/capas, sombras/transparencias, transiciones, transformaciones, animaciones e imágenes/desbordamiento/accesibilidad. Cada una tiene ideas en lista, tres apartados, ejemplo editable, tres preguntas y enlaces de práctica y referencia. El agregador `packages/content/src/theory.ts` se carga en las rutas de aprendizaje para mantener ligero el arranque. Los temas anteriores conservan sus identificadores y completados.
+La teoría reúne ahora 100 lecciones. `/teoria/m17`–`/teoria/m24` añaden modelo de caja, tipografía/color/fondos, posicionamiento/capas, sombras/transparencias, transiciones, transformaciones, animaciones e imágenes/desbordamiento/accesibilidad. Cada una tiene ideas en lista, tres apartados, ejemplo editable, tres preguntas y enlaces de práctica y referencia. El agregador `packages/content/src/theory.ts` se carga en las rutas de aprendizaje para mantener ligero el arranque. Los temas anteriores conservan sus identificadores y completados.
 
 ## Publicación
+
+## Biblioteca de 100 contenidos por apartado
+
+La ruta de Teoría suma 100 lecciones (`m0`–`m99`) con filtros por categoría, búsqueda sin distinción de acentos y estado de finalización. Las 75 incorporaciones incluyen texto y lectura, medidas, propiedades lógicas, fondos, imágenes, desbordamiento, Flexbox y Grid avanzados, alineación, capas, controles, transformaciones 3D, preferencias, consultas de contenedor, subgrid, capas de cascada e impresión. Cada lección nueva contiene cinco ideas, tres apartados, ejemplo editable y preguntas; los identificadores y completados anteriores se conservan.
+
+Propiedades suma 100 retos en categorías ampliadas. Sus 64 incorporaciones enlazan con una lección concreta y mantienen comprobación de estilos computados, borradores individuales y 60 XP por primera resolución. El catálogo suma 100 fichas en 19 categorías: las 49 nuevas trabajan navegación, tablas, controles, accesibilidad, posiciones filtradas, relaciones lógicas, atributos, semántica y patrones combinados. Se preservan favoritos y direcciones de las 51 fichas anteriores. Las bibliotecas ampliadas se cargan en sus rutas, sin incorporar todos sus cuerpos al arranque.
+
+El selector de plantillas del Laboratorio reúne 15 ejemplos: los cinco anteriores y diez nuevos con HTML, CSS y selector inicial propios. Añade tarjetas Flexbox, galería Grid, menú responsive, página con áreas, formulario con estados, tabla con franjas, variables y temas locales, tarjeta con movimiento reducido, preguntas con details/summary y planes con BEM. Cargar una plantilla se puede deshacer y el cambio conserva el formateado y aislamiento habituales.
+
+## Publicación en Pages
 
 `.github/workflows/deploy.yml` comprueba cada pull request y publica automáticamente al hacer push a `main`. En GitHub, configura **Settings → Pages → Build and deployment → Source: GitHub Actions**. La URL prevista es <https://franmatias.github.io/css-lab/>.
 
