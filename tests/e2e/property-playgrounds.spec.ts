@@ -112,13 +112,15 @@ test('unit and function explanations match computed widths and the actual iframe
   await expect(lab.locator('iframe')).toHaveJSProperty('clientWidth', 600)
   await expect(scene(page).locator('.muestra')).toHaveCSS('font-size', '24px')
   await lab.getByRole('slider', { name: /Viewport del experimento/ }).fill('1024')
+  await expect(lab.locator('iframe')).toHaveJSProperty('clientWidth', 1024)
+  // Compare within 0.05 CSS px: engines round fractional fluid font sizes differently.
   await expect
     .poll(() =>
       scene(page)
         .locator('.muestra')
         .evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
     )
-    .toBeCloseTo(40.96, 3)
+    .toBeCloseTo(40.96, 1)
 })
 
 test('animation can pause and finish and transitions have an explicit state control with reduced motion support', async ({

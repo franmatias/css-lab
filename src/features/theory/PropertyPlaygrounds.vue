@@ -509,3 +509,9 @@ async function openLab() {
   }
 }
 </style>
+
+<style>
+.property-generated-editor .cm-editor {
+  min-height: 0 !important;
+}
+</style>

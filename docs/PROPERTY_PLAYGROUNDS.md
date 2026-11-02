@@ -23,7 +23,7 @@ Cada experimento tiene un objetivo, controles con valores visibles, resultado, C
 
 Los ajustes se conservan al cambiar entre experimentos de una misma lección mientras sigue abierta. Son una exploración temporal: no completan actividades ni modifican XP o borradores del editor. La restauración afecta solo al experimento actual.
 
-El modo de ajuste muestra el viewport real y permite desactivar la escala para examinar medidas a tamaño 1:1. Los ejemplos de funciones y unidades calculan sus explicaciones a partir de esas mismas referencias. Las diferencias mínimas de serialización decimal de los motores se comprueban con tolerancia numérica de milésimas de píxel.
+El modo de ajuste muestra el viewport real y permite desactivar la escala para examinar medidas a tamaño 1:1. Los ejemplos de funciones y unidades calculan sus explicaciones a partir de esas mismas referencias. Las diferencias mínimas de serialización decimal de los motores se comprueban con tolerancia numérica inferior a 0,05 píxeles en el tamaño de fuente fluido, conservando la comprobación del viewport real.
 
 ## Casos que se explican explícitamente
 
