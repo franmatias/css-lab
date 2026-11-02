@@ -71,6 +71,7 @@ function selectNode(key: number) {
 }
 const learning = useLearningStore()
 const template = ref('')
+import { extraLabTemplates } from './model/extraLabTemplates'
 const history = ref<string[]>([])
 const future = ref<string[]>([])
 let changingHistory = false
@@ -97,6 +98,8 @@ function undoRedo(direction: 'undo' | 'redo') {
   editorRevision.value++
 }
 async function loadTemplate() {
+  const selectedTemplate = template.value
+  const extraTemplate = extraLabTemplates.find((item) => item.id === selectedTemplate)
   const templates: Record<string, string> = {
     lista: '<ul class="menu"><li>Inicio</li><li>Más<ul><li>Submenú</li></ul></li></ul>',
     formulario:
@@ -108,18 +111,20 @@ async function loadTemplate() {
     navegacion:
       '<nav aria-label="Ejemplo"><a href="#inicio">Inicio</a><a class="activo" href="#guia">Guía</a><a href="#ayuda">Ayuda</a></nav>',
   }
-  const html = templates[template.value]
+  const html = extraTemplate?.html ?? templates[selectedTemplate]
   if (html) {
     const css =
+      extraTemplate?.css ??
       'body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; line-height: 1.6; color: #24233a; }\nbutton { padding: 8px 16px; border: 0; border-radius: 8px; background: #4f46e5; color: white; }\nli, td, th { padding: 8px; }\na { display: inline-block; margin: 8px; color: #4f46e5; }'
     const [formattedHtml, formattedCss] = await Promise.all([
       formatCode(html, 'html', preferences.value),
       formatCode(css, 'css', preferences.value),
     ])
+    if (template.value !== selectedTemplate) return
     store.replaceDraft({
       html: formattedHtml,
       css: formattedCss,
-      selector: '*',
+      selector: extraTemplate?.selector ?? '*',
     })
     editorRevision.value++
   }
@@ -395,6 +400,9 @@ function movePanel(direction: number): void {
           <option value="tabla">Tabla</option>
           <option value="tarjeta">Tarjeta</option>
           <option value="navegacion">Navegación</option>
+          <option v-for="example in extraLabTemplates" :key="example.id" :value="example.id">
+            {{ example.name }}
+          </option>
         </select></label
       >
       <button class="button button-secondary" :disabled="!history.length" @click="undoRedo('undo')">

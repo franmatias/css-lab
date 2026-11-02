@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { ArrowDown, ArrowRight, Check, CodeXml, FlaskConical, Sparkles } from '@lucide/vue'
 import { useLearningStore } from '@/shared/model/learningStore'
-import { challenges, lessons, entries } from '../../../packages/content/src'
+import { challenges, lessons } from '../../../packages/content/src'
+import { catalogCount } from '../../../packages/content/src/curriculumIds'
 import { propertyIds, additionalTheoryIds } from '../../../packages/content/src/propertyProgress'
 import { dailyIndex, localDate } from '@/domain/challenges'
 import WelcomeTour from '@/shared/ui/WelcomeTour.vue'
@@ -44,7 +45,7 @@ const learningPaths = [
   },
   {
     title: 'nav.catalog',
-    description: `${entries.length} selectores para encontrar exactamente lo que quieres cambiar.`,
+    description: `${catalogCount} fichas de selectores y cascada para encontrar exactamente lo que quieres cambiar.`,
     to: '/catalogo',
     icon: Sparkles,
   },

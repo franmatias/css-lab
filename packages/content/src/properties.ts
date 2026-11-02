@@ -1,3 +1,4 @@
+import { expandedPropertyExercises } from './expandedCurriculum'
 export interface PropertyExercise {
   id: string
   title: string
@@ -456,4 +457,5 @@ export const propertyExercises: PropertyExercise[] = seeds.map(
     }
   },
 )
+propertyExercises.push(...expandedPropertyExercises)
 export const propertyCategories = [...new Set(propertyExercises.map((item) => item.category))]

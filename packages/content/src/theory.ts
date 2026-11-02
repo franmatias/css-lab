@@ -1,4 +1,5 @@
 import { lessons as foundationLessons } from './index'
+import { expandedLessons } from './expandedCurriculum'
 import { theoryLessonSchema, type TheoryLesson } from './practicalTheory'
 const html =
   '<main class="escena"><article class="tarjeta"><span class="etiqueta">CSS en acción</span><h1>Diseña con intención</h1><p>Una tarjeta accesible, legible y adaptable.</p><button type="button">Explorar</button></article></main>'
@@ -613,4 +614,19 @@ export const additionalLessons = topics.map((topic, index) =>
   }),
 )
 // Keep the additional lesson bodies in the lazy learning routes.
-export const lessons: TheoryLesson[] = [...foundationLessons, ...additionalLessons]
+export const lessons: TheoryLesson[] = [
+  ...foundationLessons,
+  ...additionalLessons,
+  ...expandedLessons,
+]
+export function theoryCategory(lesson: TheoryLesson): string {
+  return (
+    lesson.category ??
+    (lesson.module < 10
+      ? 'Selectores y cascada'
+      : lesson.module < 17
+        ? 'Componentes y diseño'
+        : 'Fundamentos y efectos')
+  )
+}
+export const theoryCategories = [...new Set(lessons.map(theoryCategory))]

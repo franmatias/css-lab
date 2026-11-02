@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { entries, moduleNames } from '../../../packages/content/src'
+import { entries, moduleNames } from '../../../packages/content/src/catalog'
 import { useLearningStore } from '@/shared/model/learningStore'
 import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import { useI18n } from 'vue-i18n'
@@ -34,7 +34,7 @@ watch(
 )
 </script>
 <template>
-  <section class="learning-page">
+  <section class="learning-page catalog-page">
     <p class="eyebrow">Tu referencia de bolsillo</p>
     <h1 id="page-title" tabindex="-1">{{ entry?.name ?? 'Catálogo' }}</h1>
     <RouterLink class="text-link" to="/ejemplos">{{ t('examples.discover') }}</RouterLink>
@@ -76,7 +76,8 @@ watch(
     </template>
     <template v-else>
       <p class="section-intro">
-        46 selectores y 5 conceptos de cascada. Busca, prueba y guarda los que más utilices.
+        {{ entries.length }} fichas en {{ moduleNames.length - 1 }} categorías. Busca, prueba y
+        guarda los selectores y conceptos que más utilices.
       </p>
       <div class="filter-bar">
         <label
@@ -129,3 +130,21 @@ watch(
     </template>
   </section>
 </template>
+<style>
+.catalog-grid article {
+  min-width: 0;
+}
+.catalog-grid code,
+.catalog-detail h2 code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.catalog-page .filter-bar > label {
+  min-width: 0;
+}
+.catalog-page .filter-bar select,
+.catalog-page .filter-bar input {
+  min-width: 0;
+  max-width: 100%;
+}
+</style>
