@@ -1,3 +1,4 @@
+import { curriculumSlugs } from './curriculumIds'
 export const propertyIds = [
   'color-texto',
   'color-fondo',
@@ -35,5 +36,6 @@ export const propertyIds = [
   'animacion-pulso',
   'animacion-alterna',
   'fotogramas',
+  ...curriculumSlugs.slice(0, 64).map((slug) => 'prop-' + slug),
 ] as const
-export const additionalTheoryIds = ['m17', 'm18', 'm19', 'm20', 'm21', 'm22', 'm23', 'm24'] as const
+export const additionalTheoryIds = Array.from({ length: 83 }, (_, index) => 'm' + (17 + index))

@@ -68,14 +68,14 @@ test('properties catalog, editor, persistent completion, DOM selection and respo
 }) => {
   await page.setViewportSize({ width: 1600, height: 1100 })
   await page.goto('/propiedades')
-  await expect(page.locator('.property-card')).toHaveCount(36)
+  await expect(page.locator('.property-card')).toHaveCount(100)
   await page
     .getByRole('combobox', { name: 'Tema', exact: true })
     .selectOption('Sombras y transparencia')
   await expect(page.locator('.property-card')).toHaveCount(3)
   await page.getByRole('combobox', { name: 'Tema', exact: true }).selectOption('')
-  await page.getByRole('searchbox', { name: 'Buscar propiedades' }).fill('margen')
-  await page.locator('.property-card').click()
+  await page.getByRole('searchbox', { name: 'Buscar propiedades' }).fill('Margen exterior')
+  await page.getByRole('link', { name: /Modelo de caja Margen exterior/ }).click()
   const source = page.getByRole('textbox', { name: 'HTML del ejemplo', exact: true })
   await expect(source).toHaveAttribute('aria-readonly', 'true')
   const editor = page.getByRole('textbox', { name: 'Tu CSS', exact: true })
@@ -110,7 +110,7 @@ test('properties catalog, editor, persistent completion, DOM selection and respo
   await expect(editor).toContainText('margin: 24px')
   await expect(page.getByText('✓ Conquistado')).toBeVisible()
   await page.goto('/progreso')
-  await expect(page.locator('.property-progress-card')).toContainText('1 / 36')
+  await expect(page.locator('.property-progress-card')).toContainText('1 / 100')
   await expect(page.locator('.progress-xp .stat-number')).toHaveText('70')
 })
 
@@ -150,7 +150,7 @@ test('eight new theory lessons have experiments and quizzes and maintain complet
     ).toBeDisabled()
   }
   await page.goto('/progreso')
-  await expect(page.locator('.stats-grid')).toContainText('8/25')
+  await expect(page.locator('.stats-grid')).toContainText('8/100')
   await expect(page.locator('.progress-xp .stat-number')).toHaveText('330')
 })
 
@@ -171,7 +171,7 @@ test('home, footer and properties are accessible in both themes and at narrow wi
     .getByRole('navigation', { name: 'Menú responsive' })
     .getByRole('link', { name: 'Propiedades', exact: true })
     .click()
-  await expect(page.locator('.property-card')).toHaveCount(36)
+  await expect(page.locator('.property-card')).toHaveCount(100)
   for (const url of ['/propiedades', '/propiedades/transicion-color', '/teoria/m23']) {
     await page.goto(url)
     await expect(page.locator('h1')).toBeVisible()

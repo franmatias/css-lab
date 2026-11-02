@@ -4,6 +4,7 @@ export const theoryLessonSchema = z.object({
   id: z.string(),
   module: z.number().int().nonnegative(),
   name: z.string(),
+  category: z.string().optional(),
   minutes: z.number().int().positive(),
   objective: z.string(),
   explanation: z.string(),

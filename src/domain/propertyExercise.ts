@@ -42,7 +42,7 @@ export async function checkProperty(
       answer +
       '\n* { animation-play-state: paused !important; }'
     ).replace(/</g, '\\3C ')
-    frame.srcdoc = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'"><style>${safeCss}</style></head><body>${sanitizeLabHtml(exercise.html)}</body></html>`
+    frame.srcdoc = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'"><style>${safeCss}</style></head><body>${sanitizeLabHtml(exercise.html)}</body></html>`
     document.body.append(frame)
     return loaded
   }

@@ -2,7 +2,7 @@
 import { computed, ref, watch, defineAsyncComponent } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { entries } from '../../../packages/content/src'
-import { lessons } from '../../../packages/content/src/theory'
+import { lessons, theoryCategories, theoryCategory } from '../../../packages/content/src/theory'
 import { useLearningStore } from '@/shared/model/learningStore'
 import SelectorDemo from '@/shared/ui/SelectorDemo.vue'
 import CascadeInspector from '@/shared/ui/CascadeInspector.vue'
@@ -11,6 +11,25 @@ import { useI18n } from 'vue-i18n'
 const TheoryDesignExample = defineAsyncComponent(() => import('./TheoryDesignExample.vue'))
 const { t } = useI18n()
 const sidebarOpen = ref(true)
+const search = ref('')
+const category = ref('')
+const completion = ref('')
+const normalize = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+const filteredLessons = computed(() =>
+  lessons.filter(
+    (item) =>
+      (!category.value || theoryCategory(item) === category.value) &&
+      normalize(item.name + ' ' + item.objective + ' ' + theoryCategory(item)).includes(
+        normalize(search.value),
+      ) &&
+      (!completion.value ||
+        (completion.value === 'completed') === Boolean(store.data.lessons[item.id])),
+  ),
+)
 import { encodeSharedLabDraft } from '@/features/lab/model/shareLabDraft'
 const route = useRoute()
 const router = useRouter()
@@ -44,10 +63,30 @@ async function openLab() {
       {{ lessons.length }} lecciones abiertas: selectores, propiedades, componentes y movimiento.
       Sigue la ruta recomendada o elige lo que quieras repasar.
     </p>
+    <form class="filter-bar theory-filters" @submit.prevent>
+      <label
+        >Buscar lecciones<input
+          v-model="search"
+          type="search"
+          placeholder="Tipografía, Grid, imágenes…" /></label
+      ><label
+        >Categoría de teoría<select v-model="category">
+          <option value="">Todas las categorías</option>
+          <option v-for="name in theoryCategories" :key="name">{{ name }}</option>
+        </select></label
+      ><label
+        >Estado de la lección<select v-model="completion">
+          <option value="">Todas las lecciones</option>
+          <option value="pending">Por completar</option>
+          <option value="completed">Completadas</option>
+        </select></label
+      >
+    </form>
+    <p role="status">{{ filteredLessons.length }} lecciones encontradas</p>
     <div class="learning-layout" :class="{ 'sidebar-collapsed': !sidebarOpen }">
       <CollapsibleSidebar v-model="sidebarOpen" class="learning-sidebar" :title="t('panels.map')">
         <RouterLink
-          v-for="item in lessons"
+          v-for="item in filteredLessons"
           :key="item.id"
           :to="`/teoria/${item.id}`"
           :class="{ selected: lesson?.id === item.id }"
@@ -151,12 +190,13 @@ async function openLab() {
       </article>
       <div v-else class="learning-grid">
         <RouterLink
-          v-for="item in lessons"
+          v-for="item in filteredLessons"
           :key="item.id"
           class="learning-card module-card"
           :to="`/teoria/${item.id}`"
         >
           <span class="eyebrow">{{ item.id.toUpperCase() }} · {{ item.minutes }} min</span>
+          <span class="theory-category">{{ theoryCategory(item) }}</span>
           <h2>{{ item.name }}</h2>
           <p>{{ item.objective }}</p>
           <span class="text-link">{{
@@ -164,10 +204,24 @@ async function openLab() {
           }}</span>
         </RouterLink>
       </div>
+      <p v-if="!lesson && !filteredLessons.length">
+        No hay lecciones con estos filtros. Prueba otra búsqueda o categoría.
+      </p>
     </div>
   </section>
 </template>
 <style>
+.theory-category {
+  display: block;
+  color: var(--primary);
+  font-size: 0.8rem;
+}
+.theory-filters {
+  flex-wrap: wrap;
+}
+.theory-filters label {
+  min-width: 0;
+}
 .theory-explanation-section {
   margin-block: 1.6rem;
 }

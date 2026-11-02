@@ -10,7 +10,7 @@ export type { GameLevel } from './game'
 
 export const entrySchema = z.object({
   id: z.string(),
-  module: z.number().int().min(1).max(9),
+  module: z.number().int().min(1).max(19),
   name: z.string(),
   syntax: z.string(),
   description: z.string(),

@@ -47,6 +47,7 @@ test('theory quiz, catalogue search and favourites work together', async ({ page
   await page.getByRole('button', { name: 'Completar lección' }).click()
   await expect(page.getByRole('button', { name: 'Lección completada' })).toBeDisabled()
   await page.goto('/catalogo')
+  await page.getByRole('combobox', { name: 'Categoría', exact: true }).selectOption('7')
   await page.getByRole('searchbox', { name: 'Buscar una ficha' }).fill(':has')
   await expect(page.locator('.catalog-grid article')).toHaveCount(1)
   await page.getByRole('button', { name: /Favorito:/ }).click()
