@@ -72,9 +72,20 @@ test('position, transforms and shadow controls affect real geometry and computed
   await expect(lab.locator('.property-playground-observation')).toContainText('los ignora')
   await page.goto('/teoria/m22')
   lab = panel(page)
+  const neighborTop = await scene(page)
+    .locator('.vecino')
+    .evaluate((el) => el.getBoundingClientRect().top)
   await lab.getByRole('slider', { name: /^Giro/ }).fill('30')
   await expect(lab.getByRole('textbox', { name: /^CSS generado:/ })).toContainText('rotate(30deg)')
   await expect(scene(page).locator('.muestra')).not.toHaveCSS('transform', 'none')
+  await expect(scene(page).locator('.muestra')).toHaveCSS('position', 'static')
+  await expect
+    .poll(() =>
+      scene(page)
+        .locator('.vecino')
+        .evaluate((el) => el.getBoundingClientRect().top),
+    )
+    .toBe(neighborTop)
   await page.goto('/teoria/m20')
   lab = panel(page)
   await lab.getByRole('slider', { name: /Opacidad del elemento/ }).fill('0.5')

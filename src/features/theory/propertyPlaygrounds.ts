@@ -312,9 +312,9 @@ export function buildPlayground(kind: PlaygroundKind, input: PlaygroundValues, p
       break
     case 'transform':
       html =
-        '<div class="lienzo"><div class="origen">Hueco original</div><div class="muestra">CSS</div></div>'
+        '<div class="lienzo"><div class="origen">Hueco original</div><div class="muestra">CSS</div><p class="vecino">Este bloque mantiene su sitio.</p></div>'
       baseCss =
-        '.lienzo { position: relative; height: 300px; } .origen, .muestra { position: absolute; left: calc(50% - 60px); top: 90px; width: 120px; height: 100px; display: grid; place-items: center; } .origen { border: 2px dashed #64748b; font-size: 12px; } .muestra { background: #c7d2fe; border: 2px solid #4338ca; font-size: 24px; }'
+        '.lienzo { position: relative; min-height: 300px; padding-top: 90px; } .origen, .muestra { width: 120px; height: 100px; display: grid; place-items: center; } .origen { position: absolute; left: calc(50% - 60px); top: 90px; border: 2px dashed #64748b; font-size: 12px; } .muestra { margin-inline: auto; background: #c7d2fe; border: 2px solid #4338ca; font-size: 24px; } .vecino { margin-top: 16px; text-align: center; }'
       css = rule('.muestra', [
         `transform: translate(${v.x}px, ${v.y}px) rotate(${v.angle}deg) scale(${v.scale})`,
         `transform-origin: ${v.origin}`,
