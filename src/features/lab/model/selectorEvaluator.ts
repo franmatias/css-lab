@@ -99,6 +99,7 @@ export interface PreviewOptions {
   changedIds?: number[]
   inspectedId?: number | null
   inspectedSelector?: string
+  inspectionToken?: string
 }
 
 export function createPreviewDocument(
@@ -108,6 +109,9 @@ export function createPreviewDocument(
 ): string {
   const document = new DOMParser().parseFromString(evaluation.sanitizedHtml, 'text/html')
   const elements = Array.from(document.querySelectorAll('*'))
+
+  if (options.inspectionToken)
+    elements.forEach((element, index) => element.setAttribute('data-csslab-node', String(index)))
 
   evaluation.matchedElementIds.forEach((id) => {
     const element = elements[id]
@@ -155,7 +159,13 @@ export function createPreviewDocument(
   const background = options.background === 'dark' ? '#111827' : '#ffffff'
   const baseCss = `html { min-height: 100%; background: ${background}; ${options.background === 'checker' ? 'background-image: conic-gradient(#e5e7eb 25%, transparent 0 50%, #e5e7eb 0 75%, transparent 0); background-size: 20px 20px;' : ''} } body { margin: 0; padding: 20px; min-height: 100vh; box-sizing: border-box; font: 16px/1.6 system-ui, sans-serif; color: ${options.background === 'dark' ? '#f3f4f6' : '#1a1b2e'}; } *, *::before, *::after { box-sizing: border-box; } ${options.grid ? '* { outline: 1px dotted rgb(100 116 139 / 55%); outline-offset: -1px; }' : ''}`
   const internalAttributes = (element: Element) =>
-    ['data-csslab-match', 'data-csslab-changed', 'data-csslab-inspect', 'data-csslab-label']
+    [
+      'data-csslab-match',
+      'data-csslab-changed',
+      'data-csslab-inspect',
+      'data-csslab-label',
+      'data-csslab-node',
+    ]
       .filter((name) => element.hasAttribute(name))
       .map((name) => ` ${name}="${element.getAttribute(name)}"`)
       .join('')
@@ -171,7 +181,17 @@ export function createPreviewDocument(
     caption.textContent = options.inspectedSelector
     document.body.appendChild(caption)
   }
-  return `<!doctype html><html lang="es"${internalAttributes(document.documentElement)}><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; form-action 'none'; base-uri 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${baseCss}\n${escapedCss}\n${darkCss}\n${highlightCss}</style></head><body${internalAttributes(document.body)}>${document.body.innerHTML}</body></html>`
+  const inspectorUrl = options.inspectionToken
+    ? new URL(`${import.meta.env.BASE_URL}preview-inspector.js`, window.location.origin).href
+    : ''
+  const inspectorMeta = options.inspectionToken
+    ? `<meta name="csslab-inspection-token" content="${options.inspectionToken}">`
+    : ''
+  const inspectorScript = inspectorUrl ? `<script src="${inspectorUrl}"></script>` : ''
+  // Student HTML is sanitized and student CSS has every '<' escaped. The opaque sandbox can load
+  // only this audited same-deployment bridge and still cannot read the application origin.
+  const scriptPolicy = inspectorUrl ? `; script-src ${window.location.origin}` : ''
+  return `<!doctype html><html lang="es"${internalAttributes(document.documentElement)}><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; form-action 'none'; base-uri 'none'${scriptPolicy}">${inspectorMeta}<meta name="viewport" content="width=device-width, initial-scale=1"><style>${baseCss}\n${escapedCss}\n${darkCss}\n${highlightCss}</style></head><body${internalAttributes(document.body)}>${document.body.innerHTML}${inspectorScript}</body></html>`
 }
 
 export const defaultLabDraft: LabDraft = { ...DEFAULT_LAB_DRAFT }

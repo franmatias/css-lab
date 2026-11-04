@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useEventListener } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { RotateCcw, Share2, ShieldCheck } from '@lucide/vue'
@@ -16,6 +17,7 @@ import { useLearningStore } from '@/shared/model/learningStore'
 import { readLabPreferences, writeLabPreferences } from '@/infrastructure/storage/appStorage'
 import { formatCode } from './model/formatCode'
 import { detectPreviewChanges, type PreviewChanges } from './model/previewChanges'
+import { diagnoseCss } from './model/cssDiagnostics'
 
 type LabPanel = 'html' | 'css' | 'preview'
 
@@ -25,18 +27,55 @@ const router = useRouter()
 const store = useLabStore()
 const preferences = ref(readLabPreferences())
 const panelColumns = computed(() => {
-  const weights =
-    preferences.value.layout === 'code'
-      ? ['1.3fr', '1.3fr', '1fr']
-      : preferences.value.layout === 'preview'
-        ? ['.8fr', '.8fr', '1.6fr']
-        : ['1fr', '1fr', '1.18fr']
+  const sizes = preferences.value.panelSizes
   return {
-    '--html-column': preferences.value.collapsed.html ? '54px' : weights[0],
-    '--css-column': preferences.value.collapsed.css ? '54px' : weights[1],
-    '--preview-column': preferences.value.collapsed.preview ? '54px' : weights[2],
+    '--html-column': preferences.value.collapsed.html ? '54px' : `${sizes[0]}fr`,
+    '--css-column': preferences.value.collapsed.css ? '54px' : `${sizes[1]}fr`,
+    '--preview-column': preferences.value.collapsed.preview ? '54px' : `${sizes[2]}fr`,
   }
 })
+const workbench = ref<HTMLElement | null>(null)
+function setLayoutSizes() {
+  preferences.value.panelSizes =
+    preferences.value.layout === 'code'
+      ? [38, 38, 24]
+      : preferences.value.layout === 'preview'
+        ? [24, 24, 52]
+        : [32, 32, 36]
+}
+function adjustDivider(index: 0 | 1, delta: number) {
+  const next = [...preferences.value.panelSizes] as [number, number, number]
+  if (next[index] + delta < 15 || next[index + 1] - delta < 15) return
+  next[index] += delta
+  next[index + 1] -= delta
+  preferences.value.panelSizes = next
+  preferences.value.layout = 'balanced'
+}
+function startResize(index: 0 | 1, event: PointerEvent) {
+  if (!workbench.value || window.matchMedia('(max-width: 1100px)').matches) return
+  const start = event.clientX
+  const width = workbench.value.getBoundingClientRect().width
+  const initial = [...preferences.value.panelSizes] as [number, number, number]
+  const target = event.currentTarget as HTMLElement
+  target.setPointerCapture(event.pointerId)
+  const move = (nextEvent: PointerEvent) => {
+    const delta = ((nextEvent.clientX - start) / width) * 100
+    const bounded = Math.max(15 - initial[index], Math.min(initial[index + 1] - 15, delta))
+    const next = [...initial] as [number, number, number]
+    next[index] += bounded
+    next[index + 1] -= bounded
+    preferences.value.panelSizes = next
+  }
+  const stop = () => {
+    target.removeEventListener('pointermove', move)
+    target.removeEventListener('pointerup', stop)
+    target.removeEventListener('pointercancel', stop)
+    preferences.value.layout = 'balanced'
+  }
+  target.addEventListener('pointermove', move)
+  target.addEventListener('pointerup', stop)
+  target.addEventListener('pointercancel', stop)
+}
 function togglePanel(panel: LabPanel) {
   const collapsed = preferences.value.collapsed
   collapsed[panel] = !collapsed[panel]
@@ -50,6 +89,7 @@ function selectPanel(panel: LabPanel) {
 function restorePanels() {
   preferences.value.collapsed = { html: false, css: false, preview: false, tree: false }
   preferences.value.layout = 'balanced'
+  preferences.value.panelSizes = [32, 32, 36]
   focusPreview.value = false
 }
 const settingsOpen = ref(false)
@@ -148,6 +188,8 @@ const previewCss = ref(draft.value.css)
 const appliedDraft = ref(JSON.stringify(draft.value))
 const changes = ref<PreviewChanges>({ ids: [], added: 0, removed: 0, modified: 0 })
 const previewRevision = ref(0)
+const previewFrame = ref<HTMLIFrameElement | null>(null)
+const inspectionToken = `csslab-${crypto.randomUUID()}`
 const animateUpdate = ref(true)
 const hasPendingChanges = computed(() => JSON.stringify(draft.value) !== appliedDraft.value)
 function refreshPreview() {
@@ -187,8 +229,24 @@ const previewDocument = computed(() =>
     inspectedId: inspectedNode.value,
     inspectedSelector: getDomNodeSelector(previewEvaluation.value, inspectedNode.value),
     animations: preferences.value.animations && animateUpdate.value,
+    inspectionToken,
   }),
 )
+useEventListener(window, 'message', async (event) => {
+  if (
+    !event.data ||
+    event.data.type !== 'csslab-inspect' ||
+    event.data.token !== inspectionToken ||
+    !Number.isInteger(event.data.key)
+  )
+    return
+  selectNode(event.data.key)
+  preferences.value.collapsed.tree = false
+  await nextTick()
+  document.querySelector<HTMLElement>(`[data-node-key="${event.data.key}"]`)?.scrollIntoView({
+    block: 'nearest',
+  })
+})
 const domTree = computed(() => createDomTree(previewEvaluation.value))
 const inspectedSelector = computed(() =>
   getDomNodeSelector(previewEvaluation.value, inspectedNode.value),
@@ -239,6 +297,7 @@ const errorMessage = computed(() => {
   if (!evaluation.value.error) return ''
   return t(`lab.errors.${evaluation.value.error}`)
 })
+const cssDiagnostics = computed(() => diagnoseCss(draft.value.css))
 const specificity = computed(() => {
   const value = evaluation.value.specificity
   return value ? `${value.a}, ${value.b}, ${value.c}` : '—'
@@ -474,7 +533,7 @@ function movePanel(direction: number): void {
       >
       <label
         >{{ t('panels.layout')
-        }}<select v-model="preferences.layout">
+        }}<select v-model="preferences.layout" @change="setLayoutSizes">
           <option value="balanced">{{ t('panels.balanced') }}</option>
           <option value="code">{{ t('panels.code') }}</option>
           <option value="preview">{{ t('panels.preview') }}</option>
@@ -494,7 +553,36 @@ function movePanel(direction: number): void {
       {{ formatMessage }}
     </p>
 
-    <div class="lab-workbench" :class="{ 'lab-focus-preview': focusPreview }" :style="panelColumns">
+    <section
+      v-if="cssDiagnostics.length"
+      class="lab-diagnostics"
+      aria-labelledby="css-diagnostics-title"
+    >
+      <h2 id="css-diagnostics-title">{{ t('lab.diagnostics.title') }}</h2>
+      <ol>
+        <li
+          v-for="item in cssDiagnostics"
+          :key="`${item.line}-${item.column}-${item.message}`"
+          :class="`is-${item.severity}`"
+        >
+          <strong>{{
+            t('lab.diagnostics.location', {
+              line: item.line,
+              column: item.column,
+              message: item.message,
+            })
+          }}</strong>
+          <span>{{ item.suggestion }}</span>
+        </li>
+      </ol>
+    </section>
+
+    <div
+      ref="workbench"
+      class="lab-workbench"
+      :class="{ 'lab-focus-preview': focusPreview }"
+      :style="panelColumns"
+    >
       <div class="lab-mobile-tabs" role="tablist" :aria-label="t('lab.panels')">
         <button
           v-for="panel in panels"
@@ -562,6 +650,24 @@ function movePanel(direction: number): void {
         />
       </section>
 
+      <div
+        class="lab-resizer"
+        role="separator"
+        :aria-label="t('panels.resizeHtmlCss')"
+        aria-orientation="vertical"
+        :aria-valuenow="Math.round(preferences.panelSizes[0])"
+        aria-valuemin="15"
+        aria-valuemax="70"
+        tabindex="0"
+        @pointerdown="startResize(0, $event)"
+        @keydown.left.prevent="adjustDivider(0, -2)"
+        @keydown.right.prevent="adjustDivider(0, 2)"
+        @keydown.home.prevent="adjustDivider(0, 15 - preferences.panelSizes[0])"
+        @keydown.end.prevent="adjustDivider(0, preferences.panelSizes[1] - 15)"
+      >
+        <span aria-hidden="true"></span>
+      </div>
+
       <section
         id="panel-css"
         class="lab-panel"
@@ -605,6 +711,24 @@ function movePanel(direction: number): void {
           @format="formatEditors('css')"
         />
       </section>
+
+      <div
+        class="lab-resizer"
+        role="separator"
+        :aria-label="t('panels.resizeCssPreview')"
+        aria-orientation="vertical"
+        :aria-valuenow="Math.round(preferences.panelSizes[1])"
+        aria-valuemin="15"
+        aria-valuemax="70"
+        tabindex="0"
+        @pointerdown="startResize(1, $event)"
+        @keydown.left.prevent="adjustDivider(1, -2)"
+        @keydown.right.prevent="adjustDivider(1, 2)"
+        @keydown.home.prevent="adjustDivider(1, 15 - preferences.panelSizes[1])"
+        @keydown.end.prevent="adjustDivider(1, preferences.panelSizes[2] - 15)"
+      >
+        <span aria-hidden="true"></span>
+      </div>
 
       <section
         id="panel-preview"
@@ -730,11 +854,12 @@ function movePanel(direction: number): void {
         </div>
         <div class="lab-preview-viewport">
           <iframe
+            ref="previewFrame"
             class="lab-preview-frame"
             :style="{ width: preferences.width === 'auto' ? '100%' : `${preferences.width}px` }"
             :srcdoc="previewDocument"
             :title="t('lab.previewTitle')"
-            sandbox=""
+            sandbox="allow-scripts"
             referrerpolicy="no-referrer"
           />
         </div>
@@ -759,7 +884,7 @@ function movePanel(direction: number): void {
           <div v-show="!preferences.collapsed.tree" id="lab-tree-content">
             <p>
               Pasa por un nodo para destacarlo. Haz clic para fijar la selección y vuelve a pulsarlo
-              para quitarla.
+              para quitarla. También puedes pulsar directamente cualquier elemento de la vista.
             </p>
             <p class="lab-inspected-selector" aria-live="polite">
               <code>{{ inspectedSelector || 'Ningún elemento seleccionado' }}</code

@@ -163,6 +163,10 @@ export const es = {
       'too-many-elements': 'Este ejemplo supera el límite de 120 elementos.',
       'invalid-selector': 'Ese selector no es válido. Revisa la sintaxis y vuelve a probar.',
     },
+    diagnostics: {
+      title: 'Diagnóstico CSS',
+      location: 'Línea {line}, columna {column}: {message}',
+    },
   },
   sections: {
     theory:

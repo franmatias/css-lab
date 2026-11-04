@@ -72,7 +72,15 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Install ${{ matrix.browser }} with retry
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            pnpm exec playwright install --with-deps "${{ matrix.browser }}" && exit 0
+            echo "Browser installation attempt ${attempt} failed; retrying..."
+            sleep 10
+          done
+          exit 1
       - name: WebKit narrow viewport regression
         if: matrix.browser == 'webkit'
         run: pnpm exec playwright test tests/e2e/rewards-studio.spec.ts --project=webkit --grep 'semantica has'

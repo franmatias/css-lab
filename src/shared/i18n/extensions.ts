@@ -1,4 +1,34 @@
 export const extensions = {
+  completion: {
+    close: 'Cerrar felicitación',
+    eyebrow: '¡Objetivo conseguido!',
+    message: 'Cada actividad completada te acerca un paso más a dominar CSS.',
+    points: 'Puntos obtenidos',
+    level: 'Nivel actual',
+    total: 'XP acumulada',
+    badge: 'Nueva insignia',
+    badges: 'Nuevas insignias',
+    continue: 'Continuar aprendiendo',
+  },
+  catalog: {
+    pocket: 'Tu referencia de bolsillo',
+    title: 'Catálogo',
+    allCards: 'Todas las fichas',
+    categoryCards: 'Fichas de esta categoría',
+    difficulty: 'Dificultad',
+    compatibility: 'Compatibilidad',
+    all: 'Todas',
+    basic: 'Básica',
+    intermediate: 'Intermedia',
+    advanced: 'Avanzada',
+    baseline: 'Consolidada',
+    modern: 'Moderna',
+    recent: 'Reciente',
+    favorites: 'Solo favoritos',
+    search: 'Buscar una ficha',
+    category: 'Categoría',
+    commonErrors: 'Errores frecuentes',
+  },
   design: {
     eyebrow: 'De seleccionar elementos a construir interfaces',
     intro:
@@ -58,6 +88,8 @@ export const extensions = {
     code: 'Priorizar código',
     preview: 'Priorizar vista previa',
     restore: 'Restaurar paneles',
+    resizeHtmlCss: 'Redimensionar paneles HTML y CSS',
+    resizeCssPreview: 'Redimensionar paneles CSS y vista previa',
   },
   game: {
     eyebrow: 'Una galaxia. Un selector. Tu siguiente descubrimiento.',

@@ -23,6 +23,11 @@ test('DOM clicks toggle a fixed selection, show its selector and preserve the sa
   await node.click()
   await expect(node).toHaveAttribute('aria-pressed', 'false')
   await expect(preview.locator('.sidebar')).not.toHaveAttribute('data-csslab-inspect')
+  await preview.locator('.sidebar').click()
+  await expect(node).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.lab-inspected-selector')).toContainText('aside.sidebar')
+  await preview.locator('.sidebar').click()
+  await expect(node).toHaveAttribute('aria-pressed', 'false')
   await node.click()
   await page
     .getByRole('textbox', { name: 'HTML del ejercicio', exact: true })
@@ -39,7 +44,23 @@ test('DOM clicks toggle a fixed selection, show its selector and preserve the sa
   const exactSelector = await page.locator('.lab-inspected-selector code').textContent()
   await expect(preview.locator(exactSelector!)).toHaveCount(1)
   await expect(preview.locator(exactSelector!)).toHaveText('Dos')
-  await expect(page.locator('#panel-preview iframe')).toHaveAttribute('sandbox', '')
+  await expect(page.locator('#panel-preview iframe')).toHaveAttribute('sandbox', 'allow-scripts')
+})
+
+test('laboratory dividers resize panels with keyboard and preserve an accessible separator', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1600, height: 1000 })
+  await page.goto('/laboratorio')
+  const divider = page.getByRole('separator', { name: 'Redimensionar paneles HTML y CSS' })
+  const before = Number(await divider.getAttribute('aria-valuenow'))
+  await divider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(divider).toHaveAttribute('aria-valuenow', String(before + 2))
+  await page.reload()
+  await expect(
+    page.getByRole('separator', { name: 'Redimensionar paneles HTML y CSS' }),
+  ).toHaveAttribute('aria-valuenow', String(before + 2))
 })
 
 test('dark preview adapts explicit light surfaces without changing the source', async ({

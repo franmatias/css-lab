@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('theory presents distinct ideas and HTML and selectors use two columns that reflow on mobile', async ({
   page,
@@ -53,6 +54,7 @@ test('every table solution selects the right nodes and handles pointer transitio
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.table-feedback')).toContainText('+100 XP')
   await expect(page.locator('.table-board')).toHaveClass(/is-won/)
+  await dismissCompletion(page)
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.table-feedback')).toContainText('una sola vez')
   await page.reload()
