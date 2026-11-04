@@ -25,6 +25,7 @@ import { useThemeStore } from '@/features/theme/model/themeStore'
 import { useLearningStore } from '@/shared/model/learningStore'
 import { badgeDefinitions } from '../../packages/content/src/badges'
 import BadgeCelebration from '@/shared/ui/BadgeCelebration.vue'
+import CompletionCelebration from '@/shared/ui/CompletionCelebration.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -240,6 +241,13 @@ watch(
       </RouterView>
     </main>
     <QuickGuide v-if="guideOpen" @close="closeGuide" />
+    <CompletionCelebration
+      v-if="learning.celebration"
+      :key="learning.celebration.id"
+      :celebration="learning.celebration"
+      :level="learning.level"
+      @close="learning.celebration = null"
+    />
 
     <footer class="site-footer">
       <span class="footer-mark" aria-hidden="true">{ }</span>

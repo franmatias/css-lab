@@ -41,7 +41,7 @@
 }
 @media (min-width: 1101px) {
   .lab-workbench:not(.lab-focus-preview) {
-    grid-template-columns: var(--html-column, 1fr) var(--css-column, 1fr) var(
+    grid-template-columns: var(--html-column, 1fr) 8px var(--css-column, 1fr) 8px var(
         --preview-column,
         1.18fr
       );
@@ -80,6 +80,33 @@
 .lab-panel {
   resize: none;
   overflow: hidden;
+}
+.lab-resizer {
+  position: relative;
+  min-width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  border-radius: 999px;
+  background: transparent;
+}
+.lab-resizer::before {
+  content: '';
+  position: absolute;
+  inset: 8px 2px;
+  border-radius: inherit;
+  background: var(--border-strong);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+.lab-resizer:hover::before,
+.lab-resizer:focus-visible::before {
+  background: var(--primary);
+  transform: scaleX(1.6);
+}
+.lab-resizer:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 35%, transparent);
+  outline-offset: 2px;
 }
 .lab-editor-shell {
   display: flex;
@@ -214,6 +241,42 @@
 }
 .lab-format-message.is-error {
   border-color: var(--error);
+}
+.lab-diagnostics {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.lab-diagnostics h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+.lab-diagnostics ol {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.lab-diagnostics li {
+  padding-left: 0.25rem;
+}
+.lab-diagnostics li strong,
+.lab-diagnostics li span {
+  display: block;
+}
+.lab-diagnostics li span {
+  margin-top: 0.18rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.lab-diagnostics .is-error::marker {
+  color: var(--error);
+}
+.lab-diagnostics .is-warning::marker {
+  color: #d97706;
 }
 .lab-preview-controls {
   display: grid;
@@ -357,6 +420,11 @@
   }
   .lab-preview-options {
     grid-column: 1 / -1;
+  }
+}
+@media (max-width: 1100px) {
+  .lab-resizer {
+    display: none;
   }
 }
 @media (max-width: 640px) {

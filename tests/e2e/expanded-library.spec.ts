@@ -51,10 +51,22 @@ test('hundred-item libraries filter by new categories and retain new favorites a
 }) => {
   await page.goto('/catalogo')
   await expect(page.locator('.catalog-grid article')).toHaveCount(100)
+  await page.getByRole('combobox', { name: 'Dificultad', exact: true }).selectOption('advanced')
+  await expect(page.locator('.catalog-grid article')).not.toHaveCount(0)
+  await page.getByRole('combobox', { name: 'Dificultad', exact: true }).selectOption('')
+  await page.getByRole('combobox', { name: 'Compatibilidad', exact: true }).selectOption('recent')
+  await expect(page.locator('.catalog-grid article')).not.toHaveCount(0)
+  await page.getByRole('combobox', { name: 'Compatibilidad', exact: true }).selectOption('')
   await page.getByRole('combobox', { name: 'Categoría', exact: true }).selectOption('11')
   await expect(page.locator('.catalog-grid article')).toHaveCount(5)
   await page.getByRole('searchbox', { name: 'Buscar una ficha' }).fill('resumen')
   await expect(page.locator('.catalog-grid article')).toHaveCount(1)
+  await page.getByRole('link', { name: 'Ver en acción →' }).click()
+  await expect(page.getByRole('complementary', { name: 'Fichas de esta categoría' })).toBeVisible()
+  await expect(
+    page.getByRole('complementary', { name: 'Fichas de esta categoría' }).getByRole('link'),
+  ).toHaveCount(5)
+  await page.getByRole('link', { name: 'Todas las fichas' }).click()
   await page.getByRole('button', { name: 'Favorito: Celdas del resumen', exact: true }).click()
   await page.reload()
   await page.getByRole('checkbox', { name: 'Solo favoritos' }).check()

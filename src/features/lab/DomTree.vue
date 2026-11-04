@@ -14,6 +14,7 @@ const { t } = useI18n()
       <button
         type="button"
         class="lab-dom-tree-node"
+        :data-node-key="node.key"
         :class="{
           'lab-dom-tree-match': node.matches,
           'lab-dom-tree-selected': selectedKey === node.key,

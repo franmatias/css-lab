@@ -46,8 +46,8 @@ test('the isolated laboratory highlights matches and keeps a safe local draft', 
 
   const preview = page.frameLocator('iframe[title="Vista previa aislada del ejercicio"]')
   await expect(preview.locator('[data-csslab-match]')).toContainText('Prueba un selector')
-  await expect(preview.locator('script')).toHaveCount(0)
-  await expect(page.locator('iframe')).toHaveAttribute('sandbox', '')
+  await expect(preview.locator('script[src$="preview-inspector.js"]')).toHaveCount(1)
+  await expect(page.locator('iframe')).toHaveAttribute('sandbox', 'allow-scripts')
 
   await selector.fill('main:has(.featured)')
   await expect(page.getByRole('status')).toContainText('1 elementos coinciden')
@@ -56,7 +56,8 @@ test('the isolated laboratory highlights matches and keeps a safe local draft', 
   await page
     .getByRole('textbox', { name: 'CSS del ejercicio' })
     .fill('body::before { content: "</style><script>window.pwned=1</script>"; }')
-  await expect(preview.locator('script')).toHaveCount(0)
+  await expect(preview.locator('script')).toHaveCount(1)
+  await expect(preview.locator('script')).not.toContainText('window.pwned')
 
   await page
     .getByRole('textbox', { name: 'HTML del ejercicio' })
@@ -73,7 +74,7 @@ test('the isolated laboratory highlights matches and keeps a safe local draft', 
     '<article><p id="saved">Guardado</p><script>window.pwned = true</script><img src=x onerror="alert(1)"></article>',
   )
   const safePreview = page.frameLocator('iframe[title="Vista previa aislada del ejercicio"]')
-  await expect(safePreview.locator('script')).toHaveCount(0)
+  await expect(safePreview.locator('script[src$="preview-inspector.js"]')).toHaveCount(1)
   await expect(safePreview.locator('img')).not.toHaveAttribute('onerror', /.+/)
 
   await expect(page.getByText('Árbol del documento')).toBeVisible()

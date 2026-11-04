@@ -18,6 +18,15 @@ import {
   STORAGE_KEY,
 } from '@/infrastructure/storage/appStorage'
 
+export interface LearningCelebration {
+  id: number
+  title: string
+  kind: 'lesson' | 'challenge' | 'property' | 'workshop' | 'game'
+  points: number
+  badgeIds: string[]
+  totalXp: number
+}
+
 function read(): LearningData {
   const raw = readLearningData()
   const parsed = learningSchema.safeParse(raw)
@@ -27,6 +36,7 @@ function read(): LearningData {
 export const useLearningStore = defineStore('learning', () => {
   const data = ref<LearningData>(read())
   const notice = ref('')
+  const celebration = ref<LearningCelebration | null>(null)
   const saveFailed = ref(false)
   const completed = computed(
     () => Object.values(data.value.challenges).filter((c) => c.status === 'completed').length,
@@ -68,10 +78,12 @@ export const useLearningStore = defineStore('learning', () => {
     if (!result) return 0
     result.attempts++
     if (!correct || result.completedAt) return 0
+    const snapshot = completionSnapshot()
     result.completedAt = new Date().toISOString()
     data.value.xp += 60
     markActivity()
     unlockBadges()
+    celebrate('property', 'Reto de propiedades completado', snapshot)
     return 60
   }
   function saveWorkshop(id: string, css: string, answer: string): void {
@@ -99,10 +111,12 @@ export const useLearningStore = defineStore('learning', () => {
     if (!workshopIds.some((known) => known === id)) return 0
     const result = data.value.workshops[id]
     if (!result || result.completedAt) return 0
+    const snapshot = completionSnapshot()
     result.completedAt = new Date().toISOString()
     data.value.xp += 100
     markActivity()
     unlockBadges()
+    celebrate('workshop', 'Taller completado', snapshot)
     return 100
   }
   const level = computed(() =>
@@ -165,16 +179,39 @@ export const useLearningStore = defineStore('learning', () => {
     }
     data.value.activity[today] = (data.value.activity[today] ?? 0) + 1
   }
-  function unlockBadges(): void {
+  function unlockBadges(): string[] {
     const d = data.value
+    const unlocked: string[] = []
     for (const badge of badgeDefinitions) {
       const progress = badgeProgress(badge, d, challenges)
       const achieved = progress.current >= progress.target
       if (achieved && !d.badges[badge.id]) {
         d.badges[badge.id] = new Date().toISOString()
+        unlocked.push(badge.id)
         if (d.settings.celebrations) notice.value = `Insignia conseguida: ${badge.name}`
       }
     }
+    return unlocked
+  }
+  function completionSnapshot() {
+    return { xp: data.value.xp, badgeIds: new Set(Object.keys(data.value.badges)) }
+  }
+  function celebrate(
+    kind: LearningCelebration['kind'],
+    title: string,
+    before: ReturnType<typeof completionSnapshot>,
+  ): void {
+    if (!data.value.settings.celebrations) return
+    const badgeIds = Object.keys(data.value.badges).filter((id) => !before.badgeIds.has(id))
+    celebration.value = {
+      id: Date.now(),
+      title,
+      kind,
+      points: data.value.xp - before.xp,
+      badgeIds,
+      totalXp: data.value.xp,
+    }
+    notice.value = ''
   }
   function flag(name: string): void {
     if (!data.value.flags.includes(name)) data.value.flags.push(name)
@@ -199,6 +236,7 @@ export const useLearningStore = defineStore('learning', () => {
     if (result.status === 'completed') return 0
     result.attempts++
     if (!correct) return 0
+    const snapshot = completionSnapshot()
     const score = visualGameScore(level.level, result.hintsUsed)
     result.status = 'completed'
     result.bestScore = score
@@ -207,6 +245,7 @@ export const useLearningStore = defineStore('learning', () => {
     markActivity()
     if (id === 'galaxia-buho') flag('gameOwl')
     unlockBadges()
+    celebrate('game', `Misión completada: ${level.title}`, snapshot)
     return score
   }
   function explore(name: string): void {
@@ -215,10 +254,12 @@ export const useLearningStore = defineStore('learning', () => {
   }
   function completeLesson(id: string): void {
     if (data.value.lessons[id]) return
+    const snapshot = completionSnapshot()
     data.value.lessons[id] = new Date().toISOString()
     data.value.xp += 40
     markActivity()
     unlockBadges()
+    celebrate('lesson', 'Lección completada', snapshot)
   }
   function resultFor(id: string) {
     return (data.value.challenges[id] ??= {
@@ -249,6 +290,7 @@ export const useLearningStore = defineStore('learning', () => {
     }
     result.attempts++
     if (!correct) return
+    const snapshot = completionSnapshot()
     result.status = 'completed'
     result.completedAt = new Date().toISOString()
     const nextReview = new Date()
@@ -261,6 +303,7 @@ export const useLearningStore = defineStore('learning', () => {
     if (challenge.entryId === 'm7-has') flag('has')
     if (new Date().getHours() < 5) flag('night')
     unlockBadges()
+    celebrate('challenge', `Reto completado: ${challenge.title}`, snapshot)
   }
   function hint(id: string): void {
     const r = resultFor(id)
@@ -311,6 +354,7 @@ export const useLearningStore = defineStore('learning', () => {
   return {
     data,
     notice,
+    celebration,
     saveFailed,
     completed,
     gamesCompleted,

@@ -14,6 +14,9 @@ export const labPreferencesSchema = z.object({
   useTabs: z.boolean().default(false),
   tabWidth: z.union([z.literal(2), z.literal(4)]).default(2),
   layout: z.enum(['balanced', 'code', 'preview']).default('balanced'),
+  panelSizes: z
+    .tuple([z.number().min(15).max(70), z.number().min(15).max(70), z.number().min(15).max(70)])
+    .default([32, 32, 36]),
   collapsed: z
     .object({
       html: z.boolean().default(false),

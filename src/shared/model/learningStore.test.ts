@@ -47,8 +47,14 @@ it('persists workshop drafts, awards XP and badges once and imports older progre
   expect(store.data.xp).toBe(110)
   expect(store.workshopsCompleted).toBe(1)
   expect(store.data.badges['primer-diseno']).toBeDefined()
+  expect(store.celebration).toMatchObject({
+    title: 'Taller completado',
+    points: 110,
+    badgeIds: expect.arrayContaining(['primer-diseno']),
+  })
   store.saveWorkshop('tablas', '/* Otro intento */', '')
   expect(store.completeWorkshop('tablas')).toBe(0)
+  expect(store.celebration?.points).toBe(110)
   expect(store.data.xp).toBe(110)
   expect(store.completeWorkshop('inventado')).toBe(0)
   store.saveWorkshop('inventado', 'body {}', '0')

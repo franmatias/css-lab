@@ -52,13 +52,14 @@ function evaluateSelectorAnswer(challenge: Challenge, answer: string, document: 
     const extra = [...selected].filter((node) => !target.has(node)).length
     const missing = [...target].filter((node) => !selected.has(node)).length
     const correct = extra === 0 && missing === 0
+    const alternative = correct && answer.trim() !== challenge.solution.trim()
     return {
       correct,
       extra,
       missing,
       message: correct
-        ? `¡Eso es! ${challenge.explanation}${challenge.type === 'shortest' ? ` Tu solución tiene ${answer.length} caracteres; la referencia, ${challenge.solution.length}.` : ''}`
-        : `Casi: sobran ${extra} elementos y faltan ${missing}. Revisa la relación entre los nodos.`,
+        ? `¡Eso es! ${alternative ? 'Has encontrado una solución alternativa válida. ' : ''}${challenge.explanation}${challenge.type === 'shortest' ? ` Tu solución tiene ${answer.length} caracteres; la referencia, ${challenge.solution.length}.` : ''}`
+        : `Casi: sobran ${extra} elementos y faltan ${missing}. ${extra ? 'Haz el selector más específico para excluir coincidencias.' : ''} ${missing ? 'Revisa si un combinador o una condición está dejando fuera el objetivo.' : ''}`.trim(),
     }
   } catch {
     return fail(
