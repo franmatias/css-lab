@@ -1,10 +1,10 @@
 # Informe de calidad y validación
 
-Fecha: **2 de noviembre de 2026**. Rama: **feat/quality-validation**. Alcance: cierre técnico de los pendientes P1; los criterios que requieren personas siguen abiertos. [Guiones y hojas de registro](./HUMAN_VALIDATION.md).
+Fecha: **4 de noviembre de 2026**. Rama publicada: **main**. Alcance: cierre técnico ampliado; los criterios que requieren personas siguen abiertos. [Guiones y hojas de registro](./HUMAN_VALIDATION.md).
 
 ## Entrega verificada y publicada
 
-Código de producto: **60fe9e8**. [Actions: validación y despliegue superados](https://github.com/franmatias/css-lab/actions/runs/41524347399). La entrega incluye diez ilustraciones SVG, los ejemplos visuales de caja/responsive/movimiento y doce experimentos de propiedades. Se han superado 66 pruebas unitarias/de componente, 81 casos por navegador en Chromium/Firefox/WebKit (243 en total), dos pruebas de producción y los presupuestos Lighthouse. Los informes JSON por motor están en los artefactos quality-browser; cobertura, producción y Lighthouse se conservan en quality-evidence.
+Código de producto: **2d49e04**. [Actions: validación y despliegue](https://github.com/franmatias/css-lab/actions/runs/41907025317). La entrega añade celebración de finalización, navegación y filtros del Catálogo, paneles redimensionables, DOM bidireccional, diagnósticos CSS y evaluación ampliada de cascada. Se han superado 70 pruebas unitarias/de componente, 82 casos por navegador en Chromium/Firefox/WebKit (246 en total), dos pruebas de producción y los presupuestos Lighthouse. Los informes JSON por motor están en los artefactos quality-browser; cobertura, producción y Lighthouse se conservan en quality-evidence.
 
 El [plan](./IMPLEMENTATION_PLAN.md) y el [estado](./IMPLEMENTATION_STATUS.md) mantienen abiertas las revisiones humanas. [Detalle de los doce experimentos](./PROPERTY_PLAYGROUNDS.md).
 
@@ -15,10 +15,10 @@ Entorno: Windows, Node 20.18.0, pnpm 9.15.9, Vitest 3.2.7 y Playwright 1.64.1. S
 | Control                           | Resultado                                                   | Alcance                                                                                                                          |
 | --------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | Reglas, formato y tipos           | Superados                                                   | ESLint, Prettier y vue-tsc.                                                                                                      |
-| Pruebas unitarias y de componente | 60 superadas                                                | Evaluación, cascada, progreso, esquemas, limpieza de vistas y panel accesible.                                                   |
-| Cobertura de dominio              | 99,10 % líneas/sentencias; 94,07 % ramas; 96,77 % funciones | Todos los archivos de src/domain, excluyendo solo archivos de pruebas. Umbral global 90 % en las cuatro métricas.                |
-| Chromium                          | 71 verificadas                                              | Flujos, referencias, guardado, Emmet, vistas aisladas, accesibilidad automática y reflujo.                                       |
-| WebKit                            | 71 verificadas                                              | La misma batería, incluidas las correcciones de foco y cambio de tema.                                                           |
+| Pruebas unitarias y de componente | 70 superadas                                                | Evaluación, cascada, progreso, diagnósticos, metadatos, limpieza de vistas y componentes compartidos.                            |
+| Cobertura de dominio              | 99,13 % líneas/sentencias; 91,57 % ramas; 96,87 % funciones | Todos los archivos de src/domain, excluyendo solo archivos de pruebas. Umbral global 90 % en las cuatro métricas.                |
+| Chromium                          | 82 verificadas                                              | Flujos, referencias, celebración, filtros, paneles, DOM bidireccional, accesibilidad automática y reflujo.                       |
+| WebKit                            | 82 verificadas                                              | La misma batería, incluidas las correcciones de foco y cambio de tema.                                                           |
 | Firefox local                     | No ejecutable en este Windows                               | El ejecutable falla antes de abrir con «configuración en paralelo no es correcta». La matriz de CI en Ubuntu incluye Firefox.    |
 | Producción                        | 2 superadas                                                 | Inicio y navegación bajo /css-lab/, talleres, juegos y presupuesto de JS.                                                        |
 | JS inicial completo               | **117 909 bytes gzip (117,91 kB)**                          | Todos los scripts solicitados al entrar en Inicio con contexto limpio, incluido theme-init. Presupuesto: menos de 150 000 bytes. |
@@ -60,7 +60,7 @@ Instalar con pnpm 9.15.9 y el archivo de bloqueo; usar Node indicado en .nvmrc. 
 - Auditoría manual con lector de pantalla, zoom real, teclado y revisión del material dentro de los iframes. axe excluye los iframes que impiden inyección de scripts.
 - Safari real y dispositivos táctiles con tecnologías de asistencia, además del WebKit automatizado.
 
-Estos puntos tienen guion y registro preparados, pero **no se han realizado ni se declara conformidad WCAG completa**. Las funcionalidades P2 y las extensiones opcionales del plan tampoco se convierten en entregadas por terminar los controles técnicos.
+Estos puntos tienen guion y registro preparados, pero **no se han realizado ni se declara conformidad WCAG completa**. Las extensiones opcionales del plan tampoco se convierten en entregadas por terminar los controles técnicos.
 
 ## Ampliación visual de teoría
 
