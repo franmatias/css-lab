@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test'
 
+async function closeCelebration(page: import('@playwright/test').Page) {
+  const dialog = page.getByRole('dialog', { name: /completad[ao]/i })
+  if (await dialog.isVisible())
+    await dialog.getByRole('button', { name: 'Continuar aprendiendo' }).click()
+}
+
 test('the compiled Pages app boots and opens every section under its repository prefix', async ({
   page,
 }) => {
@@ -38,6 +44,7 @@ test('the compiled Pages app boots and opens every section under its repository 
       await page.getByRole('textbox', { name: 'Tu selector de la misión' }).fill('.rocoso')
       await page.getByRole('button', { name: 'Activar constelación' }).click()
       await expect(page.locator('.galaxy-board')).toHaveClass(/is-won/)
+      await closeCelebration(page)
     }
     if (name === 'Laboratorio') {
       await page.getByRole('button', { name: 'Formatear todo' }).click()
@@ -62,18 +69,21 @@ test('the compiled Pages app boots and opens every section under its repository 
   await page.getByRole('radio', { name: 'ol', exact: true }).check()
   await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
   await expect(page.locator('.design-check [role="status"]')).toContainText('+100 XP')
+  await closeCelebration(page)
   await page.goto('/css-lab/juego/tablas')
   await page
     .getByRole('textbox', { name: 'Tu selector para la tabla' })
     .fill('tbody > tr:nth-child(2) > td:nth-child(3)')
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.table-feedback')).toContainText('+100 XP')
+  await closeCelebration(page)
   await page.goto('/css-lab/juego/grid')
   await page
     .getByRole('textbox', { name: 'Tu CSS para la misión' })
     .fill('.pista { display: grid; grid-template-columns: repeat(3, 1fr); }')
   await page.getByRole('button', { name: 'Comprobar misión', exact: true }).click()
   await expect(page.locator('.studio-feedback')).toContainText('+100 XP')
+  await closeCelebration(page)
   await page.goto('/css-lab/progreso')
   await expect(page.locator('.progress-hero')).toBeVisible()
   await expect(page.locator('.journey-grid')).toContainText('1 de 6 completadas')
