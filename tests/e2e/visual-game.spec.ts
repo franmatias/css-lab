@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('the responsive menu opens, closes with Escape and navigates on a narrow viewport', async ({
   page,
@@ -34,6 +35,7 @@ test('visual missions animate success, award points once and unlock their badges
   await expect(page.locator('.galaxy-board')).toHaveClass(/is-won/)
   await expect(page.locator('.game-answer [role="status"]')).toContainText('+100 XP')
   await expect(page.getByRole('link', { name: 'Siguiente misión' })).toBeVisible()
+  await dismissCompletion(page)
   await page.getByRole('button', { name: 'Activar constelación' }).click()
   await expect(page.locator('.game-answer [role="status"]')).toContainText('una sola vez')
   await page.goto('/progreso')

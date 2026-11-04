@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('guided steps persist, resume, validate separately and keep completed workshops compatible', async ({
   page,
@@ -42,6 +43,7 @@ test('guided steps persist, resume, validate separately and keep completed works
   await expect(
     page.getByRole('progressbar', { name: 'Progreso del taller', exact: true }),
   ).toHaveAttribute('value', '5')
+  await dismissCompletion(page)
   await page.getByRole('link', { name: '← Todos los talleres' }).click()
   await expect(card).toContainText('100%')
   // Existing completed data has no step history. It must still display as complete.

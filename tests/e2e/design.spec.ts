@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('every workshop has a valid solution and incomplete or conditional declarations do not pass', async ({
   page,
@@ -84,6 +85,7 @@ test('workshops save drafts, check CSS and quiz, award once, export to the lab a
   await page.getByRole('radio', { name: 'La distribución en el eje principal' }).check()
   await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
   await expect(page.locator('.design-check [role="status"]')).toContainText('+100 XP')
+  await dismissCompletion(page)
   await page.getByRole('button', { name: 'Comprobar taller', exact: true }).click()
   await expect(page.locator('.design-check [role="status"]')).toContainText('una sola vez')
   await page.reload()

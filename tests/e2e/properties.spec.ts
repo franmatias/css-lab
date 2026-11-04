@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('all property solutions pass actual browser grading, starters fail, aliases work and missing frames fail', async ({
   page,
@@ -83,6 +84,7 @@ test('properties catalog, editor, persistent completion, DOM selection and respo
   await page.getByRole('button', { name: 'Comprobar', exact: true }).click()
   await expect(page.locator('.property-validation [role="status"]')).toContainText('+60 XP')
   await expect(page.getByText('4/4 comprobados')).toBeVisible()
+  await dismissCompletion(page)
   await page.getByRole('button', { name: 'Comprobar', exact: true }).click()
   await expect(page.locator('.property-validation [role="status"]')).toContainText(
     'ya estaba completado',

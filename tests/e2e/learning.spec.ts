@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { dismissCompletion } from './completionHelper'
 
 test('all content reference solutions and alternatives pass in the actual browser', async ({
   page,
@@ -27,6 +28,7 @@ test('a challenge awards XP once, unlocks the next and persists on reload', asyn
   await page.getByRole('textbox', { name: 'Tu selector' }).fill('*')
   await page.getByRole('button', { name: 'Comprobar solución' }).click()
   await expect(page.getByText('✓ Completado · 70 XP · 1 intentos')).toBeVisible()
+  await dismissCompletion(page)
   await page.getByRole('button', { name: 'Comprobar solución' }).click()
   await page.getByRole('link', { name: 'Siguiente reto' }).click()
   await expect(page).toHaveURL(/m1-tipo-02/)
@@ -45,6 +47,7 @@ test('theory quiz, catalogue search and favourites work together', async ({ page
   await page.getByRole('radio', { name: 'La regla no se aplica a ningún elemento.' }).check()
   await page.getByRole('button', { name: 'Comprobar respuestas' }).click()
   await page.getByRole('button', { name: 'Completar lección' }).click()
+  await dismissCompletion(page)
   await expect(page.getByRole('button', { name: 'Lección completada' })).toBeDisabled()
   await page.goto('/catalogo')
   await page.getByRole('combobox', { name: 'Categoría', exact: true }).selectOption('7')
